@@ -1,0 +1,257 @@
+/* Reset and base styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  body {
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+    color: #333;
+  }
+  
+  /* Header styles */
+  .header {
+    background-color: #fff;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    position: fixed;
+    width: 100%;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+  }
+  
+  .header__content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  
+  .header__logo img {
+    display: block;
+  }
+  
+  .header__menu {
+    display: flex;
+    list-style: none;
+    gap: 2rem;
+    align-items: center;
+  }
+  
+  .header__menu li a {
+    text-decoration: none;
+    color: #333;
+    font-weight: 500;
+    transition: color 0.3s;
+  }
+  
+  .header__menu li a:hover {
+    color: #e74c3c;
+  }
+  
+  .header__quick {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+  }
+  
+  .header__quick a {
+    text-decoration: none;
+    color: #e74c3c;
+    font-weight: 600;
+  }
+  
+  .icon-hamburger {
+    display: none;
+    flex-direction: column;
+    gap: 5px;
+    cursor: pointer;
+  }
+  
+  .icon-hamburger span {
+    display: block;
+    width: 25px;
+    height: 3px;
+    background-color: #333;
+  }
+  
+  /* Main content styles */
+  .main-content {
+    padding-top: 120px; /* This creates space for the fixed header */
+    min-height: 80vh;
+  }
+  
+  /* Grid system */
+  .grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem;
+  }
+  
+  .col-50 {
+    flex: 1;
+    min-width: 300px;
+  }
+  
+  /* Utility classes */
+  .pt-3 {
+    padding-top: 3rem;
+  }
+  
+  .pt-4 {
+    padding-top: 4rem;
+  }
+  
+  .text-center {
+    text-align: center;
+  }
+  
+  /* Feature image */
+  .feature-image {
+    max-width: 100%;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Typography */
+  h1 {
+    font-size: 2.5rem;
+    margin-bottom: 1.5rem;
+    color: #e74c3c;
+  }
+  
+  h3 {
+    font-size: 1.5rem;
+    margin: 1.5rem 0 1rem;
+    color: #333;
+  }
+  
+  p {
+    margin-bottom: 1rem;
+  }
+  
+  ul {
+    margin-left: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  /* Button styles */
+  .button {
+    display: inline-block;
+    background-color: #e74c3c;
+    color: white;
+    padding: 0.75rem 1.5rem;
+    text-decoration: none;
+    border-radius: 4px;
+    font-weight: 600;
+    transition: background-color 0.3s;
+  }
+  
+  .button:hover {
+    background-color: #c0392b;
+  }
+  
+  /* Illuminiamo section */
+  .illuminiamo-section {
+    padding: 2rem 0;
+  }
+  
+  /* Footer styles */
+  .site-footer {
+    background-color: #333;
+    color: #fff;
+    padding: 3rem 0 1.5rem;
+    margin-top: 3rem;
+  }
+  
+  .site-footer h3 {
+    color: #fff;
+    position: relative;
+    padding-bottom: 0.5rem;
+  }
+  
+  .site-footer h3:after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 50px;
+    height: 2px;
+    background-color: #e74c3c;
+  }
+  
+  .site-footer p {
+    margin-bottom: 0.5rem;
+  }
+  
+  .site-footer a {
+    color: #fff;
+  }
+  
+  .schedule {
+    list-style: none;
+    margin: 0 0 1.5rem;
+  }
+  
+  .schedule li {
+    margin-bottom: 0.5rem;
+  }
+  
+  .schedule span {
+    font-weight: bold;
+  }
+  
+  .social-media {
+    margin-top: 1.5rem;
+  }
+  
+  .social-icons {
+    display: flex;
+    gap: 1rem;
+    margin-top: 0.5rem;
+  }
+  
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem;
+  }
+  
+  /* Responsive styles */
+  @media (max-width: 768px) {
+    .header__menu {
+      display: none;
+      position: absolute;
+      top: 100%;
+      left: 0;
+      width: 100%;
+      background-color: #fff;
+      flex-direction: column;
+      padding: 1rem 0;
+      box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+    }
+    
+    .header__menu.active {
+      display: flex;
+    }
+    
+    .icon-hamburger {
+      display: flex;
+    }
+    
+    .grid {
+      flex-direction: column;
+    }
+    
+    .main-content {
+      padding-top: 100px;
+    }
+  }
+  
