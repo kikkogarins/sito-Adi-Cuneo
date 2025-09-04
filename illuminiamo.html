@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Illuminiamo Insieme - ADI Cuneo</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    /* Video Hero Section */
+    .video-hero {
+      position: relative;
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, #4A4A54, #F7B32D);
+    }
+    
+    .video-hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: rgba(74, 74, 84, 0.4);
+      z-index: 2;
+    }
+    
+    .hero-video {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      min-width: 100%;
+      min-height: 100%;
+      width: auto;
+      height: auto;
+      transform: translate(-50%, -50%);
+      z-index: 1;
+    }
+    
+    .hero-content {
+      position: relative;
+      z-index: 3;
+      text-align: center;
+      color: white;
+      max-width: 800px;
+      padding: 2rem;
+    }
+    
+    .hero-content h1 {
+      font-size: 4rem;
+      margin-bottom: 1rem;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+      animation: fadeInUp 1s ease-out;
+    }
+    
+    .hero-content p {
+      font-size: 1.5rem;
+      margin-bottom: 2rem;
+      opacity: 0.95;
+      animation: fadeInUp 1s ease-out 0.3s both;
+    }
+    
+    .discover-btn {
+      background: linear-gradient(135deg, #F7B32D, #FFD700);
+      color: #4A4A54;
+      padding: 1rem 2.5rem;
+      border: none;
+      border-radius: 50px;
+      font-size: 1.2rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.4s ease;
+      text-decoration: none;
+      display: inline-block;
+      box-shadow: 0 4px 20px rgba(247, 179, 45, 0.3);
+      animation: fadeInUp 1s ease-out 0.6s both;
+    }
+    
+    .discover-btn:hover {
+      transform: translateY(-3px) scale(1.05);
+      box-shadow: 0 8px 30px rgba(247, 179, 45, 0.5);
+      background: linear-gradient(135deg, #FFD700, #F7B32D);
+    }
+    
+    /* Scroll indicator */
+    .scroll-indicator {
+      position: absolute;
+      bottom: 2rem;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 3;
+      animation: bounce 2s infinite;
+    }
+    
+    .scroll-indicator::before {
+      content: '↓';
+      font-size: 2rem;
+      color: white;
+    }
+    
+    @keyframes bounce {
+      0%, 20%, 50%, 80%, 100% { transform: translateX(-50%) translateY(0); }
+      40% { transform: translateX(-50%) translateY(-10px); }
+      60% { transform: translateX(-50%) translateY(-5px); }
+    }
+    
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    /* Content Section */
+    .content-section {
+      padding: 5rem 0;
+      background: linear-gradient(135deg, #FFF9E6 0%, #FFFBF0 50%, #FFF5E1 100%);
+    }
+    
+    .content-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem;
+      align-items: center;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 2rem;
+    }
+    
+    .content-text {
+      background: white;
+      padding: 3rem;
+      border-radius: 20px;
+      box-shadow: 0 10px 40px rgba(247, 179, 45, 0.1);
+      border-left: 6px solid #F7B32D;
+      transition: all 0.3s ease;
+    }
+    
+    .content-text:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 50px rgba(247, 179, 45, 0.2);
+    }
+    
+    .content-text h2 {
+      color: #4A4A54;
+      font-size: 2.5rem;
+      margin-bottom: 1.5rem;
+      position: relative;
+    }
+    
+    .content-text h2::after {
+      content: '';
+      position: absolute;
+      bottom: -10px;
+      left: 0;
+      width: 60px;
+      height: 4px;
+      background: linear-gradient(to right, #F7B32D, #FFD700);
+      border-radius: 2px;
+    }
+    
+    .content-text h3 {
+      color: #F7B32D;
+      font-size: 1.5rem;
+      margin: 2rem 0 1rem;
+    }
+    
+    .content-text p {
+      color: #666;
+      line-height: 1.8;
+      margin-bottom: 1.5rem;
+    }
+    
+    .content-text ul {
+      list-style: none;
+      padding: 0;
+    }
+    
+    .content-text li {
+      background: rgba(247, 179, 45, 0.1);
+      padding: 1rem;
+      margin: 0.5rem 0;
+      border-radius: 10px;
+      border-left: 4px solid #F7B32D;
+      color: #4A4A54;
+      font-weight: 500;
+      transition: all 0.3s ease;
+    }
+    
+    .content-text li:hover {
+      background: rgba(247, 179, 45, 0.2);
+      transform: translateX(5px);
+    }
+    
+    .content-text li::before {
+      content: '💡';
+      margin-right: 1rem;
+    }
+    
+    .content-image {
+      position: relative;
+    }
+    
+    .feature-image {
+      width: 100%;
+      border-radius: 20px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+      transition: all 0.3s ease;
+    }
+    
+    .feature-image:hover {
+      transform: scale(1.02);
+      box-shadow: 0 15px 50px rgba(0,0,0,0.15);
+    }
+    
+    /* Decorative elements */
+    .content-section::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 100px;
+      background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="20" cy="20" r="2" fill="%23F7B32D" opacity="0.3"/><circle cx="80" cy="40" r="1.5" fill="%234A4A54" opacity="0.2"/><circle cx="50" cy="70" r="1" fill="%23FFD700" opacity="0.4"/></svg>') repeat;
+      background-size: 100px 100px;
+    }
+    
+    /* Activities Section */
+    .activities-section {
+      padding: 5rem 0;
+      background: white;
+    }
+    
+    .activities-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 2rem;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 2rem;
+    }
+    
+    .activity-card {
+      background: linear-gradient(135deg, #4A4A54, #5A5A64);
+      color: white;
+      padding: 2.5rem;
+      border-radius: 20px;
+      text-align: center;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .activity-card::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(247, 179, 45, 0.1) 0%, transparent 70%);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+    
+    .activity-card:hover::before {
+      opacity: 1;
+    }
+    
+    .activity-card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 20px 40px rgba(74, 74, 84, 0.3);
+    }
+    
+    .activity-icon {
+      font-size: 3rem;
+      margin-bottom: 1.5rem;
+      display: block;
+    }
+    
+    .activity-card h3 {
+      color: #F7B32D;
+      margin-bottom: 1rem;
+      font-size: 1.4rem;
+    }
+    
+    .activity-card p {
+      opacity: 0.9;
+      line-height: 1.6;
+    }
+    
+    /* Responsive */
+    @media (max-width: 768px) {
+      .hero-content h1 {
+        font-size: 2.5rem;
+      }
+      
+      .hero-content p {
+        font-size: 1.2rem;
+      }
+      
+      .content-grid {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+      }
+      
+      .content-text {
+        padding: 2rem;
+      }
+      
+      .content-text h2 {
+        font-size: 2rem;
+      }
+      
+      .activities-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .video-hero {
+        height: 70vh;
+      }
+    }
+    
+    /* Hidden class for smooth reveal */
+    .hidden {
+      opacity: 0;
+      transform: translateY(50px);
+      transition: all 0.8s ease;
+    }
+    
+    .revealed {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  </style>
+</head>
+<body>
+  <!-- Header uguale al tuo originale -->
+  <header class="header">
+    <div class="header__content">
+      <a class="header__logo" href="index.html">
+        <img src="img/logo_adi_cuneo.png" alt="Logo ADI Cuneo" height="100" width="100">
+      </a>
+      <ul class="header__menu">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="index.html#chi-siamo">Chi siamo</a></li>
+        <li><a href="#"><img src="img/lampadina.png" alt="Lampadina" height="40" width="40"></a></li>
+        <li><a href="gallery.html">Galleria Foto</a></li>
+        <li><a href="eventi.html">Eventi</a></li>
+      </ul>
+      <div class="header__quick">
+        <a href="#contatti">Contatti</a>
+        <div class="icon-hamburger">
+          <span></span>
+          <span></span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+    <!-- Video Hero Section -->
+<section class="video-hero" id="home">
+  <video class="hero-video" autoplay muted loop playsinline poster="video/poster.jpg">
+    <source src="video/agrimontana_naturaV6_final.mp4" type="video/mp4">
+    Il tuo browser non supporta i video HTML5.
+  </video>
+
+  <div class="hero-content">
+    <h1>Illuminiamo Insieme</h1>
+    <p>Un progetto speciale dove la luce diventa speranza, crescita e condivisione per bambini e famiglie</p>
+    <a href="#content" class="discover-btn">Scopri di Più</a>
+  </div>
+
+  <div class="scroll-indicator"></div>
+</section>
+
+
+  <!-- Content Section -->
+  <section class="content-section" id="content">
+    <div class="content-grid">
+      <div class="content-text hidden">
+        <h2>Illuminiamo Insieme</h2>
+        <p>Un progetto speciale pensato per i bambini e le loro famiglie, dove la luce diventa metafora di speranza, crescita e condivisione.</p>
+        
+        <h3>Cosa è Illuminiamo Insieme?</h3>
+        <p>È un percorso educativo e ludico che coinvolge i più giovani in attività creative, laboratori e momenti di aggregazione.</p>
+        
+        <h3>I Nostri Obiettivi</h3>
+        <ul>
+          <li>Sviluppare la creatività attraverso laboratori artistici</li>
+          <li>Promuovere valori di solidarietà e condivisione</li>
+          <li>Stimolare l'apprendimento attraverso il gioco educativo</li>
+          <li>Creare momenti di crescita spirituale adatti ai bambini</li>
+        </ul>
+      </div>
+      
+      <div class="content-image hidden">
+        <img src="img/illuminiamo.png" alt="Illuminiamo Insieme" class="feature-image">
+      </div>
+    </div>
+  </section>
+
+  <!-- Activities Section -->
+  <section class="activities-section">
+    <div class="container">
+      <div class="activities-grid">
+        <div class="activity-card hidden">
+          <span class="activity-icon">🎨</span>
+          <h3>Laboratori Creativi</h3>
+          <p>Attività artistiche e manuali per sviluppare la creatività e l'espressione personale dei bambini.</p>
+        </div>
+        
+        <div class="activity-card hidden">
+          <span class="activity-icon">📚</span>
+          <h3>Racconti e Storie</h3>
+          <p>Momenti dedicati alla narrazione di storie edificanti e parabole adatte ai più piccoli.</p>
+        </div>
+        
+        <div class="activity-card hidden">
+          <span class="activity-icon">🎵</span>
+          <h3>Musica e Canto</h3>
+          <p>Imparare canzoni di lode e adorazione in un ambiente gioioso e partecipativo.</p>
+        </div>
+        
+        <div class="activity-card hidden">
+          <span class="activity-icon">🤝</span>
+          <h3>Giochi di Gruppo</h3>
+          <p>Attività che promuovono la collaborazione, l'amicizia e i valori cristiani.</p>
+        </div>
+        
+        <div class="activity-card hidden">
+          <span class="activity-icon">🌱</span>
+          <h3>Crescita Spirituale</h3>
+          <p>Momenti di preghiera e riflessione adeguati all'età per nutrire la fede dei bambini.</p>
+        </div>
+        
+        <div class="activity-card hidden">
+          <span class="activity-icon">👨‍👩‍👧‍👦</span>
+          <h3>Coinvolgimento Famiglie</h3>
+          <p>Eventi speciali che includono tutta la famiglia nel percorso di crescita insieme.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer uguale al tuo originale -->
+<footer id="contatti">
+  <div class="grid">
+    <div class="col-50">
+      <h3>ADI Cuneo</h3>
+      <p>Via Acceglio, 4</p>
+      <p>12100 Cuneo (CN)</p>
+      <p>Email: info@adicuneo.it</p>
+      <p>visita la pagina Assemblee di Dio in Italia</p>
+      <a href="https://www.assembleedidio.org/" target="_blank">
+        <img src="img/adi.png" alt="" style="width: 50px; height: 50px;">
+      </a>
+
+      <!-- Mappa -->
+      <div style="margin-top: 15px;">
+        <iframe 
+          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2849.374292999981!2d7.556393076545171!3d44.39166800674194!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x12cd58294ac356c7%3A0x93d57c0141b1de2!2sVia%20Acceglio%2C%204%2C%2012100%20Cuneo%20CN!5e0!3m2!1sit!2sit!4v1699199999999!5m2!1sit!2sit" 
+          width="100%" 
+          height="200" 
+          style="border:0; border-radius: 8px;" 
+          allowfullscreen="" 
+          loading="lazy" 
+          referrerpolicy="no-referrer-when-downgrade">
+        </iframe>
+      </div>
+    </div>
+
+    <div class="col-50">
+      <h3>Orari</h3>
+      <p>Domenica: 10:30 - 12:30</p>
+      <p>Martedì: 19:00 - 20:30</p>
+      <p>Giovedì: 20:00 - 21:30</p>
+      <a href="gallery.html" class="button">Visita la nostra galleria</a>
+      <br>
+      <p>Visita le nostra pagine</p>
+      <a href="https://www.instagram.com/adicuneo/" target="_blank">
+        <img src="img/insta.png" alt="Instagram" style="width: 40px; height: 40px;">
+      </a> 
+      <a href="https://www.facebook.com/ADICuneo/?locale=it_IT" target="_blank">
+        <img src="img/facebook.png" alt="Facebook" style="width: 40px; height: 35px;">
+      </a> 
+    </div>
+  </div>
+
+  <p class="text-center pt-4">© 2025 ADI Cuneo - Tutti i diritti riservati</p>
+</footer>
+
+  <script>
+    // Smooth scrolling for discover button
+    document.querySelector('.discover-btn').addEventListener('click', function(e) {
+      e.preventDefault();
+      document.querySelector('#content').scrollIntoView({
+        behavior: 'smooth'
+      });
+    });
+
+    // Intersection Observer for reveal animations
+    const observerOptions = {
+      threshold: 0.1,
+      rootMargin: '0px 0px -50px 0px'
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry, index) => {
+        if (entry.isIntersecting) {
+          setTimeout(() => {
+            entry.target.classList.add('revealed');
+          }, index * 200); // Staggered animation
+        }
+      });
+    }, observerOptions);
+
+    // Observe all hidden elements
+    document.querySelectorAll('.hidden').forEach(el => {
+      observer.observe(el);
+    });
+
+    // Menu mobile toggle (stesso del tuo script originale)
+    let item = document.querySelector('.icon-hamburger');
+    if (item) {
+      item.addEventListener("click", function() {
+        document.body.classList.toggle('menu-open');
+      });
+    }
+
+    // Video fallback - se il video non carica, usa lo sfondo
+    const video = document.querySelector('.hero-video');
+    if (video) {
+      video.addEventListener('error', function() {
+        const videoHero = document.querySelector('.video-hero');
+        videoHero.style.backgroundImage = 'linear-gradient(135deg, rgba(74, 74, 84, 0.8), rgba(247, 179, 45, 0.8)), url("img/illuminiamo.png")';
+        videoHero.style.backgroundSize = 'cover';
+        videoHero.style.backgroundPosition = 'center';
+        video.style.display = 'none';
+      });
+    }
+  </script>
+</body>
+</html>
