@@ -141,7 +141,7 @@ body {
 }
 
 .icon-hamburger {
-  display: none;
+  display: none; /* nascosto su desktop */
   flex-direction: column;
   cursor: pointer;
   z-index: 1001;
@@ -728,9 +728,20 @@ footer a:hover img {
   }
 }
 
+.mobile-only {
+  display: none !important;
+}
+
+.desktop-only {
+  display: block;
+}
+
 /* Tablet Portrait - 768px */
 @media screen and (max-width: 768px) {
   /* Nasconde il primo menu (navigazione principale) */
+  .desktop-only {
+    display: none !important;
+  }
   .header__menu:first-of-type {
     display: none;
     position: fixed;
@@ -745,7 +756,14 @@ footer a:hover img {
     transition: right 0.3s ease;
     z-index: 999;
   }
+    .mobile-only {
+    display: block !important;
+  }
   
+  .header__quick {
+    display: none !important;
+  }
+
   body.menu-open .header__menu:first-of-type {
     display: flex;
     right: 0;
