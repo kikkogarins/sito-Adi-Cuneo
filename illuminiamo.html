@@ -294,6 +294,15 @@
       line-height: 1.6;
     }
     
+    .mobile-only {
+  display: none !important;
+  }
+
+/* Il "Contatti" di destra rimane visibile su desktop */
+  .desktop-only {
+    display: block;
+  }
+
     /* Responsive */
     @media (max-width: 768px) {
       .hero-content h1 {
@@ -347,26 +356,32 @@
 </head>
 <body>
 <header class="header">
-    <div class="header__content">
-      <a class="header__logo" href="#">
-        <img src="img/logo_adi_cuneo.png" alt="Logo ADI Cuneo" height="100px" width="100px">
-      </a>
-      <ul class="header__menu">
-        <li><a href="index.html">Home</a></li>
-        <li><a href="storia.html">La Nostra Storia</a></li>
-        <li><a href="illuminiamo.html" style="display: flex; align-items: center; justify-content: center;"><img src="img/lampadina.png" alt="Lampadina" height="40px" width="40px"></a></li>
-        <li><a href="gallery.html">Galleria Foto</a></li>
-        <li><a href="eventi.html">Eventi</a></li>
-      </ul>
-      <div class="header__menu">
-        <a href="#contatti">Contatti</a>
-        <div class="icon-hamburger">
-          <span></span>
-          <span></span>
-        </div>
-      </div>
+  <div class="header__content">
+    <a class="header__logo" href="#">
+      <img src="img/logo_adi_cuneo.png" alt="Logo ADI Cuneo" height="100px" width="100px">
+    </a>
+  <ul class="header__menu">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="storia.html">La Nostra Storia</a></li>
+    <li><a href="illuminiamo.html" style="display: flex; align-items: center; justify-content: center;"><img src="img/lampadina.png" alt="Lampadina" height="40px" width="40px"></a></li>
+    <li><a href="gallery.html">Galleria Foto</a></li>
+    <li><a href="eventi.html">Eventi</a></li>
+    <li><a href="#contatti" class="mobile-only">Contatti</a></li>  <!-- SOLO SU MOBILE -->
+  </ul>
+    
+    <!-- SPOSTA IL MENU HAMBURGER FUORI DAL DIV MENU -->
+    <div class="header__quick">
+      <a href="#contatti" class="desktop-only">Contatti</a>  <!-- SOLO SU DESKTOP -->
     </div>
-  </header>
+    
+    <!-- MENU HAMBURGER SEPARATO -->
+    <div class="icon-hamburger">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+  </div>
+</header>
 
     <!-- Video Hero Section -->
 <section class="video-hero" id="home">
