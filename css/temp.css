@@ -1128,32 +1128,25 @@ footer h3 {
     padding: 20px 0;
   }
 
-  /* LIGHTBOX CORREZIONI - Tablet */
-  .lightbox {
-    padding: 15px;
-  }
-
-  .lightbox-close {
-    top: 10px;
-    right: 10px;
-    width: 45px;
-    height: 45px;
-    font-size: 26px;
-  }
-
-  .lightbox-prev,
-  .lightbox-next {
-    width: 45px;
-    height: 45px;
-    font-size: 26px;
+  .lightbox-nav {
+    width: 40px;
+    height: 40px;
+    font-size: 20px;
   }
 
   .lightbox-prev {
-    left: 10px;
+    left: -50px;
   }
 
   .lightbox-next {
-    right: 10px;
+    right: -50px;
+  }
+
+  .lightbox-close {
+    top: -35px;
+    width: 35px;
+    height: 35px;
+    font-size: 24px;
   }
 
   .category-filter {
@@ -1168,7 +1161,7 @@ footer h3 {
 
   /* Illuminiamo responsive */
   .hero-content h1 {
-    font-size: 2rem;
+    font-size: 2rem; /* Riduci dimensione */
     line-height: 1.2;
     margin-bottom: 0.5rem;
   }
@@ -1181,8 +1174,8 @@ footer h3 {
   }
 
   .hero-content {
-    padding: 1rem;
-    max-width: 90%;
+    padding: 1rem; /* Riduci padding */
+    max-width: 90%; /* Limita larghezza */
   }
 
   .content-grid {
@@ -1271,40 +1264,6 @@ footer h3 {
     padding-right: 10px;
   }
 
-  /* LIGHTBOX CORREZIONI - Mobile */
-  .lightbox {
-    padding: 10px;
-  }
-
-  .lightbox-close {
-    top: 5px;
-    right: 5px;
-    width: 40px;
-    height: 40px;
-    font-size: 24px;
-  }
-
-  .lightbox-prev,
-  .lightbox-next {
-    width: 40px;
-    height: 40px;
-    font-size: 24px;
-    background: rgba(0,0,0,0.8);
-  }
-
-  .lightbox-prev {
-    left: 5px;
-  }
-
-  .lightbox-next {
-    right: 5px;
-  }
-
-  /* Immagini verticali/ritratto su mobile */
-  .lightbox img {
-    max-height: 85vh;
-  }
-
   footer {
     padding: 30px 0;
     text-align: left;
@@ -1358,19 +1317,19 @@ footer h3 {
     height: 120px;
   }
 
-  /* LIGHTBOX CORREZIONI - Mobile Small */
-  .lightbox-close {
-    top: 5px;
-    right: 5px;
-    width: 35px;
-    height: 35px;
-    font-size: 20px;
+  .lightbox-prev, .lightbox-next {
+    display: none;
   }
 
-  .lightbox-prev,
-  .lightbox-next {
-    width: 35px;
-    height: 35px;
+  .lightbox-content {
+    max-width: 95%;
+    max-height: 95%;
+  }
+
+  .lightbox-close {
+    top: -30px;
+    width: 30px;
+    height: 30px;
     font-size: 20px;
   }
 
@@ -1394,7 +1353,7 @@ footer h3 {
     text-align: center;
   }
 
-  .hero-content h1 {
+    .hero-content h1 {
     font-size: 1.8rem;
   }
 
@@ -1487,37 +1446,5 @@ footer h3 {
 
   .pt-3 {
     padding-top: 80px;
-  }
-
-  /* LIGHTBOX CORREZIONI - Landscape Mobile */
-  .lightbox {
-    padding: 5px;
-  }
-
-  .lightbox img {
-    max-height: 90vh;
-  }
-
-  .lightbox-close {
-    width: 35px;
-    height: 35px;
-    font-size: 20px;
-    top: 5px;
-    right: 5px;
-  }
-
-  .lightbox-prev,
-  .lightbox-next {
-    width: 35px;
-    height: 35px;
-    font-size: 20px;
-  }
-
-  .lightbox-prev {
-    left: 5px;
-  }
-
-  .lightbox-next {
-    right: 5px;
   }
 }
