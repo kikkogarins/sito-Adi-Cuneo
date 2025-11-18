@@ -1,575 +1,263 @@
 <!DOCTYPE html>
 <html lang="it">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>ADI Cuneo - Contatti</title>
   <link rel="stylesheet" href="css/st.css">
-  <style>
-    /* Stili specifici per la pagina contatti */
-    .contatti-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 30px;
-      margin-top: 40px;
-      max-width: 1200px;
-      margin-left: auto;
-      margin-right: auto;
-      padding: 0 20px;
-    }
-    
-    .contatti-card {
-      background: var(--white);
-      padding: 40px;
-      border-radius: 15px;
-      box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
-      transition: all 0.3s ease;
-    }
-    
-    .contatti-card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
-    }
-    
-    .contatti-card h3 {
-      color: var(--dark-gray);
-      font-size: 1.8rem;
-      margin-bottom: 25px;
-      padding-bottom: 15px;
-      border-bottom: 3px solid var(--gold);
-    }
-    
-    .info-item {
-      display: flex;
-      align-items: flex-start;
-      gap: 15px;
-      margin-bottom: 25px;
-      padding: 15px;
-      background: #f8f8f8;
-      border-radius: 10px;
-      transition: all 0.3s ease;
-    }
-    
-    .info-item:hover {
-      background: rgba(224, 202, 85, 0.1);
-      transform: translateX(5px);
-    }
-    
-    .info-icon {
-      font-size: 1.8rem;
-      flex-shrink: 0;
-      color: var(--gold);
-    }
-    
-    .info-content h4 {
-      color: var(--dark-gray);
-      margin-bottom: 5px;
-      font-size: 1.1rem;
-    }
-    
-    .info-content p {
-      color: #555;
-      line-height: 1.6;
-      margin: 0;
-    }
-    
-    .info-content a {
-      color: var(--dark-gray);
-      text-decoration: none;
-      transition: all 0.3s ease;
-      font-weight: 600;
-    }
-    
-    .info-content a:hover {
-      color: var(--gold);
-    }
-    
-    .orari-list {
-      list-style: none;
-      padding: 0;
-      margin: 20px 0;
-    }
-    
-    .orari-list li {
-      padding: 15px 20px;
-      margin-bottom: 10px;
-      background: #f9fcff;
-      border-radius: 10px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      border-left: 4px solid var(--gold);
-      transition: all 0.3s ease;
-    }
-    
-    .orari-list li:hover {
-      background: #e6f2f7;
-      transform: translateX(8px);
-    }
-    
-    .orari-list strong {
-      color: var(--dark-gray);
-      font-size: 1.05rem;
-    }
-    
-    .orari-list span {
-      color: var(--gold);
-      font-weight: 600;
-    }
-    
-    .mappa-container {
-      border-radius: 15px;
-      overflow: hidden;
-      box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
-      height: 450px;
-      margin-top: 40px;
-    }
-    
-    .mappa-container iframe {
-      width: 100%;
-      height: 100%;
-      border: none;
-    }
-    
-    .form-group {
-      margin-bottom: 20px;
-    }
-    
-    .form-group label {
-      display: block;
-      color: var(--dark-gray);
-      font-weight: 600;
-      margin-bottom: 8px;
-    }
-    
-    .form-group input,
-    .form-group textarea,
-    .form-group select {
-      width: 100%;
-      padding: 12px 15px;
-      border: 2px solid #e0e0e0;
-      border-radius: 8px;
-      font-size: 1rem;
-      transition: all 0.3s ease;
-      font-family: inherit;
-    }
-    
-    .form-group input:focus,
-    .form-group textarea:focus,
-    .form-group select:focus {
-      outline: none;
-      border-color: var(--gold);
-      box-shadow: 0 0 0 3px rgba(224, 202, 85, 0.1);
-    }
-    
-    .form-group textarea {
-      min-height: 120px;
-      resize: vertical;
-    }
-    
-    .note-box {
-      margin-top: 25px;
-      padding: 20px;
-      background: rgba(224, 202, 85, 0.1);
-      border-radius: 10px;
-      border-left: 4px solid var(--gold);
-    }
-    
-    .note-box h4 {
-      color: var(--dark-gray);
-      margin-bottom: 10px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    
-    .note-box p {
-      color: #555;
-      line-height: 1.6;
-      margin: 0;
-    }
-    
-    .cta-card {
-      background: linear-gradient(135deg, var(--dark-gray), #5a5a64);
-      padding: 30px;
-      border-radius: 15px;
-      color: white;
-      text-align: center;
-      box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
-      transition: all 0.3s ease;
-    }
-    
-    .cta-card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-    }
-    
-    .cta-card h3 {
-      margin-bottom: 15px;
-      border: none;
-      padding: 0;
-      color: white;
-    }
-    
-    .cta-card p {
-      margin-bottom: 20px;
-      opacity: 0.95;
-    }
-    
-    .btn-light {
-      background: white;
-      color: var(--dark-gray);
-      padding: 12px 24px;
-      text-decoration: none;
-      border-radius: 8px;
-      font-weight: 600;
-      display: inline-block;
-      transition: all 0.3s ease;
-    }
-    
-    .btn-light:hover {
-      background: var(--gold);
-      transform: translateY(-2px);
-      box-shadow: 0 5px 15px rgba(224, 202, 85, 0.3);
-    }
-    
-    .social-section {
-      background: linear-gradient(135deg, var(--dark-gray), #5a5a64);
-      padding: 60px 0;
-      text-align: center;
-      color: white;
-      margin-top: 60px;
-    }
-    
-    .social-section h3 {
-      font-size: 2rem;
-      margin-bottom: 15px;
-    }
-    
-    .social-section p {
-      font-size: 1.1rem;
-      margin-bottom: 30px;
-      opacity: 0.9;
-    }
-    
-    .social-links {
-      display: flex;
-      justify-content: center;
-      gap: 20px;
-      flex-wrap: wrap;
-    }
-    
-    .social-link {
-      display: inline-block;
-      transition: all 0.3s ease;
-    }
-    
-    .social-link img {
-      width: 50px;
-      height: 50px;
-      border-radius: 50%;
-      transition: all 0.3s ease;
-      background: white;
-      padding: 10px;
-    }
-    
-    .social-link:hover img {
-      transform: scale(1.2) rotate(10deg);
-      filter: brightness(1.2);
-      box-shadow: 0 5px 20px rgba(224, 202, 85, 0.5);
-    }
-    
-    @media (max-width: 768px) {
-      .contatti-grid {
-        grid-template-columns: 1fr;
-        gap: 20px;
-      }
-      
-      .contatti-card {
-        padding: 25px;
-      }
-      
-      .mappa-container {
-        height: 300px;
-      }
-      
-      .info-item {
-        flex-direction: column;
-        text-align: center;
-      }
-      
-      .orari-list li {
-        flex-direction: column;
-        text-align: center;
-        gap: 5px;
-      }
-    }
-    
-    @media (max-width: 480px) {
-      .contatti-card {
-        padding: 20px;
-      }
-      
-      .contatti-card h3 {
-        font-size: 1.5rem;
-      }
-      
-      .mappa-container {
-        height: 250px;
-      }
-    }
-  </style>
 </head>
+
 <body>
-<header class="header">
-  <div class="header__content">
-    <a class="header__logo" href="#">
-      <img src="img/logo_adi_cuneo.png" alt="Logo ADI Cuneo" height="100px" width="100px">
-    </a>
-  <ul class="header__menu">
-    <li><a href="index.html">Home</a></li>
-    <li><a href="storia.html">La Nostra Storia</a></li>
-    <li><a href="illuminiamo.html" style="display: flex; align-items: center; justify-content: center;"><img src="img/lampadina.png" alt="Lampadina" height="40px" width="40px"></a></li>
-    <li><a href="gallery.html">Galleria Foto</a></li>
-    <li><a href="eventi.html">Eventi</a></li>
-    <li><a href="#contatti" class="mobile-only">Contatti</a></li>  <!-- SOLO SU MOBILE -->
-  </ul>
-    
-    <!-- SPOSTA IL MENU HAMBURGER FUORI DAL DIV MENU -->
-    <div class="header__quick">
-      <a href="contatti.html" class="desktop-only">Contatti</a>  <!-- SOLO SU DESKTOP -->
-    </div>
-    
-    <div class="icon-hamburger">
-      <span></span>
-      <span></span>
-      <span></span>
-    </div>
-  </div>
-</header>
-
-<!-- Page Title Section -->
-<div class="page-title" style="background-color: var(--dark-gray); color: white;">
-  <div class="grid">
-    <div style="width: 100%;">
-      <h1 style="color: white;">Contattaci</h1>
-      <p style="color: #ddd;">Siamo qui per rispondere alle tue domande e accoglierti nella nostra comunità</p>
-    </div>
-  </div>
-</div>
-
-
-<div class="contatti-grid">
-  <div class="contatti-card">
-    <h3>Informazioni di Contatto</h3>
-    
-    <div class="info-item">
-      <div class="info-icon">📍</div>
-      <div class="info-content">
-        <h4>Indirizzo</h4>
-        <p>Via Acceglio, 4<br>12100 Cuneo (CN)<br>Piemonte, Italia</p>
-      </div>
-    </div>
-    
-    <div class="info-item">
-      <div class="info-icon">📧</div>
-      <div class="info-content">
-        <h4>Email</h4>
-        <p><a href="mailto:info@adicuneo.it">info@adicuneo.it</a></p>
-      </div>
-    </div>
-    
-    <div class="info-item">
-      <div class="info-icon">📞</div>
-      <div class="info-content">
-        <h4>Telefono</h4>
-        <p><a href="tel:+390165123456">+39 0165 123456</a></p>
-      </div>
-    </div>
-    
-    <div class="info-item">
-      <div class="info-icon">🌐</div>
-      <div class="info-content">
-        <h4>ADI Italia</h4>
-        <p><a href="https://www.assembleedidio.org/" target="_blank">www.assembleedidio.org</a></p>
-      </div>
-    </div>
-  </div>
-  
-  <div class="contatti-card">
-    <h3>Orari degli Incontri</h3>
-    
-    <ul class="orari-list">
-      <li>
-        <strong>Domenica</strong>
-        <span>10:30 - 12:30</span>
-      </li>
-      <li>
-        <strong>Martedì</strong>
-        <span>20:30 - 21:30</span>
-      </li>
-      <li>
-        <strong>Giovedì</strong>
-        <span>20:30 - 21:30</span>
-      </li>
-    </ul>
-    
-    <div class="note-box">
-      <h4>💡 Nota Importante</h4>
-      <p>Tutti gli incontri sono aperti a chiunque desideri partecipare. Non è necessaria alcuna prenotazione. Ti aspettiamo!</p>
-    </div>
-  </div>
-</div>
-
-<div class="grid pt-3">
-  <div class="col-50">
-    <div style="padding: 0 15px;">
-      <h2>Dove Siamo</h2>
-      <p style="margin-bottom: 20px;">Situati nel cuore di Cuneo, facilmente raggiungibili con mezzi pubblici o auto.</p>
-      
-      <div class="mappa-container">
-        <iframe 
-          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2849.374292999981!2d7.556393076545171!3d44.39166800674194!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x12cd58294ac356c7%3A0x93d57c0141b1de2!2sVia%20Acceglio%2C%204%2C%2012100%20Cuneo%20CN!5e0!3m2!1sit!2sit!4v1699199999999!5m2!1sit!2sit"
-          allowfullscreen="" 
-          loading="lazy" 
-          referrerpolicy="no-referrer-when-downgrade">
-        </iframe>
-      </div>
-    </div>
-  </div>
-</div>
-
-<div class="contatti-grid" style="margin-top: 40px;">
-  <div class="contatti-card">
-    <h3>Inviaci un Messaggio</h3>
-    <form id="contact-form">
-      <div class="form-group">
-        <label for="nome">Nome e Cognome *</label>
-        <input type="text" id="nome" name="nome" required>
-      </div>
-      
-      <div class="form-group">
-        <label for="email">Email *</label>
-        <input type="email" id="email" name="email" required>
-      </div>
-      
-      <div class="form-group">
-        <label for="telefono">Telefono</label>
-        <input type="tel" id="telefono" name="telefono">
-      </div>
-      
-      <div class="form-group">
-        <label for="motivo">Motivo del Contatto</label>
-        <select id="motivo" name="motivo">
-          <option value="">Seleziona...</option>
-          <option value="info">Informazioni Generali</option>
-          <option value="preghiera">Richiesta di Preghiera</option>
-          <option value="evento">Informazioni su Eventi</option>
-          <option value="battesimo">Battesimo</option>
-          <option value="altro">Altro</option>
-        </select>
-      </div>
-      
-      <div class="form-group">
-        <label for="messaggio">Messaggio *</label>
-        <textarea id="messaggio" name="messaggio" required></textarea>
-      </div>
-      
-      <button type="submit" class="button" style="width: 100%; margin-top: 10px;">Invia Messaggio</button>
-    </form>
-  </div>
-  
-  <div>
-    <div class="contatti-card">
-      <h3>🙏 Hai Bisogno di Preghiera?</h3>
-      <p style="line-height: 1.7; margin-bottom: 20px;">
-        Siamo qui per pregare con te e per te. Se hai bisogno di sostegno spirituale o desideri condividere una richiesta di preghiera, non esitare a contattarci.
-      </p>
-      <a href="mailto:info@adicuneo.it" class="button">Richiedi Preghiera</a>
-    </div>
-    
-    <div class="cta-card" style="margin-top: 20px;">
-      <h3>💬 Preferisci Parlare di Persona?</h3>
-      <p>Vieni a trovarci durante uno dei nostri incontri. Saremo felici di conoscerti!</p>
-      <a href="index.html#appuntamenti" class="btn-light">Vedi Orari</a>
-    </div>
-  </div>
-</div>
-
-
-<footer id="contatti">
-  <div class="grid">
-    <div class="col-50">
-      <h3>ADI Cuneo</h3>
-      <p>Via Acceglio, 4</p>
-      <p>12100 Cuneo (CN)</p>
-      <p>Email: info@adicuneo.it</p>
-      <p>visita la pagina Assemblee di Dio in Italia</p>
-      <a href="https://www.assembleedidio.org/" target="_blank">
-        <img src="img/adi.png" alt="" style="width: 50px; height: 50px;">
+  <header class="header">
+    <div class="header__content">
+      <a class="header__logo" href="#">
+        <img src="img/logo_adi_cuneo.png" alt="Logo ADI Cuneo" height="100px" width="100px">
       </a>
+      <ul class="header__menu">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="storia.html">La Nostra Storia</a></li>
+        <li><a href="illuminiamo.html" style="display: flex; align-items: center; justify-content: center;"><img src="img/lampadina.png" alt="Lampadina" height="40px" width="40px"></a></li>
+        <li><a href="gallery.html">Galleria Foto</a></li>
+        <li><a href="eventi.html">Eventi</a></li>
+        <li><a href="#contatti" class="mobile-only">Contatti</a></li> <!-- SOLO SU MOBILE -->
+      </ul>
 
-      <div style="margin-top: 15px;">
-        <iframe 
-          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2849.374292999981!2d7.556393076545171!3d44.39166800674194!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x12cd58294ac356c7%3A0x93d57c0141b1de2!2sVia%20Acceglio%2C%204%2C%2012100%20Cuneo%20CN!5e0!3m2!1sit!2sit!4v1699199999999!5m2!1sit!2sit" 
-          width="100%" 
-          height="200" 
-          style="border:0; border-radius: 8px;" 
-          allowfullscreen="" 
-          loading="lazy" 
-          referrerpolicy="no-referrer-when-downgrade">
-        </iframe>
+      <!-- SPOSTA IL MENU HAMBURGER FUORI DAL DIV MENU -->
+      <div class="header__quick">
+        <a href="contatti.html" class="desktop-only">Contatti</a> <!-- SOLO SU DESKTOP -->
+      </div>
+
+      <div class="icon-hamburger">
+        <span></span>
+        <span></span>
+        <span></span>
       </div>
     </div>
+  </header>
 
-    <div class="col-50">
-      <h3>Orari</h3>
-      <p>Domenica: 10:30 - 12:30</p>
-      <p>Martedì: 20:30 - 21:30</p>
-      <p>Giovedì: 20:30 - 21:30</p>
-      <a href="gallery.html" class="button">Visita la nostra galleria</a>
-      <br>
-      <p>Visita le nostra pagine</p>
-      <a href="https://www.instagram.com/adicuneo/" target="_blank">
-        <img src="img/insta.png" alt="Instagram" style="width: 40px; height: 40px;">
-      </a> 
-      <a href="https://www.facebook.com/ADICuneo/?locale=it_IT" target="_blank">
-        <img src="img/facebook.png" alt="Facebook" style="width: 40px; height: 35px;">
-      </a> 
+  <!-- Page Title Section -->
+  <div class="page-title" style="background-color: var(--dark-gray); color: white;">
+    <div class="grid">
+      <div style="width: 100%;">
+        <h1 style="color: white;">Contattaci</h1>
+        <p style="color: #ddd;">Siamo qui per rispondere alle tue domande e accoglierti nella nostra comunità</p>
+      </div>
     </div>
   </div>
 
-  <p class="text-center pt-4">© 2025 ADI Cuneo - Tutti i diritti riservati</p>
-</footer>
 
-<script>
-  // Menu hamburger
-  let item = document.querySelector('.icon-hamburger');
-  item.addEventListener("click", function() {
-    document.body.classList.toggle('menu-open');
-  });
-  
-  // Smooth scroll
-  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-    anchor.addEventListener('click', function (e) {
-      e.preventDefault();
-      const target = document.querySelector(this.getAttribute('href'));
-      if (target) {
-        target.scrollIntoView({
-          behavior: 'smooth',
-          block: 'start'
-        });
-      }
+  <div class="contatti-grid">
+    <div class="contatti-card">
+      <h3>Informazioni di Contatto</h3>
+
+      <div class="info-item">
+        <div class="info-icon">📍</div>
+        <div class="info-content">
+          <h4>Indirizzo</h4>
+          <p>Via Acceglio, 4<br>12100 Cuneo (CN)<br>Piemonte, Italia</p>
+        </div>
+      </div>
+
+      <div class="info-item">
+        <div class="info-icon">📧</div>
+        <div class="info-content">
+          <h4>Email</h4>
+          <p><a href="mailto:info@adicuneo.it">info@adicuneo.it</a></p>
+        </div>
+      </div>
+
+      <div class="info-item">
+        <div class="info-icon">📞</div>
+        <div class="info-content">
+          <h4>Telefono</h4>
+          <p><a href="tel:+390165123456">+39 0165 123456</a></p>
+        </div>
+      </div>
+
+      <div class="info-item">
+        <div class="info-icon">🌐</div>
+        <div class="info-content">
+          <h4>ADI Italia</h4>
+          <p><a href="https://www.assembleedidio.org/" target="_blank">www.assembleedidio.org</a></p>
+        </div>
+      </div>
+    </div>
+
+    <div class="contatti-card">
+      <h3>Orari degli Incontri</h3>
+
+      <ul class="orari-list">
+        <li>
+          <strong>Domenica</strong>
+          <span>10:30 - 12:30</span>
+        </li>
+        <li>
+          <strong>Martedì</strong>
+          <span>20:30 - 21:30</span>
+        </li>
+        <li>
+          <strong>Giovedì</strong>
+          <span>20:30 - 21:30</span>
+        </li>
+      </ul>
+
+      <div class="note-box">
+        <h4>💡 Nota Importante</h4>
+        <p>Tutti gli incontri sono aperti a chiunque desideri partecipare. Non è necessaria alcuna prenotazione. Ti
+          aspettiamo!</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid pt-3">
+    <div class="col-50">
+      <div style="padding: 0 15px;">
+        <h2>Dove Siamo</h2>
+        <p style="margin-bottom: 20px;">Situati nel cuore di Cuneo, facilmente raggiungibili con mezzi pubblici o auto.
+        </p>
+
+        <div class="mappa-container">
+          <iframe
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2849.374292999981!2d7.556393076545171!3d44.39166800674194!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x12cd58294ac356c7%3A0x93d57c0141b1de2!2sVia%20Acceglio%2C%204%2C%2012100%20Cuneo%20CN!5e0!3m2!1sit!2sit!4v1699199999999!5m2!1sit!2sit"
+            allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade">
+          </iframe>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="contatti-grid" style="margin-top: 40px;">
+    <div class="contatti-card">
+      <h3>Inviaci un Messaggio</h3>
+      <form action="https://formsubmit.co/info@adicuneo.it" method="POST">
+        <!-- FormSubmit Configuration -->
+        <input type="hidden" name="_subject" value="Nuovo messaggio dal sito ADI Cuneo">
+        <input type="hidden" name="_captcha" value="false">
+        <input type="hidden" name="_template" value="table">
+        <input type="hidden" name="_next" value="https://tuosito.com/grazie.html">
+
+        <div class="form-group">
+          <label for="nome">Nome e Cognome *</label>
+          <input type="text" id="nome" name="nome" required>
+        </div>
+
+        <div class="form-group">
+          <label for="email">Email *</label>
+          <input type="email" id="email" name="email" required>
+        </div>
+
+        <div class="form-group">
+          <label for="telefono">Telefono</label>
+          <input type="tel" id="telefono" name="telefono">
+        </div>
+
+        <div class="form-group">
+          <label for="motivo">Motivo del Contatto</label>
+          <select id="motivo" name="motivo">
+            <option value="">Seleziona...</option>
+            <option value="info">Informazioni Generali</option>
+            <option value="preghiera">Richiesta di Preghiera</option>
+            <option value="evento">Informazioni su Eventi</option>
+            <option value="battesimo">Battesimo</option>
+            <option value="altro">Altro</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="messaggio">Messaggio *</label>
+          <textarea id="messaggio" name="messaggio" required></textarea>
+        </div>
+
+        <button type="submit" class="button" style="width: 100%; margin-top: 10px;">Invia Messaggio</button>
+      </form>
+    </div>
+
+
+
+    <div>
+      <div class="contatti-card">
+        <h3>🙏 Hai Bisogno di Preghiera?</h3>
+        <p style="line-height: 1.7; margin-bottom: 20px;">
+          Siamo qui per pregare con te e per te. Se hai bisogno di sostegno spirituale o desideri condividere una
+          richiesta di preghiera, non esitare a contattarci.
+        </p>
+        <a href="mailto:info@adicuneo.it" class="button">Richiedi Preghiera</a>
+      </div>
+
+      <div class="cta-card" style="margin-top: 20px;">
+        <h3>💬 Preferisci Parlare di Persona?</h3>
+        <p>Vieni a trovarci durante uno dei nostri incontri. Saremo felici di conoscerti!</p>
+        <a href="index.html#appuntamenti" class="btn-light">Vedi Orari</a>
+      </div>
+    </div>
+  </div>
+
+
+  <footer id="contatti">
+    <div class="grid">
+      <div class="col-50">
+        <h3>ADI Cuneo</h3>
+        <p>Via Acceglio, 4</p>
+        <p>12100 Cuneo (CN)</p>
+        <p>Email: info@adicuneo.it</p>
+        <p>visita la pagina Assemblee di Dio in Italia</p>
+        <a href="https://www.assembleedidio.org/" target="_blank">
+          <img src="img/adi.png" alt="" style="width: 50px; height: 50px;">
+        </a>
+
+        <div style="margin-top: 15px;">
+          <iframe
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2849.374292999981!2d7.556393076545171!3d44.39166800674194!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x12cd58294ac356c7%3A0x93d57c0141b1de2!2sVia%20Acceglio%2C%204%2C%2012100%20Cuneo%20CN!5e0!3m2!1sit!2sit!4v1699199999999!5m2!1sit!2sit"
+            width="100%" height="200" style="border:0; border-radius: 8px;" allowfullscreen="" loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade">
+          </iframe>
+        </div>
+      </div>
+
+      <div class="col-50">
+        <h3>Orari</h3>
+        <p>Domenica: 10:30 - 12:30</p>
+        <p>Martedì: 20:30 - 21:30</p>
+        <p>Giovedì: 20:30 - 21:30</p>
+        <a href="gallery.html" class="button">Visita la nostra galleria</a>
+        <br>
+        <p>Visita le nostra pagine</p>
+        <a href="https://www.instagram.com/adicuneo/" target="_blank">
+          <img src="img/insta.png" alt="Instagram" style="width: 40px; height: 40px;">
+        </a>
+        <a href="https://www.facebook.com/ADICuneo/?locale=it_IT" target="_blank">
+          <img src="img/facebook.png" alt="Facebook" style="width: 40px; height: 35px;">
+        </a>
+      </div>
+    </div>
+
+    <p class="text-center pt-4">© 2025 ADI Cuneo - Tutti i diritti riservati</p>
+  </footer>
+
+  <script>
+    // Menu hamburger
+    let item = document.querySelector('.icon-hamburger');
+    item.addEventListener("click", function () {
+      document.body.classList.toggle('menu-open');
     });
-  });
 
-  // Form submission
-  document.getElementById('contact-form').addEventListener('submit', function(e) {
-    e.preventDefault();
-    alert('Grazie per averci contattato! Ti risponderemo al più presto.');
-    this.reset();
-  });
-</script>
+    // Smooth scroll
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+          target.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+          });
+        }
+      });
+    });
+
+  </script>
 </body>
+
 </html>
