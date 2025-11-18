@@ -1013,14 +1013,6 @@
     display: inline-block;
   }
 
-  /* Focus states per accessibilità */
-  .button:focus,
-  .header__menu a:focus,
-  .header__quick a:focus,
-  .filter-button:focus {
-    outline: 2px solid var(--gold);
-    outline-offset: 2px;
-  }
 
   /* Pulse animation per elementi speciali */
   @keyframes pulse {
