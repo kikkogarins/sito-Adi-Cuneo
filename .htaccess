@@ -1,0 +1,13 @@
+# Abilita PHP
+AddHandler application/x-httpd-php .php
+
+# Consenti POST
+<Files "invia_email.php">
+    <Limit POST>
+        Order allow,deny
+        Allow from all
+    </Limit>
+</Files>
+
+# Rimozione index.php dall'URL
+DirectoryIndex index.html index.php

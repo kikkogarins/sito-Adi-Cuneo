@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="it">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Grazie - ADI Cuneo</title>
+    <link rel="stylesheet" href="css/st.css">
+    <style>
+        .thank-you-section {
+            min-height: 80vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+        }
+
+        .thank-you-card {
+            background: white;
+            padding: 60px 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            max-width: 600px;
+            animation: slideIn 0.5s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .thank-you-icon {
+            font-size: 80px;
+            margin-bottom: 20px;
+            animation: bounce 1s ease;
+        }
+
+        @keyframes bounce {
+
+            0%,
+            20%,
+            50%,
+            80%,
+            100% {
+                transform: translateY(0);
+            }
+
+            40% {
+                transform: translateY(-20px);
+            }
+
+            60% {
+                transform: translateY(-10px);
+            }
+        }
+
+        .thank-you-card h1 {
+            color: var(--dark-gray);
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+        }
+
+        .thank-you-card p {
+            color: #555;
+            font-size: 1.2rem;
+            line-height: 1.8;
+            margin-bottom: 15px;
+        }
+
+        .thank-you-card .highlight {
+            color: var(--gold);
+            font-weight: 600;
+        }
+
+        .button-group {
+            margin-top: 40px;
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        @media (max-width: 576px) {
+            .thank-you-card {
+                padding: 40px 25px;
+            }
+
+            .thank-you-card h1 {
+                font-size: 2rem;
+            }
+
+            .thank-you-icon {
+                font-size: 60px;
+            }
+
+            .button-group {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header class="header">
+        <div class="header__content">
+            <a class="header__logo" href="index.html">
+                <img src="img/logo_adi_cuneo.png" alt="Logo ADI Cuneo" height="100px" width="100px">
+            </a>
+            <ul class="header__menu">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="storia.html">La Nostra Storia</a></li>
+                <li><a href="illuminiamo.html" style="display: flex; align-items: center; justify-content: center;"><img
+                            src="img/lampadina.png" alt="Lampadina" height="40px" width="40px"></a></li>
+                <li><a href="gallery.html">Galleria Foto</a></li>
+                <li><a href="eventi.html">Eventi</a></li>
+                <li><a href="#contatti" class="mobile-only">Contatti</a></li>
+            </ul>
+
+            <div class="header__quick">
+                <a href="contatti.html" class="desktop-only">Contatti</a>
+            </div>
+
+            <div class="icon-hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </header>
+
+    <section class="thank-you-section">
+        <div class="thank-you-card">
+            <div class="thank-you-icon">✅</div>
+            <h1>Grazie per averci contattato!</h1>
+            <p>Il tuo messaggio è stato <span class="highlight">inviato con successo</span>.</p>
+            <p>Riceverai una risposta al più presto all'indirizzo email che hai fornito.</p>
+            <p>Ti aspettiamo ai nostri incontri!</p>
+
+            <div class="button-group">
+                <a href="index.html" class="button">Torna alla Home</a>
+                <a href="eventi.html" class="button">Scopri i Nostri Eventi</a>
+            </div>
+        </div>
+    </section>
+
+    <footer id="contatti">
+        <div class="grid">
+            <div class="col-50">
+                <h3>ADI Cuneo</h3>
+                <p>Via Acceglio, 4</p>
+                <p>12100 Cuneo (CN)</p>
+                <p>Email: info@adicuneo.it</p>
+                <p>visita la pagina Assemblee di Dio in Italia</p>
+                <a href="https://www.assembleedidio.org/" target="_blank">
+                    <img src="img/adi.png" alt="" style="width: 50px; height: 50px;">
+                </a>
+
+                <div style="margin-top: 15px;">
+                    <iframe
+                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2849.374292999981!2d7.556393076545171!3d44.39166800674194!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x12cd58294ac356c7%3A0x93d57c0141b1de2!2sVia%20Acceglio%2C%204%2C%2012100%20Cuneo%20CN!5e0!3m2!1sit!2sit!4v1699199999999!5m2!1sit!2sit"
+                        width="100%" height="200" style="border:0; border-radius: 8px;" allowfullscreen=""
+                        loading="lazy" referrerpolicy="no-referrer-when-downgrade">
+                    </iframe>
+                </div>
+            </div>
+
+            <div class="col-50">
+                <h3>Orari</h3>
+                <p>Domenica: 10:30 - 12:30</p>
+                <p>Martedì: 20:30 - 21:30</p>
+                <p>Giovedì: 20:30 - 21:30</p>
+                <a href="gallery.html" class="button">Visita la nostra galleria</a>
+                <br>
+                <p>Visita le nostra pagine</p>
+                <a href="https://www.instagram.com/adicuneo/" target="_blank">
+                    <img src="img/insta.png" alt="Instagram" style="width: 40px; height: 40px;">
+                </a>
+                <a href="https://www.facebook.com/ADICuneo/?locale=it_IT" target="_blank">
+                    <img src="img/facebook.png" alt="Facebook" style="width: 40px; height: 35px;">
+                </a>
+            </div>
+        </div>
+
+        <p class="text-center pt-4">© 2025 ADI Cuneo - Tutti i diritti riservati</p>
+    </footer>
+
+    <script>
+        let item = document.querySelector('.icon-hamburger');
+        item.addEventListener("click", function () {
+            document.body.classList.toggle('menu-open');
+        });
+    </script>
+</body>
+
+</html>
