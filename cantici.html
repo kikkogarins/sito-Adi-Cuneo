@@ -157,7 +157,6 @@
                     <img src="img/adi.png" alt="" style="width: 50px; height: 50px;">
                 </a>
 
-                <!-- Mappa -->
                 <div style="margin-top: 15px;">
                     <iframe
                         src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2849.374292999981!2d7.556393076545171!3d44.39166800674194!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x12cd58294ac356c7%3A0x93d57c0141b1de2!2sVia%20Acceglio%2C%204%2C%2012100%20Cuneo%20CN!5e0!3m2!1sit!2sit!4v1699199999999!5m2!1sit!2sit"
@@ -255,19 +254,34 @@
             }
         }
 
-        function handleLogin(event) {
+        async function handleLogin(event) {
             event.preventDefault();
             const username = document.getElementById('username').value;
             const password = document.getElementById('password').value;
 
-            if (username === 'musicista' && password === 'adi2024') {
-                isLoggedIn = true;
-                currentMode = 'musicisti';
-                closeLogin();
-                showInfoMessage('✅ Login effettuato!');
-                displayAllCantici();
-            } else {
-                alert('❌ Credenziali non valide.');
+            try {
+                const response = await fetch('api-musicisti.php?action=login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ username, password })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    isLoggedIn = true;
+                    currentMode = 'musicisti';
+                    closeLogin();
+                    showInfoMessage(`✅ Benvenuto ${data.user.name}!`);
+                    displayAllCantici();
+                } else {
+                    alert('❌ Credenziali non valide.');
+                }
+            } catch (error) {
+                console.error('Errore login:', error);
+                alert('❌ Errore di connessione. Riprova.');
             }
         }
 
