@@ -1574,6 +1574,10 @@
     }
   }
 
+  /*
+  CANTICI
+  */
+
   /* Stili specifici per la pagina contatti */
   .contatti-grid {
     display: grid;
@@ -1884,5 +1888,628 @@
 
     .mappa-container {
       height: 250px;
+    }
+  }
+
+  /* Stili specifici per la pagina cantici */
+  .cantici-hero {
+    background: linear-gradient(135deg, rgba(74, 74, 84, 0.95), rgba(224, 202, 85, 0.85)),
+      url('img/chiesa-interno.jpg');
+    background-size: cover;
+    background-position: center;
+    min-height: 50vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    color: white;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .cantici-hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 30% 50%, rgba(224, 202, 85, 0.2), transparent 70%);
+    animation: pulseGlow 6s ease-in-out infinite;
+  }
+
+  @keyframes pulseGlow {
+
+    0%,
+    100% {
+      opacity: 0.3;
+    }
+
+    50% {
+      opacity: 0.6;
+    }
+  }
+
+  .cantici-hero__content {
+    position: relative;
+    z-index: 2;
+    max-width: 800px;
+    padding: 40px 20px;
+  }
+
+  .cantici-hero h1 {
+    font-size: clamp(2.5rem, 6vw, 4rem);
+    margin-bottom: 20px;
+    text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.3);
+    animation: fadeInUp 0.8s ease-out;
+  }
+
+  .cantici-hero p {
+    font-size: clamp(1.1rem, 3vw, 1.5rem);
+    opacity: 0.95;
+    animation: fadeInUp 0.8s ease-out 0.2s both;
+  }
+
+  /* Sezione modalità */
+  .mode-selector {
+    background: white;
+    padding: 60px 20px;
+    text-align: center;
+  }
+
+  .mode-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 30px;
+    margin-top: 40px;
+  }
+
+  .mode-card {
+    background: linear-gradient(135deg, #f8f8f8, #ffffff);
+    border: 3px solid transparent;
+    border-radius: 20px;
+    padding: 40px 30px;
+    cursor: pointer;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+  }
+
+  .mode-card::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, var(--gold) 0%, transparent 70%);
+    opacity: 0;
+    transition: opacity 0.4s ease;
+  }
+
+  .mode-card:hover::before {
+    opacity: 0.1;
+  }
+
+  .mode-card:hover {
+    transform: translateY(-10px) scale(1.02);
+    border-color: var(--gold);
+    box-shadow: 0 15px 40px rgba(224, 202, 85, 0.25);
+  }
+
+  .mode-card.active {
+    background: linear-gradient(135deg, var(--dark-gray), #5a5a64);
+    color: white;
+    border-color: var(--gold);
+    transform: scale(1.05);
+    box-shadow: 0 15px 50px rgba(74, 74, 84, 0.3);
+  }
+
+  .mode-icon {
+    font-size: 4rem;
+    margin-bottom: 20px;
+    display: block;
+    animation: bounce 2s ease-in-out infinite;
+  }
+
+  @keyframes bounce {
+
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+
+    50% {
+      transform: translateY(-10px);
+    }
+  }
+
+  .mode-card:hover .mode-icon {
+    animation: none;
+    transform: scale(1.2) rotate(5deg);
+  }
+
+  .mode-card h3 {
+    font-size: 1.8rem;
+    margin-bottom: 15px;
+    color: var(--dark-gray);
+  }
+
+  .mode-card.active h3 {
+    color: var(--gold);
+  }
+
+  .mode-card p {
+    opacity: 0.8;
+    line-height: 1.6;
+  }
+
+  /* Sezione ricerca */
+  .search-section {
+    background: linear-gradient(135deg, #f5f5f5, #fafafa);
+    padding: 60px 20px;
+  }
+
+  .search-container {
+    max-width: 800px;
+    margin: 0 auto;
+  }
+
+  .search-box {
+    position: relative;
+    margin-bottom: 40px;
+  }
+
+  .search-input {
+    width: 100%;
+    padding: 20px 60px 20px 25px;
+    font-size: 1.2rem;
+    border: 3px solid #e0e0e0;
+    border-radius: 50px;
+    transition: all 0.3s ease;
+    background: white;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+  }
+
+  .search-input:focus {
+    outline: none;
+    border-color: var(--gold);
+    box-shadow: 0 8px 30px rgba(224, 202, 85, 0.2);
+    transform: translateY(-2px);
+  }
+
+  .search-icon {
+    position: absolute;
+    right: 25px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 1.5rem;
+    color: var(--gold);
+    pointer-events: none;
+  }
+
+  .quick-numbers {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+    margin-top: 20px;
+  }
+
+  .quick-number {
+    background: white;
+    border: 2px solid var(--gold);
+    color: var(--dark-gray);
+    padding: 10px 20px;
+    border-radius: 25px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 600;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+  }
+
+  .quick-number:hover {
+    background: var(--gold);
+    color: white;
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(224, 202, 85, 0.3);
+  }
+
+  /* Risultati ricerca */
+  .results-section {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 40px 20px;
+  }
+
+  .results-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 25px;
+    margin-top: 30px;
+  }
+
+  .cantico-card {
+    background: white;
+    border-radius: 15px;
+    padding: 25px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+    cursor: pointer;
+    border-left: 5px solid var(--gold);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .cantico-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 5px;
+    height: 100%;
+    background: linear-gradient(to bottom, var(--gold), #ffd700);
+    transition: width 0.3s ease;
+  }
+
+  .cantico-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 35px rgba(0, 0, 0, 0.15);
+  }
+
+  .cantico-card:hover::before {
+    width: 100%;
+    opacity: 0.1;
+  }
+
+  .cantico-number {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--gold);
+    margin-bottom: 10px;
+    display: block;
+  }
+
+  .cantico-title {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--dark-gray);
+    margin-bottom: 10px;
+    line-height: 1.4;
+  }
+
+  .cantico-meta {
+    font-size: 0.9rem;
+    color: #888;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  /* Badge musicisti */
+  .badge-musicisti {
+    display: inline-block;
+    background: var(--dark-gray);
+    color: white;
+    padding: 5px 12px;
+    border-radius: 15px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    margin-top: 10px;
+  }
+
+  /* Login modal per musicisti */
+  .login-modal {
+    display: none;
+    position: fixed;
+    z-index: 10000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.85);
+    animation: fadeIn 0.3s ease;
+  }
+
+  .login-modal.show {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .login-content {
+    background: white;
+    padding: 50px 40px;
+    border-radius: 20px;
+    max-width: 450px;
+    width: 90%;
+    position: relative;
+    animation: slideUp 0.4s ease;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  }
+
+  @keyframes slideUp {
+    from {
+      opacity: 0;
+      transform: translateY(50px);
+    }
+
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .login-close {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    font-size: 2rem;
+    cursor: pointer;
+    color: #999;
+    transition: all 0.3s ease;
+  }
+
+  .login-close:hover {
+    color: var(--dark-gray);
+    transform: rotate(90deg);
+  }
+
+  .login-content h2 {
+    color: var(--dark-gray);
+    margin-bottom: 30px;
+    text-align: center;
+    font-size: 2rem;
+  }
+
+  .login-icon {
+    text-align: center;
+    font-size: 4rem;
+    color: var(--gold);
+    margin-bottom: 20px;
+  }
+
+  .form-group {
+    margin-bottom: 20px;
+  }
+
+  .form-group label {
+    display: block;
+    color: var(--dark-gray);
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+
+  .form-group input {
+    width: 100%;
+    padding: 15px;
+    border: 2px solid #e0e0e0;
+    border-radius: 10px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+  }
+
+  .form-group input:focus {
+    outline: none;
+    border-color: var(--gold);
+    box-shadow: 0 0 0 3px rgba(224, 202, 85, 0.1);
+  }
+
+  .login-button {
+    width: 100%;
+    padding: 15px;
+    background: linear-gradient(135deg, var(--dark-gray), #5a5a64);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 20px;
+  }
+
+  .login-button:hover {
+    background: linear-gradient(135deg, var(--gold), #ffd700);
+    color: var(--dark-gray);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(224, 202, 85, 0.3);
+  }
+
+  .login-note {
+    text-align: center;
+    margin-top: 20px;
+    color: #888;
+    font-size: 0.9rem;
+  }
+
+  /* Visualizzatore PDF */
+  .pdf-viewer {
+    display: none;
+    position: fixed;
+    z-index: 10000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.95);
+    animation: fadeIn 0.3s ease;
+  }
+
+  .pdf-viewer.show {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+  }
+
+  .pdf-controls {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    display: flex;
+    gap: 15px;
+    z-index: 10001;
+  }
+
+  .pdf-close,
+  .pdf-download {
+    background: rgba(255, 255, 255, 0.9);
+    border: none;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 1.5rem;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .pdf-close:hover,
+  .pdf-download:hover {
+    background: var(--gold);
+    transform: scale(1.1);
+  }
+
+  .pdf-container {
+    width: 90%;
+    height: 90%;
+    background: white;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+  }
+
+  .pdf-container iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+  }
+
+  /* Info message */
+  .info-message {
+    background: linear-gradient(135deg, rgba(224, 202, 85, 0.1), rgba(224, 202, 85, 0.05));
+    border-left: 5px solid var(--gold);
+    padding: 20px 25px;
+    border-radius: 10px;
+    margin: 30px auto;
+    max-width: 800px;
+    display: none;
+  }
+
+  .info-message.show {
+    display: block;
+    animation: slideDown 0.5s ease;
+  }
+
+  @keyframes slideDown {
+    from {
+      opacity: 0;
+      transform: translateY(-20px);
+    }
+
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .info-message h4 {
+    color: var(--dark-gray);
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .info-message p {
+    color: #666;
+    line-height: 1.6;
+  }
+
+  /* Loading animation */
+  .loading {
+    display: none;
+    text-align: center;
+    padding: 40px;
+  }
+
+  .loading.show {
+    display: block;
+  }
+
+  .spinner {
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid var(--gold);
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 20px;
+  }
+
+  @keyframes spin {
+    0% {
+      transform: rotate(0deg);
+    }
+
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .cantici-hero h1 {
+      font-size: 2rem;
+    }
+
+    .mode-container {
+      grid-template-columns: 1fr;
+      gap: 20px;
+    }
+
+    .search-input {
+      padding: 15px 50px 15px 20px;
+      font-size: 1rem;
+    }
+
+    .results-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .login-content {
+      padding: 40px 25px;
+    }
+
+    .pdf-container {
+      width: 95%;
+      height: 85%;
+    }
+
+    .pdf-controls {
+      top: 10px;
+      right: 10px;
+      gap: 10px;
+    }
+
+    .pdf-close,
+    .pdf-download {
+      width: 45px;
+      height: 45px;
+      font-size: 1.3rem;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .quick-numbers {
+      justify-content: stretch;
+    }
+
+    .quick-number {
+      flex: 1;
+      text-align: center;
     }
   }
