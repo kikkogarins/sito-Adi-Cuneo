@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>ADI Cuneo - Contatti</title>
+    <title>ADI Cuneo - Cantici</title>
     <link rel="stylesheet" href="css/st.css">
 </head>
 
@@ -18,15 +18,16 @@
             <ul class="header__menu">
                 <li><a href="index.html">Home</a></li>
                 <li><a href="storia.html">La Nostra Storia</a></li>
-                <li><a href="illuminiamo.html" style="display: flex; align-items: center; justify-content: center;"><img src="img/lampadina.png" alt="Lampadina" height="40px" width="40px"></a></li>
+                <li><a href="illuminiamo.html" style="display: flex; align-items: center; justify-content: center;"><img
+                            src="img/lampadina.png" alt="Lampadina" height="40px" width="40px"></a></li>
                 <li><a href="gallery.html">Galleria Foto</a></li>
                 <li><a href="eventi.html">Eventi</a></li>
-                <li><a href="#contatti" class="mobile-only">Contatti</a></li> <!-- SOLO SU MOBILE -->
+                <li><a href="cantici.html">Cantici</a></li>
+                <li><a href="#contatti" class="mobile-only">Contatti</a></li>
             </ul>
 
-            <!-- SPOSTA IL MENU HAMBURGER FUORI DAL DIV MENU -->
             <div class="header__quick">
-                <a href="contatti.html" class="desktop-only">Contatti</a> <!-- SOLO SU DESKTOP -->
+                <a href="contatti.html" class="desktop-only">Contatti</a>
             </div>
 
             <div class="icon-hamburger">
@@ -36,6 +37,7 @@
             </div>
         </div>
     </header>
+
     <!-- Hero Section -->
     <section class="cantici-hero">
         <div class="cantici-hero__content">
@@ -103,9 +105,7 @@
 
         <!-- Risultati -->
         <div class="results-section">
-            <div class="results-grid" id="resultsGrid">
-                <!-- I risultati verranno inseriti qui dinamicamente -->
-            </div>
+            <div class="results-grid" id="resultsGrid"></div>
         </div>
     </section>
 
@@ -132,53 +132,73 @@
         </div>
     </div>
 
-    <!-- Visualizzatore PDF -->
+    <!-- Visualizzatore PDF - OTTIMIZZATO PER MOBILE -->
     <div class="pdf-viewer" id="pdfViewer">
         <div class="pdf-controls">
             <button class="pdf-download" onclick="downloadPDF()" title="Scarica PDF">⬇️</button>
             <button class="pdf-close" onclick="closePDF()">×</button>
         </div>
         <div class="pdf-container">
-            <iframe id="pdfFrame" src=""></iframe>
+            <!-- Usa Google Docs Viewer per compatibilità mobile -->
+            <iframe id="pdfFrame" style="width: 100%; height: 100%; border: none;" allowfullscreen></iframe>
         </div>
     </div>
 
-    <!-- Footer (usa quello esistente del sito) -->
-    <footer>
-        <p>&copy; 2024 ADI Cuneo. Tutti i diritti riservati.</p>
-        <div class="social-icons">
-            <a href="#" target="_blank">
-                <img src="img/facebook-icon.png" alt="Facebook" style="width: 40px; height: 40px;">
-            </a>
-            <a href="#" target="_blank">
-                <img src="img/instagram-icon.png" alt="Instagram" style="width: 40px; height: 40px;">
-            </a>
+    <!-- Footer -->
+    <footer id="contatti">
+        <div class="grid">
+            <div class="col-50">
+                <h3>ADI Cuneo</h3>
+                <p>Via Acceglio, 4</p>
+                <p>12100 Cuneo (CN)</p>
+                <p>Email: info@adicuneo.it</p>
+                <p>visita la pagina Assemblee di Dio in Italia</p>
+                <a href="https://www.assembleedidio.org/" target="_blank">
+                    <img src="img/adi.png" alt="" style="width: 50px; height: 50px;">
+                </a>
+
+                <!-- Mappa -->
+                <div style="margin-top: 15px;">
+                    <iframe
+                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2849.374292999981!2d7.556393076545171!3d44.39166800674194!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x12cd58294ac356c7%3A0x93d57c0141b1de2!2sVia%20Acceglio%2C%204%2C%2012100%20Cuneo%20CN!5e0!3m2!1sit!2sit!4v1699199999999!5m2!1sit!2sit"
+                        width="100%" height="200" style="border:0; border-radius: 8px;" allowfullscreen=""
+                        loading="lazy" referrerpolicy="no-referrer-when-downgrade">
+                    </iframe>
+                </div>
+            </div>
+
+            <div class="col-50">
+                <h3>Orari</h3>
+                <p>Domenica: 10:30 - 12:30</p>
+                <p>Martedì: 20:30 - 21:30</p>
+                <p>Giovedì: 20:30 - 21:30</p>
+                <a href="gallery.html" class="button">Visita la nostra galleria</a>
+                <br>
+                <p>Visita le nostra pagine</p>
+                <a href="https://www.instagram.com/adicuneo/" target="_blank">
+                    <img src="img/insta.png" alt="Instagram" style="width: 40px; height: 40px;">
+                </a>
+                <a href="https://www.facebook.com/ADICuneo/?locale=it_IT" target="_blank">
+                    <img src="img/facebook.png" alt="Facebook" style="width: 40px; height: 35px;">
+                </a>
+            </div>
         </div>
+
+        <p class="text-center pt-4">© 2025 ADI Cuneo - Tutti i diritti riservati</p>
     </footer>
 
     <script>
-        // ============================================
-        // CONFIGURAZIONE REPOSITORY SEPARATO
-        // ============================================
-        // 🔧 IMPORTANTE: Cambia questo URL con il TUO repository GitHub dei cantici
         const REPO_CANTICI = 'https://raw.githubusercontent.com/kikkogarins/Adi-Cuneo-Cantici/main';
 
-        // Esempio: se il tuo username è "chiesa-adi-cuneo":
-        // const REPO_CANTICI = 'https://raw.githubusercontent.com/chiesa-adi-cuneo/adi-cuneo-cantici/main';
-        // ============================================
-
-        // Stato dell'applicazione
-        let currentMode = 'base'; // 'base' o 'musicisti'
+        let currentMode = 'base';
         let isLoggedIn = false;
         let currentPDFUrl = '';
         let allCantici = [];
 
-        // Carica database cantici da repository separato
         window.onload = function () {
             showInfoMessage('⏳ Caricamento cantici in corso...');
             document.getElementById('loading').classList.add('show');
 
-            // Carica database.json dal repository cantici
             fetch(`${REPO_CANTICI}/database.json`)
                 .then(response => {
                     if (!response.ok) {
@@ -195,28 +215,15 @@
                 .catch(error => {
                     console.error('Errore caricamento database cantici:', error);
                     document.getElementById('loading').classList.remove('show');
+                    showInfoMessage('⚠️ Errore nel caricamento. Riprova tra poco.');
 
-                    // Fallback: database di esempio per test
-                    showInfoMessage('⚠️ Usando database di esempio. Configura REPO_CANTICI nel codice.');
                     allCantici = [
-                        { numero: 1, titolo: "Sei tu, Signore il pane", categoria: "Adorazione" },
-                        { numero: 2, titolo: "Alleluia", categoria: "Lode" },
-                        { numero: 3, titolo: "Santo, Santo, Santo", categoria: "Adorazione" },
-                        { numero: 10, titolo: "Grande è il Signore", categoria: "Lode" },
-                        { numero: 23, titolo: "Gesù dolce pensier", categoria: "Adorazione" },
-                        { numero: 50, titolo: "Benedici anima mia", categoria: "Lode" },
-                        { numero: 77, titolo: "Come è bello e giocondo", categoria: "Comunione" },
-                        { numero: 100, titolo: "Giubilate servite", categoria: "Lode" },
-                        { numero: 150, titolo: "Ti amo o Dio", categoria: "Adorazione" },
-                        { numero: 200, titolo: "Eterna rocca è il mio Signor", categoria: "Fiducia" },
-                        { numero: 250, titolo: "Quando pace quale fiume", categoria: "Pace" },
-                        { numero: 300, titolo: "Padre per Cristo ascolta", categoria: "Preghiera" }
+                        { numero: 1, titolo: "Primo Cantico", categoria: "Adorazione", filename: "0001-primo-cantico.pdf" }
                     ];
                     displayAllCantici();
                 });
         };
 
-        // Gestione selezione modalità
         function selectMode(mode) {
             const cards = document.querySelectorAll('.mode-card');
             cards.forEach(card => card.classList.remove('active'));
@@ -230,21 +237,19 @@
                 currentMode = mode;
                 showInfoMessage(
                     mode === 'base'
-                        ? 'Modalità Cantici Base attiva. Visualizzi i testi senza accordi.'
-                        : 'Modalità Musicisti attiva. Visualizzi gli spartiti con accordi.'
+                        ? 'Modalità Cantici Base attiva.'
+                        : 'Modalità Musicisti attiva.'
                 );
                 displayAllCantici();
             }
         }
 
-        // Gestione login
         function showLogin() {
             document.getElementById('loginModal').classList.add('show');
         }
 
         function closeLogin() {
             document.getElementById('loginModal').classList.remove('show');
-            // Reset alla modalità base se non loggato
             if (!isLoggedIn) {
                 selectMode('base');
             }
@@ -255,19 +260,17 @@
             const username = document.getElementById('username').value;
             const password = document.getElementById('password').value;
 
-            // Credenziali di esempio (in produzione usare autenticazione server-side)
             if (username === 'musicista' && password === 'adi2024') {
                 isLoggedIn = true;
                 currentMode = 'musicisti';
                 closeLogin();
-                showInfoMessage('✅ Login effettuato! Ora puoi visualizzare gli spartiti con accordi.');
+                showInfoMessage('✅ Login effettuato!');
                 displayAllCantici();
             } else {
-                alert('❌ Credenziali non valide. Riprova o contatta il responsabile.');
+                alert('❌ Credenziali non valide.');
             }
         }
 
-        // Ricerca cantici
         function searchCantici() {
             const searchTerm = document.getElementById('searchInput').value.toLowerCase();
 
@@ -285,92 +288,81 @@
             displayCantici(filtered);
         }
 
-        // Ricerca rapida per numero
         function quickSearch(numero) {
             document.getElementById('searchInput').value = numero;
             searchCantici();
         }
 
-        // Visualizza tutti i cantici
         function displayAllCantici() {
             displayCantici(allCantici);
         }
 
-        // Visualizza cantici
         function displayCantici(cantici) {
             const grid = document.getElementById('resultsGrid');
 
             if (cantici.length === 0) {
                 grid.innerHTML = `
-          <div style="grid-column: 1/-1; text-align: center; padding: 60px 20px;">
-            <span style="font-size: 4rem;">🔍</span>
-            <h3 style="color: var(--dark-gray); margin: 20px 0;">Nessun cantico trovato</h3>
-            <p style="color: #888;">Prova a cercare con altri termini</p>
-          </div>
-        `;
+                    <div style="grid-column: 1/-1; text-align: center; padding: 60px 20px;">
+                        <span style="font-size: 4rem;">🔍</span>
+                        <h3 style="color: var(--dark-gray); margin: 20px 0;">Nessun cantico trovato</h3>
+                        <p style="color: #888;">Prova a cercare con altri termini</p>
+                    </div>
+                `;
                 return;
             }
 
             grid.innerHTML = cantici.map(cantico => `
-        <div class="cantico-card" onclick="openCantico(${cantico.numero})">
-          <span class="cantico-number">#${cantico.numero}</span>
-          <div class="cantico-title">${cantico.titolo}</div>
-          <div class="cantico-meta">
-            <span>📂</span>
-            <span>${cantico.categoria}</span>
-          </div>
-          ${currentMode === 'musicisti' ? '<span class="badge-musicisti">🎸 Con accordi</span>' : ''}
-        </div>
-      `).join('');
+                <div class="cantico-card" onclick="openCantico(${cantico.numero})">
+                    <span class="cantico-number">#${cantico.numero}</span>
+                    <div class="cantico-title">${cantico.titolo}</div>
+                    <div class="cantico-meta">
+                        <span>📂</span>
+                        <span>${cantico.categoria}</span>
+                    </div>
+                    ${currentMode === 'musicisti' ? '<span class="badge-musicisti">🎸 Con accordi</span>' : ''}
+                </div>
+            `).join('');
         }
 
-        // Apri cantico nel visualizzatore PDF
         function openCantico(numero) {
-            // Formatta il numero con zeri iniziali (es: 1 -> 0001)
             const numeroFormattato = numero.toString().padStart(4, '0');
-
-            // Costruisci il path del PDF dal repository separato
             const basePath = currentMode === 'base'
                 ? `${REPO_CANTICI}/base/`
                 : `${REPO_CANTICI}/musicisti/`;
 
-            // Trova il cantico nel database per ottenere il nome file corretto
             const cantico = allCantici.find(c => c.numero === numero);
             let pdfPath;
 
             if (cantico && cantico.filename) {
-                // Se abbiamo il filename nel database, usalo
                 pdfPath = `${basePath}${cantico.filename}`;
             } else {
-                // Altrimenti usa convenzione standard
                 const suffix = currentMode === 'musicisti' ? '-accordi' : '';
                 pdfPath = `${basePath}${numeroFormattato}${suffix}.pdf`;
             }
 
             currentPDFUrl = pdfPath;
 
-            // Mostra il visualizzatore
-            document.getElementById('pdfFrame').src = pdfPath;
+            // SOLUZIONE MOBILE: Usa Google Docs Viewer
+            // Funziona su tutti i dispositivi e mostra il PDF nella pagina
+            const viewerUrl = `https://docs.google.com/viewer?url=${encodeURIComponent(pdfPath)}&embedded=true`;
+
+            document.getElementById('pdfFrame').src = viewerUrl;
             document.getElementById('pdfViewer').classList.add('show');
 
             console.log(`📄 Apertura cantico ${numero} da: ${pdfPath}`);
         }
 
-        // Chiudi visualizzatore PDF
         function closePDF() {
             document.getElementById('pdfViewer').classList.remove('show');
             document.getElementById('pdfFrame').src = '';
         }
 
-        // Download PDF
         function downloadPDF() {
             if (currentPDFUrl) {
-                // In produzione, questo scaricherà il file
                 window.open(currentPDFUrl, '_blank');
             }
         }
 
-        // Mostra messaggio info
         function showInfoMessage(text) {
             const infoMsg = document.getElementById('infoMessage');
             document.getElementById('infoText').textContent = text;
@@ -381,12 +373,11 @@
             }, 5000);
         }
 
-        // Gestione hamburger menu (compatibile con il sito esistente)
+        // Menu hamburger
         document.querySelector('.icon-hamburger')?.addEventListener('click', function () {
             document.body.classList.toggle('menu-open');
         });
 
-        // Chiudi menu quando si clicca fuori
         document.addEventListener('click', function (event) {
             const menu = document.querySelector('.header__menu');
             const hamburger = document.querySelector('.icon-hamburger');

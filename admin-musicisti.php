@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Musicisti - ADI Cuneo</title>
+    <link rel="stylesheet" href="css/st.css">
+    <style>
+        /* ... stesso CSS della versione precedente ... */
+        :root {
+            --admin-primary: #4a4a54;
+            --admin-accent: #e0ca55;
+            --admin-danger: #e74c3c;
+            --admin-success: #27ae60;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+        }
+
+        .admin-wrapper {
+            padding: 130px 20px 50px;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .admin-header {
+            text-align: center;
+            margin-bottom: 40px;
+            animation: fadeInDown 0.6s ease;
+        }
+
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .admin-header h1 {
+            color: var(--admin-primary);
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .admin-header p {
+            color: #666;
+            font-size: 1.1rem;
+        }
+
+        .admin-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .admin-card {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            animation: fadeInUp 0.6s ease;
+            transition: all 0.3s ease;
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .admin-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 50px rgba(0,0,0,0.15);
+        }
+
+        .admin-card h2 {
+            color: var(--admin-primary);
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 3px solid var(--admin-accent);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .users-list {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .user-item {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-left: 4px solid var(--admin-accent);
+            transition: all 0.3s ease;
+        }
+
+        .user-item:hover {
+            background: #e9ecef;
+            transform: translateX(5px);
+        }
+
+        .user-info {
+            flex: 1;
+        }
+
+        .user-name {
+            font-weight: 600;
+            color: var(--admin-primary);
+            font-size: 1.1rem;
+            margin-bottom: 5px;
+        }
+
+        .user-meta {
+            font-size: 0.85rem;
+            color: #666;
+        }
+
+        .user-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+        }
+
+        .btn-delete {
+            background: #fee;
+            color: var(--admin-danger);
+        }
+
+        .btn-delete:hover {
+            background: var(--admin-danger);
+            color: white;
+            transform: scale(1.1);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            color: var(--admin-primary);
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 0.95rem;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--admin-accent);
+            box-shadow: 0 0 0 3px rgba(224, 202, 85, 0.1);
+        }
+
+        .btn-primary {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, var(--admin-primary), #5a5a64);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, var(--admin-accent), #ffd700);
+            color: var(--admin-primary);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(224, 202, 85, 0.3);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .alert {
+            padding: 15px 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            animation: slideDown 0.5s ease;
+            display: none;
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .alert.show {
+            display: block;
+        }
+
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border-left: 4px solid var(--admin-success);
+        }
+
+        .alert-danger {
+            background: #f8d7da;
+            color: #721c24;
+            border-left: 4px solid var(--admin-danger);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, var(--admin-primary), #5a5a64);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            animation: fadeInUp 0.6s ease;
+        }
+
+        .stat-number {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 0.95rem;
+            opacity: 0.9;
+        }
+
+        .password-toggle {
+            position: relative;
+        }
+
+        .password-toggle-btn {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1.2rem;
+            color: #999;
+            transition: color 0.3s ease;
+        }
+
+        .password-toggle-btn:hover {
+            color: var(--admin-primary);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: #999;
+        }
+
+        .empty-state-icon {
+            font-size: 4rem;
+            margin-bottom: 15px;
+            opacity: 0.5;
+        }
+
+        @media (max-width: 768px) {
+            .admin-grid {
+                grid-template-columns: 1fr;
+            }
+            .admin-header h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header__content">
+            <a class="header__logo" href="index.html">
+                <img src="img/logo_adi_cuneo.png" alt="Logo ADI Cuneo" height="100px" width="100px">
+            </a>
+            <ul class="header__menu">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="cantici.html">Cantici</a></li>
+                <li><a href="admin-musicisti-php.html">Admin</a></li>
+            </ul>
+        </div>
+    </header>
+
+    <div class="admin-wrapper">
+        <div class="admin-header">
+            <h1>🎸 Gestione Musicisti</h1>
+            <p>Amministrazione utenti Area Musicisti (PHP Version)</p>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-number" id="totalUsers">0</div>
+                <div class="stat-label">Musicisti Registrati</div>
+            </div>
+            <div class="stat-card" style="background: linear-gradient(135deg, var(--admin-accent), #ffd700);">
+                <div class="stat-number" id="activeUsers">0</div>
+                <div class="stat-label">Utenti Attivi</div>
+            </div>
+        </div>
+
+        <div id="alertContainer"></div>
+
+        <div class="admin-grid">
+            <!-- Lista Utenti -->
+            <div class="admin-card">
+                <h2>
+                    <span>👥</span>
+                    Utenti Registrati
+                </h2>
+                <div class="users-list" id="usersList">
+                    <div class="empty-state">
+                        <div class="empty-state-icon">⏳</div>
+                        <p>Caricamento...</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Form Nuovo Utente -->
+            <div class="admin-card">
+                <h2>
+                    <span>➕</span>
+                    Aggiungi Musicista
+                </h2>
+                <form id="addUserForm">
+                    <div class="form-group">
+                        <label for="newUsername">Username</label>
+                        <input type="text" id="newUsername" class="form-input" 
+                               placeholder="es: andrea" required minlength="3">
+                    </div>
+
+                    <div class="form-group password-toggle">
+                        <label for="newPassword">Password</label>
+                        <input type="password" id="newPassword" class="form-input" 
+                               placeholder="Password sicura" required minlength="6">
+                        <button type="button" class="password-toggle-btn" onclick="togglePassword('newPassword')">
+                            👁️
+                        </button>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="newName">Nome Completo</label>
+                        <input type="text" id="newName" class="form-input" 
+                               placeholder="es: Andrea Rossi" required>
+                    </div>
+
+                    <button type="submit" class="btn-primary" id="submitBtn">
+                        <span>➕</span>
+                        <span>Aggiungi Musicista</span>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2024 ADI Cuneo. Tutti i diritti riservati.</p>
+    </footer>
+
+    <script>
+        const API_URL = 'api-musicisti.php';
+
+        async function loadUsers() {
+            try {
+                const response = await fetch(`${API_URL}?action=list`);
+                const data = await response.json();
+
+                if (data.success) {
+                    renderUsers(data.users);
+                }
+            } catch (error) {
+                console.error('Errore caricamento utenti:', error);
+                showAlert('Errore nel caricamento degli utenti', 'danger');
+            }
+        }
+
+        function renderUsers(users) {
+            const container = document.getElementById('usersList');
+
+            if (users.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">🎸</div>
+                        <p>Nessun musicista registrato</p>
+                    </div>
+                `;
+                updateStats(0);
+                return;
+            }
+
+            container.innerHTML = users.map(user => `
+                <div class="user-item">
+                    <div class="user-info">
+                        <div class="user-name">${user.name}</div>
+                        <div class="user-meta">
+                            @${user.username} • 
+                            Creato: ${new Date(user.createdAt).toLocaleDateString('it-IT')}
+                        </div>
+                    </div>
+                    <div class="user-actions">
+                        <button class="btn-icon btn-delete" onclick="deleteUser(${user.id}, '${user.name}')" title="Elimina">
+                            🗑️
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+
+            updateStats(users.length);
+        }
+
+        function updateStats(count) {
+            document.getElementById('totalUsers').textContent = count;
+            document.getElementById('activeUsers').textContent = count;
+        }
+
+        async function deleteUser(userId, userName) {
+            if (!confirm(`Sei sicuro di voler eliminare "${userName}"?`)) {
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_URL}?action=delete&id=${userId}`);
+                const data = await response.json();
+
+                if (data.success) {
+                    showAlert(`Musicista "${userName}" eliminato con successo!`, 'success');
+                    loadUsers();
+                } else {
+                    showAlert(data.message || 'Errore durante l\'eliminazione', 'danger');
+                }
+            } catch (error) {
+                console.error('Errore:', error);
+                showAlert('Errore durante l\'eliminazione', 'danger');
+            }
+        }
+
+        async function addUser(username, password, name) {
+            const submitBtn = document.getElementById('submitBtn');
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<span>⏳</span><span>Aggiunta in corso...</span>';
+
+            try {
+                const response = await fetch(`${API_URL}?action=add`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ username, password, name })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    showAlert(`Musicista "${name}" aggiunto con successo! ✅`, 'success');
+                    loadUsers();
+                    document.getElementById('addUserForm').reset();
+                } else {
+                    showAlert(data.message || 'Errore durante l\'aggiunta', 'danger');
+                }
+            } catch (error) {
+                console.error('Errore:', error);
+                showAlert('Errore durante l\'aggiunta', 'danger');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<span>➕</span><span>Aggiungi Musicista</span>';
+            }
+        }
+
+        function showAlert(message, type) {
+            const container = document.getElementById('alertContainer');
+            const alert = document.createElement('div');
+            alert.className = `alert alert-${type} show`;
+            alert.textContent = message;
+            
+            container.innerHTML = '';
+            container.appendChild(alert);
+
+            setTimeout(() => {
+                alert.classList.remove('show');
+                setTimeout(() => alert.remove(), 500);
+            }, 5000);
+        }
+
+        function togglePassword(inputId) {
+            const input = document.getElementById(inputId);
+            input.type = input.type === 'password' ? 'text' : 'password';
+        }
+
+        // Event Listeners
+        document.getElementById('addUserForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const username = document.getElementById('newUsername').value.trim();
+            const password = document.getElementById('newPassword').value;
+            const name = document.getElementById('newName').value.trim();
+
+            addUser(username, password, name);
+        });
+
+        // Inizializza
+        window.onload = function() {
+            loadUsers();
+        };
+
+        // Menu hamburger
+        document.querySelector('.icon-hamburger')?.addEventListener('click', function () {
+            document.body.classList.toggle('menu-open');
+        });
+    </script>
+</body>
+</html>
