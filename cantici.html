@@ -356,10 +356,9 @@
 
             currentPDFUrl = pdfPath;
 
-            // SOLUZIONE MOBILE: Usa Google Docs Viewer
-            // Funziona su tutti i dispositivi e mostra il PDF nella pagina
-            const viewerUrl = `https://mozilla.github.io/pdf.js/web/viewer.html?file=${encodeURIComponent(pdfPath)}`;
-
+            // Aggiungi timestamp per forzare refresh cache Google
+            const timestamp = new Date().getTime();
+            const viewerUrl = `https://docs.google.com/viewer?url=${encodeURIComponent(pdfPath)}&embedded=true&t=${timestamp}`;
 
             document.getElementById('pdfFrame').src = viewerUrl;
             document.getElementById('pdfViewer').classList.add('show');
