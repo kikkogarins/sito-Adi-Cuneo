@@ -471,18 +471,33 @@
 
         function openCantico(numero) {
             const numeroFormattato = numero.toString().padStart(4, '0');
-            const basePath = currentMode === 'base'
-                ? `${REPO_CANTICI}/base/`
-                : `${REPO_CANTICI}/musicisti/`;
-
             const cantico = allCantici.find(c => c.numero === numero);
+            
             let pdfPath;
 
-            if (cantico && cantico.filename) {
-                pdfPath = `${basePath}${cantico.filename}`;
+            if (currentMode === 'base') {
+                // MODALITÀ BASE
+                if (cantico && cantico.filename) {
+                    // Usa il filename dal database
+                    pdfPath = `${REPO_CANTICI}/base/${cantico.filename}`;
+                } else {
+                    // Fallback al pattern standard
+                    pdfPath = `${REPO_CANTICI}/base/${numeroFormattato}.pdf`;
+                }
             } else {
-                const suffix = currentMode === 'musicisti' ? '-accordi' : '';
-                pdfPath = `${basePath}${numeroFormattato}${suffix}.pdf`;
+                // MODALITÀ MUSICISTI
+                if (cantico && cantico.filename_musicisti) {
+                    // Se il database ha un campo specifico per musicisti
+                    pdfPath = `${REPO_CANTICI}/musicisti/${cantico.filename_musicisti}`;
+                } else if (cantico && cantico.filename) {
+                    // Prova a costruire il nome basandoti sul file base
+                    // Rimuovi l'estensione e aggiungi -accordi
+                    const baseFilename = cantico.filename.replace('.pdf', '');
+                    pdfPath = `${REPO_CANTICI}/musicisti/${baseFilename}-accordi.pdf`;
+                } else {
+                    // Fallback al pattern standard con -accordi
+                    pdfPath = `${REPO_CANTICI}/musicisti/${numeroFormattato}-accordi.pdf`;
+                }
             }
 
             currentPDFUrl = pdfPath;
@@ -492,9 +507,10 @@
             document.getElementById('pdfLoading').style.display = 'block';
             document.getElementById('pdfFrame').style.display = 'none';
 
-            console.log(`📄 Apertura cantico ${numero} da: ${pdfPath}`);
+            console.log(`📄 Apertura cantico ${numero} in modalità ${currentMode}`);
+            console.log(`📁 Percorso PDF: ${pdfPath}`);
 
-            // METODO MIGLIORATO: Prova multipli viewer con fallback
+            // Carica il PDF con fallback
             loadPDFWithFallback(pdfPath);
         }
 
@@ -502,17 +518,16 @@
             const iframe = document.getElementById('pdfFrame');
             const loading = document.getElementById('pdfLoading');
             
-            // Metodo 1: Prova PDF.js viewer (se disponibile)
+            // Metodo 1: PDF.js viewer
             const pdfJsUrl = `https://mozilla.github.io/pdf.js/web/viewer.html?file=${encodeURIComponent(pdfUrl)}`;
             
             // Metodo 2: Google Docs Viewer (con cache busting)
             const timestamp = new Date().getTime();
             const googleDocsUrl = `https://docs.google.com/viewer?url=${encodeURIComponent(pdfUrl)}&embedded=true&t=${timestamp}`;
             
-            // Metodo 3: Diretto (funziona su desktop e alcuni mobile)
+            // Metodo 3: Diretto
             const directUrl = pdfUrl;
 
-            // Tenta prima con PDF.js, poi Google Docs, poi diretto
             let currentMethod = 0;
             const methods = [pdfJsUrl, googleDocsUrl, directUrl];
             
@@ -522,24 +537,29 @@
                     loading.innerHTML = `
                         <div class="pdf-error">
                             <h3>❌ Impossibile caricare il PDF</h3>
-                            <p>Prova a scaricarlo o aprirlo in una nuova scheda</p>
+                            <p>File: ${pdfUrl.split('/').pop()}</p>
+                            <p style="font-size: 0.9em; color: #999; margin: 10px 0;">
+                                Modalità: ${currentMode === 'base' ? 'Cantici Base' : 'Musicisti'}
+                            </p>
                             <button onclick="downloadPDF()" style="margin-top: 20px; padding: 10px 20px; background: #4CAF50; color: white; border: none; border-radius: 6px; cursor: pointer;">
                                 ⬇️ Scarica PDF
+                            </button>
+                            <button onclick="openInNewTab()" style="margin-top: 10px; padding: 10px 20px; background: #2196F3; color: white; border: none; border-radius: 6px; cursor: pointer;">
+                                🔗 Apri in nuova scheda
                             </button>
                         </div>
                     `;
                     return;
                 }
 
+                console.log(`🔄 Tentativo metodo ${currentMethod + 1}: ${methods[currentMethod].substring(0, 50)}...`);
                 iframe.src = methods[currentMethod];
                 
-                // Timeout per provare il metodo successivo se non carica
                 const timeout = setTimeout(() => {
                     currentMethod++;
                     tryNextMethod();
                 }, 5000);
 
-                // Se carica con successo, cancella il timeout
                 iframe.onload = function() {
                     clearTimeout(timeout);
                     loading.style.display = 'none';
@@ -561,6 +581,10 @@
             document.getElementById('pdfViewer').classList.remove('show');
             document.getElementById('pdfFrame').src = '';
             document.getElementById('pdfLoading').style.display = 'block';
+            document.getElementById('pdfLoading').innerHTML = `
+                <div class="pdf-spinner"></div>
+                <p>Caricamento PDF...</p>
+            `;
         }
 
         function downloadPDF() {
