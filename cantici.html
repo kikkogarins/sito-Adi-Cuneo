@@ -7,6 +7,127 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>ADI Cuneo - Cantici</title>
     <link rel="stylesheet" href="css/st.css">
+    <style>
+        /* Stili aggiuntivi per il visualizzatore PDF migliorato */
+        .pdf-viewer {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 10000;
+            display: none;
+            flex-direction: column;
+        }
+
+        .pdf-viewer.show {
+            display: flex;
+        }
+
+        .pdf-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            background: rgba(0, 0, 0, 0.9);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .pdf-controls-left {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .pdf-controls button {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
+        .pdf-controls button:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .pdf-close {
+            font-size: 28px !important;
+            padding: 4px 12px !important;
+            line-height: 1;
+        }
+
+        .pdf-container {
+            flex: 1;
+            overflow: auto;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 20px;
+        }
+
+        .pdf-loading {
+            color: white;
+            text-align: center;
+            padding: 40px;
+        }
+
+        .pdf-spinner {
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-top: 3px solid white;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .pdf-error {
+            color: #ff6b6b;
+            text-align: center;
+            padding: 40px;
+        }
+
+        /* Iframe per PDF con fallback mobile-friendly */
+        #pdfFrame {
+            width: 100%;
+            max-width: 900px;
+            height: 100%;
+            min-height: 600px;
+            border: none;
+            background: white;
+            border-radius: 8px;
+        }
+
+        /* Mobile ottimizzato */
+        @media (max-width: 768px) {
+            .pdf-container {
+                padding: 10px;
+            }
+
+            #pdfFrame {
+                min-height: calc(100vh - 80px);
+            }
+
+            .pdf-controls {
+                padding: 10px;
+            }
+
+            .pdf-controls button {
+                padding: 6px 12px;
+                font-size: 13px;
+            }
+        }
+    </style>
 </head>
 
 <body>
@@ -132,15 +253,25 @@
         </div>
     </div>
 
-    <!-- Visualizzatore PDF - OTTIMIZZATO PER MOBILE -->
+    <!-- Visualizzatore PDF MIGLIORATO -->
     <div class="pdf-viewer" id="pdfViewer">
         <div class="pdf-controls">
-            <button class="pdf-download" onclick="downloadPDF()" title="Scarica PDF">⬇️</button>
+            <div class="pdf-controls-left">
+                <button class="pdf-download" onclick="downloadPDF()" title="Scarica PDF">
+                    ⬇️ Scarica
+                </button>
+                <button onclick="openInNewTab()" title="Apri in nuova scheda">
+                    🔗 Apri
+                </button>
+            </div>
             <button class="pdf-close" onclick="closePDF()">×</button>
         </div>
-        <div class="pdf-container">
-            <!-- Usa Google Docs Viewer per compatibilità mobile -->
-            <iframe id="pdfFrame" style="width: 100%; height: 100%; border: none;" allowfullscreen></iframe>
+        <div class="pdf-container" id="pdfContainer">
+            <div class="pdf-loading" id="pdfLoading">
+                <div class="pdf-spinner"></div>
+                <p>Caricamento PDF...</p>
+            </div>
+            <iframe id="pdfFrame" style="display: none;"></iframe>
         </div>
     </div>
 
@@ -356,22 +487,95 @@
 
             currentPDFUrl = pdfPath;
 
-            // Aggiungi timestamp per forzare refresh cache Google
-            const timestamp = new Date().getTime();
-            const viewerUrl = `https://docs.google.com/viewer?url=${encodeURIComponent(pdfPath)}&embedded=true&t=${timestamp}`;
-
-            document.getElementById('pdfFrame').src = viewerUrl;
+            // Mostra il viewer con loading
             document.getElementById('pdfViewer').classList.add('show');
+            document.getElementById('pdfLoading').style.display = 'block';
+            document.getElementById('pdfFrame').style.display = 'none';
 
             console.log(`📄 Apertura cantico ${numero} da: ${pdfPath}`);
+
+            // METODO MIGLIORATO: Prova multipli viewer con fallback
+            loadPDFWithFallback(pdfPath);
+        }
+
+        function loadPDFWithFallback(pdfUrl) {
+            const iframe = document.getElementById('pdfFrame');
+            const loading = document.getElementById('pdfLoading');
+            
+            // Metodo 1: Prova PDF.js viewer (se disponibile)
+            const pdfJsUrl = `https://mozilla.github.io/pdf.js/web/viewer.html?file=${encodeURIComponent(pdfUrl)}`;
+            
+            // Metodo 2: Google Docs Viewer (con cache busting)
+            const timestamp = new Date().getTime();
+            const googleDocsUrl = `https://docs.google.com/viewer?url=${encodeURIComponent(pdfUrl)}&embedded=true&t=${timestamp}`;
+            
+            // Metodo 3: Diretto (funziona su desktop e alcuni mobile)
+            const directUrl = pdfUrl;
+
+            // Tenta prima con PDF.js, poi Google Docs, poi diretto
+            let currentMethod = 0;
+            const methods = [pdfJsUrl, googleDocsUrl, directUrl];
+            
+            function tryNextMethod() {
+                if (currentMethod >= methods.length) {
+                    // Tutti i metodi falliti - mostra errore
+                    loading.innerHTML = `
+                        <div class="pdf-error">
+                            <h3>❌ Impossibile caricare il PDF</h3>
+                            <p>Prova a scaricarlo o aprirlo in una nuova scheda</p>
+                            <button onclick="downloadPDF()" style="margin-top: 20px; padding: 10px 20px; background: #4CAF50; color: white; border: none; border-radius: 6px; cursor: pointer;">
+                                ⬇️ Scarica PDF
+                            </button>
+                        </div>
+                    `;
+                    return;
+                }
+
+                iframe.src = methods[currentMethod];
+                
+                // Timeout per provare il metodo successivo se non carica
+                const timeout = setTimeout(() => {
+                    currentMethod++;
+                    tryNextMethod();
+                }, 5000);
+
+                // Se carica con successo, cancella il timeout
+                iframe.onload = function() {
+                    clearTimeout(timeout);
+                    loading.style.display = 'none';
+                    iframe.style.display = 'block';
+                    console.log(`✅ PDF caricato con metodo ${currentMethod + 1}`);
+                };
+
+                iframe.onerror = function() {
+                    clearTimeout(timeout);
+                    currentMethod++;
+                    tryNextMethod();
+                };
+            }
+
+            tryNextMethod();
         }
 
         function closePDF() {
             document.getElementById('pdfViewer').classList.remove('show');
             document.getElementById('pdfFrame').src = '';
+            document.getElementById('pdfLoading').style.display = 'block';
         }
 
         function downloadPDF() {
+            if (currentPDFUrl) {
+                const link = document.createElement('a');
+                link.href = currentPDFUrl;
+                link.download = currentPDFUrl.split('/').pop();
+                link.target = '_blank';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            }
+        }
+
+        function openInNewTab() {
             if (currentPDFUrl) {
                 window.open(currentPDFUrl, '_blank');
             }
