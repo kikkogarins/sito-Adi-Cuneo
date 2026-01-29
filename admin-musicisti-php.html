@@ -6,7 +6,6 @@
     <title>Admin Musicisti - ADI Cuneo</title>
     <link rel="stylesheet" href="css/st.css">
     <style>
-        /* ... stesso CSS della versione precedente ... */
         :root {
             --admin-primary: #4a4a54;
             --admin-accent: #e0ca55;
@@ -19,6 +18,127 @@
             min-height: 100vh;
         }
 
+        /* LOGIN SCREEN */
+        .login-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+        }
+
+        .login-box {
+            background: white;
+            padding: 50px 40px;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+            animation: slideIn 0.5s ease;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(-50px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .login-box h2 {
+            color: var(--admin-primary);
+            margin-bottom: 10px;
+            font-size: 2rem;
+        }
+
+        .login-box p {
+            color: #666;
+            margin-bottom: 30px;
+        }
+
+        .login-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+        }
+
+        .login-form {
+            margin-top: 30px;
+        }
+
+        .login-input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+
+        .login-input:focus {
+            outline: none;
+            border-color: var(--admin-accent);
+            box-shadow: 0 0 0 3px rgba(224, 202, 85, 0.2);
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, var(--admin-primary), #5a5a64);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .login-btn:hover:not(:disabled) {
+            background: linear-gradient(135deg, var(--admin-accent), #ffd700);
+            color: var(--admin-primary);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(224, 202, 85, 0.3);
+        }
+
+        .login-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .login-error {
+            background: #fee;
+            color: var(--admin-danger);
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+            animation: shake 0.5s ease;
+        }
+
+        .login-error.show {
+            display: block;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+
+        .admin-content {
+            display: none;
+        }
+
+        .admin-content.unlocked {
+            display: block;
+        }
+
+        /* RESTO DELLO STILE ORIGINALE */
         .admin-wrapper {
             padding: 130px 20px 50px;
             max-width: 1000px;
@@ -298,6 +418,26 @@
             opacity: 0.5;
         }
 
+        .logout-btn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 10px 20px;
+            background: var(--admin-danger);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        .logout-btn:hover {
+            background: #c0392b;
+            transform: translateY(-2px);
+        }
+
         @media (max-width: 768px) {
             .admin-grid {
                 grid-template-columns: 1fr;
@@ -305,101 +445,229 @@
             .admin-header h1 {
                 font-size: 2rem;
             }
+            .login-box {
+                padding: 30px 20px;
+            }
         }
     </style>
 </head>
 <body>
-    <header class="header">
-        <div class="header__content">
-            <a class="header__logo" href="index.html">
-                <img src="img/logo_adi_cuneo.png" alt="Logo ADI Cuneo" height="100px" width="100px">
-            </a>
-            <ul class="header__menu">
-                <li><a href="index.html">Home</a></li>
-                <li><a href="cantici.html">Cantici</a></li>
-                <li><a href="admin-musicisti-php.html">Admin</a></li>
-            </ul>
-        </div>
-    </header>
-
-    <div class="admin-wrapper">
-        <div class="admin-header">
-            <h1>🎸 Gestione Musicisti</h1>
-            <p>Amministrazione utenti Area Musicisti (PHP Version)</p>
-        </div>
-
-        <div class="stats-grid">
-            <div class="stat-card">
-                <div class="stat-number" id="totalUsers">0</div>
-                <div class="stat-label">Musicisti Registrati</div>
-            </div>
-            <div class="stat-card" style="background: linear-gradient(135deg, var(--admin-accent), #ffd700);">
-                <div class="stat-number" id="activeUsers">0</div>
-                <div class="stat-label">Utenti Attivi</div>
-            </div>
-        </div>
-
-        <div id="alertContainer"></div>
-
-        <div class="admin-grid">
-            <!-- Lista Utenti -->
-            <div class="admin-card">
-                <h2>
-                    <span>👥</span>
-                    Utenti Registrati
-                </h2>
-                <div class="users-list" id="usersList">
-                    <div class="empty-state">
-                        <div class="empty-state-icon">⏳</div>
-                        <p>Caricamento...</p>
-                    </div>
-                </div>
+    <!-- LOGIN OVERLAY -->
+    <div class="login-overlay" id="loginOverlay">
+        <div class="login-box">
+            <div class="login-icon">🔐</div>
+            <h2>Area Admin</h2>
+            <p>Inserisci la password per accedere</p>
+            
+            <div class="login-error" id="loginError">
+                ❌ Password errata!
             </div>
 
-            <!-- Form Nuovo Utente -->
-            <div class="admin-card">
-                <h2>
-                    <span>➕</span>
-                    Aggiungi Musicista
-                </h2>
-                <form id="addUserForm">
-                    <div class="form-group">
-                        <label for="newUsername">Username</label>
-                        <input type="text" id="newUsername" class="form-input" 
-                               placeholder="es: andrea" required minlength="3">
-                    </div>
-
-                    <div class="form-group password-toggle">
-                        <label for="newPassword">Password</label>
-                        <input type="password" id="newPassword" class="form-input" 
-                               placeholder="Password sicura" required minlength="6">
-                        <button type="button" class="password-toggle-btn" onclick="togglePassword('newPassword')">
-                            👁️
-                        </button>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="newName">Nome Completo</label>
-                        <input type="text" id="newName" class="form-input" 
-                               placeholder="es: Andrea Rossi" required>
-                    </div>
-
-                    <button type="submit" class="btn-primary" id="submitBtn">
-                        <span>➕</span>
-                        <span>Aggiungi Musicista</span>
-                    </button>
-                </form>
-            </div>
+            <form class="login-form" id="loginForm">
+                <input 
+                    type="password" 
+                    id="adminPassword" 
+                    class="login-input" 
+                    placeholder="Password"
+                    required
+                    autocomplete="off"
+                >
+                <button type="submit" class="login-btn" id="loginBtn">
+                    🔓 Accedi
+                </button>
+            </form>
         </div>
     </div>
 
-    <footer>
-        <p>&copy; 2025 ADI Cuneo. Tutti i diritti riservati.</p>
-    </footer>
+    <!-- CONTENUTO ADMIN (nascosto fino al login) -->
+    <div class="admin-content" id="adminContent">
+        <button class="logout-btn" onclick="logout()">🚪 Esci</button>
+
+        <header class="header">
+            <div class="header__content">
+                <a class="header__logo" href="index.html">
+                    <img src="img/logo_adi_cuneo.png" alt="Logo ADI Cuneo" height="100px" width="100px">
+                </a>
+                <ul class="header__menu">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="cantici.html">Cantici</a></li>
+                    <li><a href="admin-musicisti.html">Admin</a></li>
+                </ul>
+            </div>
+        </header>
+
+        <div class="admin-wrapper">
+            <div class="admin-header">
+                <h1>🎸 Gestione Musicisti</h1>
+                <p>Amministrazione utenti Area Musicisti</p>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-number" id="totalUsers">0</div>
+                    <div class="stat-label">Musicisti Registrati</div>
+                </div>
+                <div class="stat-card" style="background: linear-gradient(135deg, var(--admin-accent), #ffd700);">
+                    <div class="stat-number" id="activeUsers">0</div>
+                    <div class="stat-label">Utenti Attivi</div>
+                </div>
+            </div>
+
+            <div id="alertContainer"></div>
+
+            <div class="admin-grid">
+                <!-- Lista Utenti -->
+                <div class="admin-card">
+                    <h2>
+                        <span>👥</span>
+                        Utenti Registrati
+                    </h2>
+                    <div class="users-list" id="usersList">
+                        <div class="empty-state">
+                            <div class="empty-state-icon">⏳</div>
+                            <p>Caricamento...</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Form Nuovo Utente -->
+                <div class="admin-card">
+                    <h2>
+                        <span>➕</span>
+                        Aggiungi Musicista
+                    </h2>
+                    <form id="addUserForm">
+                        <div class="form-group">
+                            <label for="newUsername">Username</label>
+                            <input type="text" id="newUsername" class="form-input" 
+                                   placeholder="es: andrea" required minlength="3">
+                        </div>
+
+                        <div class="form-group password-toggle">
+                            <label for="newPassword">Password</label>
+                            <input type="password" id="newPassword" class="form-input" 
+                                   placeholder="Password sicura" required minlength="6">
+                            <button type="button" class="password-toggle-btn" onclick="togglePassword('newPassword')">
+                                👁️
+                            </button>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="newName">Nome Completo</label>
+                            <input type="text" id="newName" class="form-input" 
+                                   placeholder="es: Andrea Rossi" required>
+                        </div>
+
+                        <button type="submit" class="btn-primary" id="submitBtn">
+                            <span>➕</span>
+                            <span>Aggiungi Musicista</span>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <p>&copy; 2025 ADI Cuneo. Tutti i diritti riservati.</p>
+        </footer>
+    </div>
 
     <script>
         const API_URL = 'api-musicisti.php';
 
+        // ============================================
+        // GESTIONE AUTENTICAZIONE
+        // ============================================
+        
+        async function checkAuth() {
+            try {
+                const response = await fetch(`${API_URL}?action=admin-check`);
+                const data = await response.json();
+                
+                if (data.success && data.authenticated) {
+                    showAdminContent();
+                    loadUsers();
+                    return true;
+                }
+                return false;
+            } catch (error) {
+                console.error('Errore controllo autenticazione:', error);
+                return false;
+            }
+        }
+
+        async function login(password) {
+            const loginBtn = document.getElementById('loginBtn');
+            loginBtn.disabled = true;
+            loginBtn.textContent = '⏳ Verifica...';
+
+            try {
+                const response = await fetch(`${API_URL}?action=admin-login`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ password })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    document.getElementById('loginError').classList.remove('show');
+                    showAdminContent();
+                    loadUsers();
+                    return true;
+                } else {
+                    document.getElementById('loginError').textContent = '❌ ' + data.message;
+                    document.getElementById('loginError').classList.add('show');
+                    document.getElementById('adminPassword').value = '';
+                    document.getElementById('adminPassword').focus();
+                    return false;
+                }
+            } catch (error) {
+                console.error('Errore login:', error);
+                document.getElementById('loginError').textContent = '❌ Errore di connessione';
+                document.getElementById('loginError').classList.add('show');
+                return false;
+            } finally {
+                loginBtn.disabled = false;
+                loginBtn.textContent = '🔓 Accedi';
+            }
+        }
+
+        async function logout() {
+            if (confirm('Sei sicuro di voler uscire?')) {
+                try {
+                    await fetch(`${API_URL}?action=admin-logout`);
+                    location.reload();
+                } catch (error) {
+                    console.error('Errore logout:', error);
+                    location.reload();
+                }
+            }
+        }
+
+        function showAdminContent() {
+            document.getElementById('loginOverlay').style.display = 'none';
+            document.getElementById('adminContent').classList.add('unlocked');
+        }
+
+        // Login form handler
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const password = document.getElementById('adminPassword').value;
+            login(password);
+        });
+
+        // Verifica autenticazione all'avvio
+        window.addEventListener('load', function() {
+            checkAuth();
+        });
+
+        // ============================================
+        // GESTIONE UTENTI
+        // ============================================
+        
         async function loadUsers() {
             try {
                 const response = await fetch(`${API_URL}?action=list`);
@@ -407,6 +675,8 @@
 
                 if (data.success) {
                     renderUsers(data.users);
+                } else if (response.status === 401) {
+                    location.reload();
                 }
             } catch (error) {
                 console.error('Errore caricamento utenti:', error);
@@ -431,14 +701,14 @@
             container.innerHTML = users.map(user => `
                 <div class="user-item">
                     <div class="user-info">
-                        <div class="user-name">${user.name}</div>
+                        <div class="user-name">${escapeHtml(user.name)}</div>
                         <div class="user-meta">
-                            @${user.username} • 
+                            @${escapeHtml(user.username)} • 
                             Creato: ${new Date(user.createdAt).toLocaleDateString('it-IT')}
                         </div>
                     </div>
                     <div class="user-actions">
-                        <button class="btn-icon btn-delete" onclick="deleteUser(${user.id}, '${user.name}')" title="Elimina">
+                        <button class="btn-icon btn-delete" onclick="deleteUser(${user.id}, '${escapeHtml(user.name)}')" title="Elimina">
                             🗑️
                         </button>
                     </div>
@@ -465,6 +735,8 @@
                 if (data.success) {
                     showAlert(`Musicista "${userName}" eliminato con successo!`, 'success');
                     loadUsers();
+                } else if (response.status === 401) {
+                    location.reload();
                 } else {
                     showAlert(data.message || 'Errore durante l\'eliminazione', 'danger');
                 }
@@ -494,6 +766,8 @@
                     showAlert(`Musicista "${name}" aggiunto con successo! ✅`, 'success');
                     loadUsers();
                     document.getElementById('addUserForm').reset();
+                } else if (response.status === 401) {
+                    location.reload();
                 } else {
                     showAlert(data.message || 'Errore durante l\'aggiunta', 'danger');
                 }
@@ -526,6 +800,12 @@
             input.type = input.type === 'password' ? 'text' : 'password';
         }
 
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
         // Event Listeners
         document.getElementById('addUserForm').addEventListener('submit', function(e) {
             e.preventDefault();
@@ -536,11 +816,6 @@
 
             addUser(username, password, name);
         });
-
-        // Inizializza
-        window.onload = function() {
-            loadUsers();
-        };
 
         // Menu hamburger
         document.querySelector('.icon-hamburger')?.addEventListener('click', function () {

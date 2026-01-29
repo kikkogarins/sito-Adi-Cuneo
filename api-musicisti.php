@@ -2,7 +2,30 @@
 /**
  * API Gestione Utenti Musicisti ADI Cuneo
  * File: api-musicisti.php
+ * VERSIONE PROTETTA CON PASSWORD
  */
+
+session_start();
+
+// ============================================
+// PROTEZIONE PASSWORD - CAMBIA QUI!
+// ============================================
+define('ADMIN_PASSWORD', 'admin2025'); // <-- CAMBIA QUESTA PASSWORD!
+
+// Verifica autenticazione per tutte le azioni tranne login
+$action = $_GET['action'] ?? '';
+
+if ($action !== 'admin-login' && $action !== 'login') {
+    // Verifica se è autenticato come admin
+    if (!isset($_SESSION['admin_auth']) || $_SESSION['admin_auth'] !== true) {
+        http_response_code(401);
+        echo json_encode([
+            'success' => false,
+            'message' => 'Non autenticato. Accesso negato.'
+        ]);
+        exit;
+    }
+}
 
 header('Content-Type: application/json');
 header('Access-Control-Allow-Origin: *');
@@ -49,9 +72,45 @@ function saveUsers($users) {
 
 // Gestione richieste
 $method = $_SERVER['REQUEST_METHOD'];
-$action = $_GET['action'] ?? '';
 
 switch ($action) {
+    case 'admin-login':
+        // Login admin per accedere alla gestione
+        $input = json_decode(file_get_contents('php://input'), true);
+        $password = $input['password'] ?? '';
+        
+        if ($password === ADMIN_PASSWORD) {
+            $_SESSION['admin_auth'] = true;
+            $_SESSION['login_time'] = time();
+            echo json_encode([
+                'success' => true,
+                'message' => 'Accesso autorizzato'
+            ]);
+        } else {
+            sleep(1); // Rallenta brute force
+            echo json_encode([
+                'success' => false,
+                'message' => 'Password errata'
+            ]);
+        }
+        break;
+    
+    case 'admin-logout':
+        session_destroy();
+        echo json_encode([
+            'success' => true,
+            'message' => 'Logout effettuato'
+        ]);
+        break;
+    
+    case 'admin-check':
+        $isAuth = isset($_SESSION['admin_auth']) && $_SESSION['admin_auth'] === true;
+        echo json_encode([
+            'success' => true,
+            'authenticated' => $isAuth
+        ]);
+        break;
+    
     case 'list':
         // Lista utenti (senza password in chiaro)
         $users = getUsers();
@@ -137,7 +196,7 @@ switch ($action) {
         break;
     
     case 'login':
-        // Verifica login
+        // Verifica login (per i musicisti, non per admin)
         $input = json_decode(file_get_contents('php://input'), true);
         
         if (!isset($input['username']) || !isset($input['password'])) {
