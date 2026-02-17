@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="it">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>ADI Cuneo - Cantici</title>
+    <link rel="stylesheet" href="css/st.css">
+    <style>
+        /* Stili aggiuntivi per il visualizzatore PDF migliorato */
+        .pdf-viewer {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 10000;
+            display: none;
+            flex-direction: column;
+        }
+
+        .pdf-viewer.show {
+            display: flex;
+        }
+
+        .pdf-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            background: rgba(0, 0, 0, 0.9);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .pdf-controls-left {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .pdf-controls button {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
+        .pdf-controls button:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .pdf-close {
+            font-size: 28px !important;
+            padding: 4px 12px !important;
+            line-height: 1;
+        }
+
+        .pdf-container {
+            flex: 1;
+            overflow: auto;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 20px;
+        }
+
+        .pdf-loading {
+            color: white;
+            text-align: center;
+            padding: 40px;
+        }
+
+        .pdf-spinner {
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-top: 3px solid white;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .pdf-error {
+            color: #ff6b6b;
+            text-align: center;
+            padding: 40px;
+        }
+
+        /* Iframe per PDF con fallback mobile-friendly */
+        #pdfFrame {
+            width: 100%;
+            max-width: 900px;
+            height: 100%;
+            min-height: 600px;
+            border: none;
+            background: white;
+            border-radius: 8px;
+        }
+
+        /* Mobile ottimizzato */
+        @media (max-width: 768px) {
+            .pdf-container {
+                padding: 10px;
+            }
+
+            #pdfFrame {
+                min-height: calc(100vh - 80px);
+            }
+
+            .pdf-controls {
+                padding: 10px;
+            }
+
+            .pdf-controls button {
+                padding: 6px 12px;
+                font-size: 13px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header class="header">
+        <div class="header__content">
+            <a class="header__logo" href="#">
+                <img src="img/logo_adi_cuneo.png" alt="Logo ADI Cuneo" height="100px" width="100px">
+            </a>
+            <ul class="header__menu">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="cantici.html">Cantici</a></li>
+                <li><a href="admin-musicisti-php.html">Admin Musicisti</a></li>
+                <li><a href="#contatti" class="mobile-only">Contatti</a></li>
+            </ul>
+
+            <div class="header__quick">
+                <a href="contatti.html" class="desktop-only">Contatti</a>
+            </div>
+
+            <div class="icon-hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="cantici-hero">
+        <div class="cantici-hero__content">
+            <h1>🎵 Cantici di Lode</h1>
+            <p>Esplora la collezione completa dei cantici della chiesa ADI Cuneo</p>
+        </div>
+    </section>
+
+    <!-- Selezione modalità -->
+    <section class="mode-selector">
+        <h2 style="color: var(--dark-gray); font-size: 2.5rem; margin-bottom: 20px;">Scegli la modalità</h2>
+        <p style="color: #666; font-size: 1.1rem; max-width: 600px; margin: 0 auto;">
+            Seleziona se visualizzare i cantici base o accedi all'area musicisti per vedere gli spartiti con accordi
+        </p>
+
+        <div class="mode-container">
+            <div class="mode-card active" data-mode="base" onclick="selectMode('base')">
+                <span class="mode-icon">📖</span>
+                <h3>Cantici Base</h3>
+                <p>Visualizza i testi dei cantici per il culto e la lode</p>
+            </div>
+
+            <div class="mode-card" data-mode="musicisti" onclick="selectMode('musicisti')">
+                <span class="mode-icon">🎸</span>
+                <h3>Area Musicisti</h3>
+                <p>Accedi agli spartiti con accordi (richiede login)</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Info message -->
+    <div class="info-message" id="infoMessage">
+        <h4>ℹ️ Informazione</h4>
+        <p id="infoText"></p>
+    </div>
+
+    <!-- Sezione ricerca -->
+    <section class="search-section">
+        <div class="search-container">
+            <h2 style="color: var(--dark-gray); font-size: 2rem; margin-bottom: 30px; text-align: center;">
+                Cerca un cantico
+            </h2>
+
+            <div class="search-box">
+                <input type="text" class="search-input" id="searchInput"
+                    placeholder="Cerca per numero, titolo o parole chiave..." onkeyup="searchCantici()">
+                <span class="search-icon">🔍</span>
+            </div>
+
+            <div class="quick-numbers">
+                <div class="quick-number" onclick="quickSearch('1')">1</div>
+                <div class="quick-number" onclick="quickSearch('10')">10</div>
+                <div class="quick-number" onclick="quickSearch('50')">50</div>
+                <div class="quick-number" onclick="quickSearch('100')">100</div>
+                <div class="quick-number" onclick="quickSearch('200')">200</div>
+                <div class="quick-number" onclick="quickSearch('300')">300</div>
+            </div>
+        </div>
+
+        <!-- Loading spinner -->
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <p style="color: var(--dark-gray);">Caricamento cantici...</p>
+        </div>
+
+        <!-- Risultati -->
+        <div class="results-section">
+            <div class="results-grid" id="resultsGrid"></div>
+        </div>
+    </section>
+
+    <!-- Modal Login Musicisti -->
+    <div class="login-modal" id="loginModal">
+        <div class="login-content">
+            <span class="login-close" onclick="closeLogin()">×</span>
+            <div class="login-icon">🎼</div>
+            <h2>Area Musicisti</h2>
+            <form onsubmit="handleLogin(event)">
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" name="username" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" required>
+                </div>
+                <button type="submit" class="login-button">Accedi</button>
+            </form>
+            <p class="login-note">
+                Per ottenere le credenziali di accesso contatta il responsabile del gruppo musicale
+            </p>
+        </div>
+    </div>
+
+    <!-- Visualizzatore PDF MIGLIORATO -->
+    <div class="pdf-viewer" id="pdfViewer">
+        <div class="pdf-controls">
+            <div class="pdf-controls-left">
+                <button class="pdf-download" onclick="downloadPDF()" title="Scarica PDF">
+                    ⬇️ Scarica
+                </button>
+                <button onclick="openInNewTab()" title="Apri in nuova scheda">
+                    🔗 Apri
+                </button>
+            </div>
+            <button class="pdf-close" onclick="closePDF()">×</button>
+        </div>
+        <div class="pdf-container" id="pdfContainer">
+            <div class="pdf-loading" id="pdfLoading">
+                <div class="pdf-spinner"></div>
+                <p>Caricamento PDF...</p>
+            </div>
+            <iframe id="pdfFrame" style="display: none;"></iframe>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer id="contatti">
+        <div class="grid">
+            <div class="col-50">
+                <h3>ADI Cuneo</h3>
+                <p>Via Acceglio, 4</p>
+                <p>12100 Cuneo (CN)</p>
+                <p>Email: info@adicuneo.it</p>
+                <p>visita la pagina Assemblee di Dio in Italia</p>
+                <a href="https://www.assembleedidio.org/" target="_blank">
+                    <img src="img/adi.png" alt="" style="width: 50px; height: 50px;">
+                </a>
+
+                <div style="margin-top: 15px;">
+                    <iframe
+                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2849.374292999981!2d7.556393076545171!3d44.39166800674194!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x12cd58294ac356c7%3A0x93d57c0141b1de2!2sVia%20Acceglio%2C%204%2C%2012100%20Cuneo%20CN!5e0!3m2!1sit!2sit!4v1699199999999!5m2!1sit!2sit"
+                        width="100%" height="200" style="border:0; border-radius: 8px;" allowfullscreen=""
+                        loading="lazy" referrerpolicy="no-referrer-when-downgrade">
+                    </iframe>
+                </div>
+            </div>
+
+            <div class="col-50">
+                <h3>Orari</h3>
+                <p>Domenica: 10:30 - 12:30</p>
+                <p>Martedì: 20:30 - 21:30</p>
+                <p>Giovedì: 20:30 - 21:30</p>
+                <a href="gallery.html" class="button">Visita la nostra galleria</a>
+                <br>
+                <p>Visita le nostra pagine</p>
+                <a href="https://www.instagram.com/adicuneo/" target="_blank">
+                    <img src="img/insta.png" alt="Instagram" style="width: 40px; height: 40px;">
+                </a>
+                <a href="https://www.facebook.com/ADICuneo/?locale=it_IT" target="_blank">
+                    <img src="img/facebook.png" alt="Facebook" style="width: 40px; height: 35px;">
+                </a>
+            </div>
+        </div>
+
+        <p class="text-center pt-4">© 2025 ADI Cuneo - Tutti i diritti riservati</p>
+    </footer>
+
+    <script>
+        const REPO_CANTICI = 'https://raw.githubusercontent.com/kikkogarins/Adi-Cuneo-Cantici/main';
+
+        let currentMode = 'base';
+        let isLoggedIn = false;
+        let currentPDFUrl = '';
+        let allCantici = [];
+
+        window.onload = function () {
+            showInfoMessage('⏳ Caricamento cantici in corso...');
+            document.getElementById('loading').classList.add('show');
+
+            fetch(`${REPO_CANTICI}/database.json`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    allCantici = data;
+                    displayAllCantici();
+                    document.getElementById('loading').classList.remove('show');
+                    showInfoMessage(`✅ Caricati ${allCantici.length} cantici. Modalità: Cantici Base.`);
+                })
+                .catch(error => {
+                    console.error('Errore caricamento database cantici:', error);
+                    document.getElementById('loading').classList.remove('show');
+                    showInfoMessage('⚠️ Errore nel caricamento. Riprova tra poco.');
+
+                    allCantici = [
+                        { numero: 1, titolo: "Primo Cantico", categoria: "Adorazione", filename: "0001-primo-cantico.pdf" }
+                    ];
+                    displayAllCantici();
+                });
+        };
+
+        function selectMode(mode) {
+            const cards = document.querySelectorAll('.mode-card');
+            cards.forEach(card => card.classList.remove('active'));
+
+            const selectedCard = document.querySelector(`[data-mode="${mode}"]`);
+            selectedCard.classList.add('active');
+
+            if (mode === 'musicisti' && !isLoggedIn) {
+                showLogin();
+            } else {
+                currentMode = mode;
+                showInfoMessage(
+                    mode === 'base'
+                        ? 'Modalità Cantici Base attiva.'
+                        : 'Modalità Musicisti attiva.'
+                );
+                displayAllCantici();
+            }
+        }
+
+        function showLogin() {
+            document.getElementById('loginModal').classList.add('show');
+        }
+
+        function closeLogin() {
+            document.getElementById('loginModal').classList.remove('show');
+            if (!isLoggedIn) {
+                selectMode('base');
+            }
+        }
+
+        async function handleLogin(event) {
+            event.preventDefault();
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            try {
+                const response = await fetch('api-musicisti.php?action=login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ username, password })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    isLoggedIn = true;
+                    currentMode = 'musicisti';
+                    closeLogin();
+                    showInfoMessage(`✅ Benvenuto ${data.user.name}!`);
+                    displayAllCantici();
+                } else {
+                    alert('❌ Credenziali non valide.');
+                }
+            } catch (error) {
+                console.error('Errore login:', error);
+                alert('❌ Errore di connessione. Riprova.');
+            }
+        }
+
+        function searchCantici() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+
+            if (searchTerm === '') {
+                displayAllCantici();
+                return;
+            }
+
+            const filtered = allCantici.filter(cantico => {
+                return cantico.numero.toString().includes(searchTerm) ||
+                    cantico.titolo.toLowerCase().includes(searchTerm) ||
+                    cantico.categoria.toLowerCase().includes(searchTerm);
+            });
+
+            displayCantici(filtered);
+        }
+
+        function quickSearch(numero) {
+            document.getElementById('searchInput').value = numero;
+            searchCantici();
+        }
+
+        function displayAllCantici() {
+            displayCantici(allCantici);
+        }
+
+        function displayCantici(cantici) {
+            const grid = document.getElementById('resultsGrid');
+
+            if (cantici.length === 0) {
+                grid.innerHTML = `
+                    <div style="grid-column: 1/-1; text-align: center; padding: 60px 20px;">
+                        <span style="font-size: 4rem;">🔍</span>
+                        <h3 style="color: var(--dark-gray); margin: 20px 0;">Nessun cantico trovato</h3>
+                        <p style="color: #888;">Prova a cercare con altri termini</p>
+                    </div>
+                `;
+                return;
+            }
+
+            grid.innerHTML = cantici.map(cantico => `
+                <div class="cantico-card" onclick="openCantico(${cantico.numero})">
+                    <span class="cantico-number">#${cantico.numero}</span>
+                    <div class="cantico-title">${cantico.titolo}</div>
+                    <div class="cantico-meta">
+                        <span>📂</span>
+                        <span>${cantico.categoria}</span>
+                    </div>
+                    ${currentMode === 'musicisti' ? '<span class="badge-musicisti">🎸 Con accordi</span>' : ''}
+                </div>
+            `).join('');
+        }
+
+        function openCantico(numero) {
+            const numeroFormattato = numero.toString().padStart(4, '0');
+            const cantico = allCantici.find(c => c.numero === numero);
+            
+            let pdfPath;
+
+            if (currentMode === 'base') {
+                // MODALITÀ BASE
+                if (cantico && cantico.filename) {
+                    // Usa il filename dal database
+                    pdfPath = `${REPO_CANTICI}/base/${cantico.filename}`;
+                } else {
+                    // Fallback al pattern standard
+                    pdfPath = `${REPO_CANTICI}/base/${numeroFormattato}.pdf`;
+                }
+            } else {
+                // MODALITÀ MUSICISTI
+                if (cantico && cantico.filename_musicisti) {
+                    // Se il database ha un campo specifico per musicisti
+                    pdfPath = `${REPO_CANTICI}/musicisti/${cantico.filename_musicisti}`;
+                } else if (cantico && cantico.filename) {
+                    // Prova a costruire il nome basandoti sul file base
+                    // Rimuovi l'estensione e aggiungi -accordi
+                    const baseFilename = cantico.filename.replace('.pdf', '');
+                    pdfPath = `${REPO_CANTICI}/musicisti/${baseFilename}-accordi.pdf`;
+                } else {
+                    // Fallback al pattern standard con -accordi
+                    pdfPath = `${REPO_CANTICI}/musicisti/${numeroFormattato}-accordi.pdf`;
+                }
+            }
+
+            currentPDFUrl = pdfPath;
+
+            // Mostra il viewer con loading
+            document.getElementById('pdfViewer').classList.add('show');
+            document.getElementById('pdfLoading').style.display = 'block';
+            document.getElementById('pdfFrame').style.display = 'none';
+
+            console.log(`📄 Apertura cantico ${numero} in modalità ${currentMode}`);
+            console.log(`📁 Percorso PDF: ${pdfPath}`);
+
+            // Carica il PDF con fallback
+            loadPDFWithFallback(pdfPath);
+        }
+
+        function loadPDFWithFallback(pdfUrl) {
+            const iframe = document.getElementById('pdfFrame');
+            const loading = document.getElementById('pdfLoading');
+            
+            // Metodo 1: PDF.js viewer
+            const pdfJsUrl = `https://mozilla.github.io/pdf.js/web/viewer.html?file=${encodeURIComponent(pdfUrl)}`;
+            
+            // Metodo 2: Google Docs Viewer (con cache busting)
+            const timestamp = new Date().getTime();
+            const googleDocsUrl = `https://docs.google.com/viewer?url=${encodeURIComponent(pdfUrl)}&embedded=true&t=${timestamp}`;
+            
+            // Metodo 3: Diretto
+            const directUrl = pdfUrl;
+
+            let currentMethod = 0;
+            const methods = [pdfJsUrl, googleDocsUrl, directUrl];
+            
+            function tryNextMethod() {
+                if (currentMethod >= methods.length) {
+                    // Tutti i metodi falliti - mostra errore
+                    loading.innerHTML = `
+                        <div class="pdf-error">
+                            <h3>❌ Impossibile caricare il PDF</h3>
+                            <p>File: ${pdfUrl.split('/').pop()}</p>
+                            <p style="font-size: 0.9em; color: #999; margin: 10px 0;">
+                                Modalità: ${currentMode === 'base' ? 'Cantici Base' : 'Musicisti'}
+                            </p>
+                            <button onclick="downloadPDF()" style="margin-top: 20px; padding: 10px 20px; background: #4CAF50; color: white; border: none; border-radius: 6px; cursor: pointer;">
+                                ⬇️ Scarica PDF
+                            </button>
+                            <button onclick="openInNewTab()" style="margin-top: 10px; padding: 10px 20px; background: #2196F3; color: white; border: none; border-radius: 6px; cursor: pointer;">
+                                🔗 Apri in nuova scheda
+                            </button>
+                        </div>
+                    `;
+                    return;
+                }
+
+                console.log(`🔄 Tentativo metodo ${currentMethod + 1}: ${methods[currentMethod].substring(0, 50)}...`);
+                iframe.src = methods[currentMethod];
+                
+                const timeout = setTimeout(() => {
+                    currentMethod++;
+                    tryNextMethod();
+                }, 5000);
+
+                iframe.onload = function() {
+                    clearTimeout(timeout);
+                    loading.style.display = 'none';
+                    iframe.style.display = 'block';
+                    console.log(`✅ PDF caricato con metodo ${currentMethod + 1}`);
+                };
+
+                iframe.onerror = function() {
+                    clearTimeout(timeout);
+                    currentMethod++;
+                    tryNextMethod();
+                };
+            }
+
+            tryNextMethod();
+        }
+
+        function closePDF() {
+            document.getElementById('pdfViewer').classList.remove('show');
+            document.getElementById('pdfFrame').src = '';
+            document.getElementById('pdfLoading').style.display = 'block';
+            document.getElementById('pdfLoading').innerHTML = `
+                <div class="pdf-spinner"></div>
+                <p>Caricamento PDF...</p>
+            `;
+        }
+
+        function downloadPDF() {
+            if (currentPDFUrl) {
+                const link = document.createElement('a');
+                link.href = currentPDFUrl;
+                link.download = currentPDFUrl.split('/').pop();
+                link.target = '_blank';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            }
+        }
+
+        function openInNewTab() {
+            if (currentPDFUrl) {
+                window.open(currentPDFUrl, '_blank');
+            }
+        }
+
+        function showInfoMessage(text) {
+            const infoMsg = document.getElementById('infoMessage');
+            document.getElementById('infoText').textContent = text;
+            infoMsg.classList.add('show');
+
+            setTimeout(() => {
+                infoMsg.classList.remove('show');
+            }, 5000);
+        }
+
+        // Menu hamburger
+        document.querySelector('.icon-hamburger')?.addEventListener('click', function () {
+            document.body.classList.toggle('menu-open');
+        });
+
+        document.addEventListener('click', function (event) {
+            const menu = document.querySelector('.header__menu');
+            const hamburger = document.querySelector('.icon-hamburger');
+
+            if (document.body.classList.contains('menu-open') &&
+                !menu?.contains(event.target) &&
+                !hamburger?.contains(event.target)) {
+                document.body.classList.remove('menu-open');
+            }
+        });
+
+        // Chiudi modal con ESC
+        document.addEventListener('keydown', function (event) {
+            if (event.key === 'Escape') {
+                if (document.getElementById('loginModal').classList.contains('show')) {
+                    closeLogin();
+                }
+                if (document.getElementById('pdfViewer').classList.contains('show')) {
+                    closePDF();
+                }
+            }
+        });
+    </script>
+</body>
+
+</html>
