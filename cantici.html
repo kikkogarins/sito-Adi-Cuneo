@@ -24,9 +24,11 @@
     <link rel="manifest" href="manifest.json">
 
     <link rel="stylesheet" href="css/st.css">
-
+    
     <style>
-        /* ===== BANNER INSTALLAZIONE ===== */
+        /* ===== STILI PWA AGGIUNTI ===== */
+        
+        /* Banner installazione */
         .pwa-install-banner {
             position: fixed;
             bottom: 0;
@@ -41,7 +43,6 @@
             gap: 12px;
             z-index: 9999;
             box-shadow: 0 -4px 20px rgba(0,0,0,0.2);
-            border-top: 2px solid rgba(255,255,255,0.15);
         }
         .pwa-install-banner.show { display: flex; }
         .pwa-install-banner p { margin: 0; font-size: 0.9rem; flex: 1; }
@@ -54,7 +55,6 @@
             border-radius: 20px;
             font-weight: bold;
             cursor: pointer;
-            white-space: nowrap;
             font-size: 0.9rem;
         }
         .pwa-btn-dismiss {
@@ -63,10 +63,9 @@
             color: rgba(255,255,255,0.7);
             cursor: pointer;
             font-size: 22px;
-            padding: 0 4px;
         }
 
-        /* ===== BANNER iOS (istruzione manuale) ===== */
+        /* Banner iOS */
         .ios-install-banner {
             position: fixed;
             bottom: 0;
@@ -82,12 +81,12 @@
         }
         .ios-install-banner.show { display: block; }
         .ios-install-banner h4 { margin: 0 0 8px; font-size: 1rem; }
-        .ios-install-banner p { margin: 0; font-size: 0.85rem; color: rgba(255,255,255,0.85); }
-        .ios-steps { display: flex; gap: 12px; margin-top: 12px; flex-wrap: wrap; }
-        .ios-step { background: rgba(255,255,255,0.1); padding: 8px 12px; border-radius: 8px; font-size: 0.8rem; text-align: center; }
+        .ios-install-banner p { margin: 0 0 12px; font-size: 0.85rem; color: rgba(255,255,255,0.85); }
+        .ios-steps { display: flex; gap: 12px; flex-wrap: wrap; }
+        .ios-step { background: rgba(255,255,255,0.1); padding: 8px 12px; border-radius: 8px; font-size: 0.8rem; text-align: center; flex: 1; min-width: 100px; }
         .ios-close { position: absolute; top: 12px; right: 16px; background: none; border: none; color: white; font-size: 22px; cursor: pointer; }
 
-        /* ===== STATO CONNESSIONE ===== */
+        /* Barra connessione */
         .connection-bar {
             display: none;
             padding: 8px 16px;
@@ -98,22 +97,11 @@
             top: 0;
             z-index: 100;
         }
-        .connection-bar.offline {
-            display: block;
-            background: #ff6b35;
-            color: white;
-        }
-        .connection-bar.online {
-            display: block;
-            background: #2ecc71;
-            color: white;
-            animation: fadeOut 3s forwards 2s;
-        }
-        @keyframes fadeOut {
-            to { opacity: 0; display: none; }
-        }
+        .connection-bar.offline { display: block; background: #ff6b35; color: white; }
+        .connection-bar.online { display: block; background: #2ecc71; color: white; animation: fadeOut 3s forwards 2s; }
+        @keyframes fadeOut { to { opacity: 0; } }
 
-        /* ===== PANNELLO DOWNLOAD OFFLINE ===== */
+        /* Pannello download offline */
         .offline-panel {
             background: linear-gradient(135deg, #f0f7ff, #e8f4fd);
             border: 2px solid #2d6a9f;
@@ -126,54 +114,15 @@
         .offline-panel h3 { color: #1a3a5c; margin: 0 0 8px; font-size: 1.2rem; }
         .offline-panel p { color: #555; margin: 0 0 16px; font-size: 0.9rem; }
 
-        .download-progress-wrap {
-            display: none;
-            margin-top: 16px;
-        }
+        .download-progress-wrap { display: none; margin-top: 16px; }
         .download-progress-wrap.show { display: block; }
+        .progress-bar-bg { background: #dde8f5; border-radius: 20px; height: 14px; overflow: hidden; margin-bottom: 8px; }
+        .progress-bar-fill { height: 100%; background: linear-gradient(90deg, #2d6a9f, #4fa3e0); border-radius: 20px; transition: width 0.3s; width: 0%; }
+        .progress-text { font-size: 0.85rem; color: #555; text-align: center; }
+        .progress-filename { font-size: 0.75rem; color: #999; text-align: center; margin-top: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
-        .progress-bar-bg {
-            background: #dde8f5;
-            border-radius: 20px;
-            height: 14px;
-            overflow: hidden;
-            margin-bottom: 8px;
-        }
-        .progress-bar-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #2d6a9f, #4fa3e0);
-            border-radius: 20px;
-            transition: width 0.3s ease;
-            width: 0%;
-        }
-        .progress-text {
-            font-size: 0.85rem;
-            color: #555;
-            text-align: center;
-        }
-        .progress-filename {
-            font-size: 0.75rem;
-            color: #999;
-            text-align: center;
-            margin-top: 4px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .offline-stats {
-            display: flex;
-            gap: 12px;
-            margin-top: 12px;
-        }
-        .offline-stat {
-            flex: 1;
-            background: white;
-            border-radius: 10px;
-            padding: 10px;
-            text-align: center;
-            border: 1px solid #c8dff5;
-        }
+        .offline-stats { display: flex; gap: 12px; margin-top: 12px; }
+        .offline-stat { flex: 1; background: white; border-radius: 10px; padding: 10px; text-align: center; border: 1px solid #c8dff5; }
         .offline-stat strong { display: block; font-size: 1.4rem; color: #1a3a5c; }
         .offline-stat span { font-size: 0.75rem; color: #888; }
 
@@ -204,72 +153,6 @@
             width: 100%;
         }
 
-        /* ===== PDF VIEWER ===== */
-        .pdf-viewer {
-            position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            background: rgba(0,0,0,0.95);
-            z-index: 10000;
-            display: none;
-            flex-direction: column;
-        }
-        .pdf-viewer.show { display: flex; }
-        .pdf-controls {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 15px 20px;
-            background: rgba(0,0,0,0.9);
-            border-bottom: 1px solid rgba(255,255,255,0.1);
-        }
-        .pdf-controls-left { display: flex; gap: 10px; align-items: center; }
-        .pdf-controls button {
-            background: rgba(255,255,255,0.1);
-            border: 1px solid rgba(255,255,255,0.2);
-            color: white;
-            padding: 8px 16px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 14px;
-            transition: all 0.3s;
-        }
-        .pdf-controls button:hover { background: rgba(255,255,255,0.2); }
-        .pdf-close { font-size: 28px !important; padding: 4px 12px !important; }
-        .pdf-container {
-            flex: 1;
-            overflow: auto;
-            display: flex;
-            justify-content: center;
-            align-items: flex-start;
-            padding: 20px;
-        }
-        .pdf-loading {
-            color: white;
-            text-align: center;
-            padding: 40px;
-        }
-        .pdf-spinner {
-            border: 3px solid rgba(255,255,255,0.3);
-            border-top: 3px solid white;
-            border-radius: 50%;
-            width: 40px; height: 40px;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 20px;
-        }
-        @keyframes spin { to { transform: rotate(360deg); } }
-        .pdf-error { color: #ff6b6b; text-align: center; padding: 40px; }
-        #pdfFrame {
-            width: 100%;
-            max-width: 900px;
-            height: 100%;
-            min-height: 600px;
-            border: none;
-            background: white;
-            border-radius: 8px;
-        }
-
-        /* Badge offline su card cantico */
         .cantico-offline-badge {
             display: inline-block;
             font-size: 0.7rem;
@@ -278,6 +161,105 @@
             padding: 2px 7px;
             border-radius: 10px;
             margin-top: 4px;
+        }
+
+        /* ===== STILI PDF VIEWER ORIGINALI ===== */
+        .pdf-viewer {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 10000;
+            display: none;
+            flex-direction: column;
+        }
+
+        .pdf-viewer.show {
+            display: flex;
+        }
+
+        .pdf-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            background: rgba(0, 0, 0, 0.9);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .pdf-controls-left {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .pdf-controls button {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
+        .pdf-controls button:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .pdf-close {
+            font-size: 28px !important;
+            padding: 4px 12px !important;
+            line-height: 1;
+        }
+
+        .pdf-container {
+            flex: 1;
+            overflow: auto;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 20px;
+        }
+
+        .pdf-loading {
+            color: white;
+            text-align: center;
+            padding: 40px;
+        }
+
+        .pdf-spinner {
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-top: 3px solid white;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .pdf-error {
+            color: #ff6b6b;
+            text-align: center;
+            padding: 40px;
+        }
+
+        #pdfFrame {
+            width: 100%;
+            max-width: 900px;
+            height: 100%;
+            min-height: 600px;
+            border: none;
+            background: white;
+            border-radius: 8px;
         }
 
         @media (max-width: 768px) {
@@ -291,7 +273,6 @@
 </head>
 
 <body>
-
     <!-- Barra stato connessione -->
     <div class="connection-bar" id="connectionBar"></div>
 
@@ -302,24 +283,24 @@
             </a>
             <ul class="header__menu">
                 <li><a href="index.html">Home</a></li>
-                <li><a href="storia.html">La Nostra Storia</a></li>
-                <li><a href="illuminiamo.html" style="display:flex;align-items:center;justify-content:center;">
-                    <img src="img/lampadina.png" alt="Lampadina" height="40px" width="40px"></a></li>
-                <li><a href="gallery.html">Galleria Foto</a></li>
-                <li><a href="eventi.html">Eventi</a></li>
                 <li><a href="cantici.html">Cantici</a></li>
+                <li><a href="admin-musicisti-php.html">Admin Musicisti</a></li>
                 <li><a href="#contatti" class="mobile-only">Contatti</a></li>
             </ul>
+
             <div class="header__quick">
                 <a href="contatti.html" class="desktop-only">Contatti</a>
             </div>
+
             <div class="icon-hamburger">
-                <span></span><span></span><span></span>
+                <span></span>
+                <span></span>
+                <span></span>
             </div>
         </div>
     </header>
 
-    <!-- Hero -->
+    <!-- Hero Section -->
     <section class="cantici-hero">
         <div class="cantici-hero__content">
             <h1>🎵 Cantici di Lode</h1>
@@ -329,16 +310,18 @@
 
     <!-- Selezione modalità -->
     <section class="mode-selector">
-        <h2 style="color:var(--dark-gray);font-size:2.5rem;margin-bottom:20px;">Scegli la modalità</h2>
-        <p style="color:#666;font-size:1.1rem;max-width:600px;margin:0 auto;">
+        <h2 style="color: var(--dark-gray); font-size: 2.5rem; margin-bottom: 20px;">Scegli la modalità</h2>
+        <p style="color: #666; font-size: 1.1rem; max-width: 600px; margin: 0 auto;">
             Seleziona se visualizzare i cantici base o accedi all'area musicisti per vedere gli spartiti con accordi
         </p>
+
         <div class="mode-container">
             <div class="mode-card active" data-mode="base" onclick="selectMode('base')">
                 <span class="mode-icon">📖</span>
                 <h3>Cantici Base</h3>
                 <p>Visualizza i testi dei cantici per il culto e la lode</p>
             </div>
+
             <div class="mode-card" data-mode="musicisti" onclick="selectMode('musicisti')">
                 <span class="mode-icon">🎸</span>
                 <h3>Area Musicisti</h3>
@@ -353,12 +336,11 @@
         <p id="infoText"></p>
     </div>
 
-    <!-- ===== PANNELLO DOWNLOAD OFFLINE ===== -->
+    <!-- ===== PANNELLO DOWNLOAD OFFLINE (NUOVO) ===== -->
     <div class="offline-panel" id="offlinePanel">
         <h3>📥 Disponibilità Offline</h3>
         <p>
-            Sei la prima volta qui? Scarica tutti i cantici ora con la connessione WiFi
-            e potrai accedervi anche senza internet!
+            Prima volta qui? Scarica tutti i cantici con il WiFi e potrai accedervi anche senza internet!
         </p>
 
         <div class="offline-stats">
@@ -395,14 +377,16 @@
     <!-- Sezione ricerca -->
     <section class="search-section">
         <div class="search-container">
-            <h2 style="color:var(--dark-gray);font-size:2rem;margin-bottom:30px;text-align:center;">
+            <h2 style="color: var(--dark-gray); font-size: 2rem; margin-bottom: 30px; text-align: center;">
                 Cerca un cantico
             </h2>
+
             <div class="search-box">
                 <input type="text" class="search-input" id="searchInput"
                     placeholder="Cerca per numero, titolo o parole chiave..." onkeyup="searchCantici()">
                 <span class="search-icon">🔍</span>
             </div>
+
             <div class="quick-numbers">
                 <div class="quick-number" onclick="quickSearch('1')">1</div>
                 <div class="quick-number" onclick="quickSearch('10')">10</div>
@@ -413,11 +397,13 @@
             </div>
         </div>
 
+        <!-- Loading spinner -->
         <div class="loading" id="loading">
             <div class="spinner"></div>
-            <p style="color:var(--dark-gray);">Caricamento cantici...</p>
+            <p style="color: var(--dark-gray);">Caricamento cantici...</p>
         </div>
 
+        <!-- Risultati -->
         <div class="results-section">
             <div class="results-grid" id="resultsGrid"></div>
         </div>
@@ -440,7 +426,9 @@
                 </div>
                 <button type="submit" class="login-button">Accedi</button>
             </form>
-            <p class="login-note">Per ottenere le credenziali contatta il responsabile del gruppo musicale</p>
+            <p class="login-note">
+                Per ottenere le credenziali di accesso contatta il responsabile del gruppo musicale
+            </p>
         </div>
     </div>
 
@@ -448,8 +436,12 @@
     <div class="pdf-viewer" id="pdfViewer">
         <div class="pdf-controls">
             <div class="pdf-controls-left">
-                <button onclick="downloadPDF()" title="Scarica PDF">⬇️ Scarica</button>
-                <button onclick="openInNewTab()" title="Apri in nuova scheda">🔗 Apri</button>
+                <button class="pdf-download" onclick="downloadPDF()" title="Scarica PDF">
+                    ⬇️ Scarica
+                </button>
+                <button onclick="openInNewTab()" title="Apri in nuova scheda">
+                    🔗 Apri
+                </button>
             </div>
             <button class="pdf-close" onclick="closePDF()">×</button>
         </div>
@@ -458,7 +450,7 @@
                 <div class="pdf-spinner"></div>
                 <p>Caricamento PDF...</p>
             </div>
-            <iframe id="pdfFrame" style="display:none;"></iframe>
+            <iframe id="pdfFrame" style="display: none;"></iframe>
         </div>
     </div>
 
@@ -475,12 +467,12 @@
 
     <!-- Banner installazione iOS -->
     <div class="ios-install-banner" id="iosBanner">
-        <button class="ios-close" onclick="document.getElementById('iosBanner').classList.remove('show')">×</button>
+        <button class="ios-close" onclick="dismissIOSBanner()">×</button>
         <h4>📲 Installa l'app Cantici ADI</h4>
         <p>Aggiungi alla schermata Home per usarla anche offline:</p>
         <div class="ios-steps">
-            <div class="ios-step">1️⃣ Tocca<br>il tasto<br>Condividi</div>
-            <div class="ios-step">2️⃣ Scorri e scegli<br>"Aggiungi a<br>schermata Home"</div>
+            <div class="ios-step">1️⃣ Tocca il tasto<br>Condividi ⬆️</div>
+            <div class="ios-step">2️⃣ Scorri e scegli<br>"Aggiungi a Home"</div>
             <div class="ios-step">3️⃣ Tocca<br>"Aggiungi"</div>
         </div>
     </div>
@@ -495,16 +487,18 @@
                 <p>Email: info@adicuneo.it</p>
                 <p>visita la pagina Assemblee di Dio in Italia</p>
                 <a href="https://www.assembleedidio.org/" target="_blank">
-                    <img src="img/adi.png" alt="" style="width:50px;height:50px;">
+                    <img src="img/adi.png" alt="" style="width: 50px; height: 50px;">
                 </a>
-                <div style="margin-top:15px;">
+
+                <div style="margin-top: 15px;">
                     <iframe
                         src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2849.374292999981!2d7.556393076545171!3d44.39166800674194!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x12cd58294ac356c7%3A0x93d57c0141b1de2!2sVia%20Acceglio%2C%204%2C%2012100%20Cuneo%20CN!5e0!3m2!1sit!2sit!4v1699199999999!5m2!1sit!2sit"
-                        width="100%" height="200" style="border:0;border-radius:8px;" allowfullscreen
+                        width="100%" height="200" style="border:0; border-radius: 8px;" allowfullscreen=""
                         loading="lazy" referrerpolicy="no-referrer-when-downgrade">
                     </iframe>
                 </div>
             </div>
+
             <div class="col-50">
                 <h3>Orari</h3>
                 <p>Domenica: 10:30 - 12:30</p>
@@ -514,50 +508,52 @@
                 <br>
                 <p>Visita le nostra pagine</p>
                 <a href="https://www.instagram.com/adicuneo/" target="_blank">
-                    <img src="img/insta.png" alt="Instagram" style="width:40px;height:40px;">
+                    <img src="img/insta.png" alt="Instagram" style="width: 40px; height: 40px;">
                 </a>
                 <a href="https://www.facebook.com/ADICuneo/?locale=it_IT" target="_blank">
-                    <img src="img/facebook.png" alt="Facebook" style="width:40px;height:35px;">
+                    <img src="img/facebook.png" alt="Facebook" style="width: 40px; height: 35px;">
                 </a>
             </div>
         </div>
+
         <p class="text-center pt-4">© 2025 ADI Cuneo - Tutti i diritti riservati</p>
     </footer>
 
     <script>
-        // ============================================================
-        // CONFIGURAZIONE
-        // ============================================================
         const REPO_CANTICI = 'https://raw.githubusercontent.com/kikkogarins/Adi-Cuneo-Cantici/main';
 
         let currentMode = 'base';
         let isLoggedIn = false;
         let currentPDFUrl = '';
         let allCantici = [];
+
+        // ===== VARIABILI PWA (NUOVE) =====
         let cachedPDFUrls = new Set();
         let deferredInstallPrompt = null;
         let swRegistration = null;
 
-        // ============================================================
-        // SERVICE WORKER — Registrazione
-        // ============================================================
+        // ===== SERVICE WORKER (NUOVO) =====
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('/sw.js')
                     .then(reg => {
                         swRegistration = reg;
                         console.log('[App] Service Worker registrato:', reg.scope);
-
-                        // Ascolta messaggi dal SW
                         navigator.serviceWorker.addEventListener('message', handleSWMessage);
+
+                        if (!navigator.serviceWorker.controller) {
+                            console.log('[App] Prima visita: attendo controller...');
+                            navigator.serviceWorker.addEventListener('controllerchange', () => {
+                                console.log('[App] SW ora è controller!');
+                                checkCachedStatus();
+                            });
+                        }
                     })
-                    .catch(err => console.error('[App] SW registrazione fallita:', err));
+                    .catch(err => console.error('[App] SW fallito:', err));
             });
         }
 
-        // ============================================================
-        // STATO CONNESSIONE
-        // ============================================================
+        // ===== STATO CONNESSIONE (NUOVO) =====
         function updateConnectionStatus() {
             const bar = document.getElementById('connectionBar');
             if (navigator.onLine) {
@@ -565,21 +561,17 @@
                 bar.className = 'connection-bar online';
                 document.getElementById('offlinePanel').classList.add('show');
             } else {
-                bar.textContent = '📵 Modalità offline — Visualizzi i cantici salvati';
+                bar.textContent = '📵 Modalità offline — Cantici salvati disponibili';
                 bar.className = 'connection-bar offline';
             }
         }
-
         window.addEventListener('online', updateConnectionStatus);
         window.addEventListener('offline', updateConnectionStatus);
 
-        // ============================================================
-        // PWA — Installazione
-        // ============================================================
+        // ===== PWA INSTALLAZIONE (NUOVO) =====
         window.addEventListener('beforeinstallprompt', e => {
             e.preventDefault();
             deferredInstallPrompt = e;
-            // Mostra banner solo se non già installata e non già scartata
             if (!localStorage.getItem('pwa-dismissed')) {
                 setTimeout(() => {
                     document.getElementById('installBanner').classList.add('show');
@@ -604,7 +596,12 @@
             localStorage.setItem('pwa-dismissed', '1');
         }
 
-        // Mostra istruzioni iOS
+        function dismissIOSBanner() {
+            document.getElementById('iosBanner').classList.remove('show');
+            localStorage.setItem('ios-dismissed', '1');
+        }
+
+        // Banner iOS
         const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
         const isStandalone = window.navigator.standalone;
         if (isIOS && !isStandalone && !localStorage.getItem('ios-dismissed')) {
@@ -613,49 +610,314 @@
             }, 4000);
         }
 
-        // ============================================================
-        // INIT
-        // ============================================================
+        // ===== CODICE ORIGINALE (INTATTO) =====
         window.onload = function () {
-            updateConnectionStatus();
+            updateConnectionStatus(); // NUOVO: aggiunto solo questa riga
+            
             showInfoMessage('⏳ Caricamento cantici in corso...');
             document.getElementById('loading').classList.add('show');
 
             fetch(`${REPO_CANTICI}/database.json`)
-                .then(res => {
-                    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-                    return res.json();
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return response.json();
                 })
                 .then(data => {
                     allCantici = data;
                     displayAllCantici();
                     document.getElementById('loading').classList.remove('show');
+                    showInfoMessage(`✅ Caricati ${allCantici.length} cantici. Modalità: Cantici Base.`);
+                    
+                    // NUOVO: aggiunte queste righe
                     document.getElementById('statTotal').textContent = allCantici.length;
-                    showInfoMessage(`✅ Caricati ${allCantici.length} cantici.`);
-
-                    // Controlla quali PDF sono già in cache
                     checkCachedStatus();
-
-                    // Mostra pannello offline se online
                     if (navigator.onLine) {
                         document.getElementById('offlinePanel').classList.add('show');
                     }
                 })
-                .catch(err => {
-                    console.error('Errore caricamento:', err);
+                .catch(error => {
+                    console.error('Errore caricamento database cantici:', error);
                     document.getElementById('loading').classList.remove('show');
-                    showInfoMessage('⚠️ Errore nel caricamento. Sei offline?');
-                    allCantici = [];
+                    showInfoMessage('⚠️ Errore nel caricamento. Riprova tra poco.');
+
+                    allCantici = [
+                        { numero: 1, titolo: "Primo Cantico", categoria: "Adorazione", filename: "0001-primo-cantico.pdf" }
+                    ];
                     displayAllCantici();
                 });
         };
 
-        // ============================================================
-        // DOWNLOAD BULK — Scarica tutti i PDF
-        // ============================================================
+        function selectMode(mode) {
+            const cards = document.querySelectorAll('.mode-card');
+            cards.forEach(card => card.classList.remove('active'));
+
+            const selectedCard = document.querySelector(`[data-mode="${mode}"]`);
+            selectedCard.classList.add('active');
+
+            if (mode === 'musicisti' && !isLoggedIn) {
+                showLogin();
+            } else {
+                currentMode = mode;
+                showInfoMessage(
+                    mode === 'base'
+                        ? 'Modalità Cantici Base attiva.'
+                        : 'Modalità Musicisti attiva.'
+                );
+                displayAllCantici();
+            }
+        }
+
+        function showLogin() {
+            document.getElementById('loginModal').classList.add('show');
+        }
+
+        function closeLogin() {
+            document.getElementById('loginModal').classList.remove('show');
+            if (!isLoggedIn) {
+                selectMode('base');
+            }
+        }
+
+        async function handleLogin(event) {
+            event.preventDefault();
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            try {
+                const response = await fetch('api-musicisti.php?action=login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ username, password })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    isLoggedIn = true;
+                    currentMode = 'musicisti';
+                    // NUOVO: salva token per accesso offline
+                    localStorage.setItem('musicisti-token', data.token || '1');
+                    localStorage.setItem('musicisti-name', data.user.name);
+                    closeLogin();
+                    showInfoMessage(`✅ Benvenuto ${data.user.name}!`);
+                    displayAllCantici();
+                } else {
+                    alert('❌ Credenziali non valide.');
+                }
+            } catch (error) {
+                console.error('Errore login:', error);
+                // NUOVO: prova accesso offline
+                const savedToken = localStorage.getItem('musicisti-token');
+                if (savedToken) {
+                    isLoggedIn = true;
+                    currentMode = 'musicisti';
+                    const name = localStorage.getItem('musicisti-name') || 'Musicista';
+                    closeLogin();
+                    showInfoMessage(`✅ Benvenuto ${name}! (offline)`);
+                    displayAllCantici();
+                } else {
+                    alert('❌ Errore di connessione. Riprova.');
+                }
+            }
+        }
+
+        function searchCantici() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+
+            if (searchTerm === '') {
+                displayAllCantici();
+                return;
+            }
+
+            const filtered = allCantici.filter(cantico => {
+                return cantico.numero.toString().includes(searchTerm) ||
+                    cantico.titolo.toLowerCase().includes(searchTerm) ||
+                    cantico.categoria.toLowerCase().includes(searchTerm);
+            });
+
+            displayCantici(filtered);
+        }
+
+        function quickSearch(numero) {
+            document.getElementById('searchInput').value = numero;
+            searchCantici();
+        }
+
+        function displayAllCantici() {
+            displayCantici(allCantici);
+        }
+
+        function displayCantici(cantici) {
+            const grid = document.getElementById('resultsGrid');
+
+            if (cantici.length === 0) {
+                grid.innerHTML = `
+                    <div style="grid-column: 1/-1; text-align: center; padding: 60px 20px;">
+                        <span style="font-size: 4rem;">🔍</span>
+                        <h3 style="color: var(--dark-gray); margin: 20px 0;">Nessun cantico trovato</h3>
+                        <p style="color: #888;">Prova a cercare con altri termini</p>
+                    </div>
+                `;
+                return;
+            }
+
+            grid.innerHTML = cantici.map(cantico => {
+                // NUOVO: controlla se il PDF è in cache
+                const pdfUrl = `${REPO_CANTICI}/base/${cantico.filename}`;
+                const isCached = cachedPDFUrls.has(pdfUrl);
+                
+                return `
+                <div class="cantico-card" onclick="openCantico(${cantico.numero})">
+                    <span class="cantico-number">#${cantico.numero}</span>
+                    <div class="cantico-title">${cantico.titolo}</div>
+                    <div class="cantico-meta">
+                        <span>📂</span>
+                        <span>${cantico.categoria}</span>
+                    </div>
+                    ${currentMode === 'musicisti' ? '<span class="badge-musicisti">🎸 Con accordi</span>' : ''}
+                    ${isCached ? '<span class="cantico-offline-badge">📵 Offline</span>' : ''}
+                </div>
+            `}).join('');
+        }
+
+        function openCantico(numero) {
+            const numeroFormattato = numero.toString().padStart(4, '0');
+            const cantico = allCantici.find(c => c.numero === numero);
+            
+            let pdfPath;
+
+            if (currentMode === 'base') {
+                if (cantico && cantico.filename) {
+                    pdfPath = `${REPO_CANTICI}/base/${cantico.filename}`;
+                } else {
+                    pdfPath = `${REPO_CANTICI}/base/${numeroFormattato}.pdf`;
+                }
+            } else {
+                if (cantico && cantico.filename_musicisti) {
+                    pdfPath = `${REPO_CANTICI}/musicisti/${cantico.filename_musicisti}`;
+                } else if (cantico && cantico.filename) {
+                    const baseFilename = cantico.filename.replace('.pdf', '');
+                    pdfPath = `${REPO_CANTICI}/musicisti/${baseFilename}-accordi.pdf`;
+                } else {
+                    pdfPath = `${REPO_CANTICI}/musicisti/${numeroFormattato}-accordi.pdf`;
+                }
+            }
+
+            currentPDFUrl = pdfPath;
+
+            document.getElementById('pdfViewer').classList.add('show');
+            document.getElementById('pdfLoading').style.display = 'block';
+            document.getElementById('pdfFrame').style.display = 'none';
+
+            console.log(`📄 Apertura cantico ${numero} in modalità ${currentMode}`);
+            console.log(`📁 Percorso PDF: ${pdfPath}`);
+
+            loadPDFWithFallback(pdfPath);
+        }
+
+        function loadPDFWithFallback(pdfUrl) {
+            const iframe = document.getElementById('pdfFrame');
+            const loading = document.getElementById('pdfLoading');
+            
+            const pdfJsUrl = `https://mozilla.github.io/pdf.js/web/viewer.html?file=${encodeURIComponent(pdfUrl)}`;
+            const timestamp = new Date().getTime();
+            const googleDocsUrl = `https://docs.google.com/viewer?url=${encodeURIComponent(pdfUrl)}&embedded=true&t=${timestamp}`;
+            const directUrl = pdfUrl;
+
+            let currentMethod = 0;
+            const methods = [pdfJsUrl, googleDocsUrl, directUrl];
+            
+            function tryNextMethod() {
+                if (currentMethod >= methods.length) {
+                    loading.innerHTML = `
+                        <div class="pdf-error">
+                            <h3>❌ Impossibile caricare il PDF</h3>
+                            <p>File: ${pdfUrl.split('/').pop()}</p>
+                            <p style="font-size: 0.9em; color: #999; margin: 10px 0;">
+                                ${!navigator.onLine ? '📵 Sei offline e questo cantico non è stato scaricato.' : 'Modalità: ' + (currentMode === 'base' ? 'Cantici Base' : 'Musicisti')}
+                            </p>
+                            <button onclick="downloadPDF()" style="margin-top: 20px; padding: 10px 20px; background: #4CAF50; color: white; border: none; border-radius: 6px; cursor: pointer;">
+                                ⬇️ Scarica PDF
+                            </button>
+                            <button onclick="openInNewTab()" style="margin-top: 10px; padding: 10px 20px; background: #2196F3; color: white; border: none; border-radius: 6px; cursor: pointer;">
+                                🔗 Apri in nuova scheda
+                            </button>
+                        </div>
+                    `;
+                    return;
+                }
+
+                console.log(`🔄 Tentativo metodo ${currentMethod + 1}`);
+                iframe.src = methods[currentMethod];
+                
+                const timeout = setTimeout(() => {
+                    currentMethod++;
+                    tryNextMethod();
+                }, 5000);
+
+                iframe.onload = function() {
+                    clearTimeout(timeout);
+                    loading.style.display = 'none';
+                    iframe.style.display = 'block';
+                    console.log(`✅ PDF caricato con metodo ${currentMethod + 1}`);
+                };
+
+                iframe.onerror = function() {
+                    clearTimeout(timeout);
+                    currentMethod++;
+                    tryNextMethod();
+                };
+            }
+
+            tryNextMethod();
+        }
+
+        function closePDF() {
+            document.getElementById('pdfViewer').classList.remove('show');
+            document.getElementById('pdfFrame').src = '';
+            document.getElementById('pdfLoading').style.display = 'block';
+            document.getElementById('pdfLoading').innerHTML = `
+                <div class="pdf-spinner"></div>
+                <p>Caricamento PDF...</p>
+            `;
+        }
+
+        function downloadPDF() {
+            if (currentPDFUrl) {
+                const link = document.createElement('a');
+                link.href = currentPDFUrl;
+                link.download = currentPDFUrl.split('/').pop();
+                link.target = '_blank';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            }
+        }
+
+        function openInNewTab() {
+            if (currentPDFUrl) {
+                window.open(currentPDFUrl, '_blank');
+            }
+        }
+
+        function showInfoMessage(text) {
+            const infoMsg = document.getElementById('infoMessage');
+            document.getElementById('infoText').textContent = text;
+            infoMsg.classList.add('show');
+
+            setTimeout(() => {
+                infoMsg.classList.remove('show');
+            }, 5000);
+        }
+
+        // ===== FUNZIONI PWA NUOVE =====
+        
         function buildPDFUrls(mode) {
             return allCantici.map(cantico => {
-                const folder = mode === 'base' ? 'base' : 'musicisti';
                 if (mode === 'base') {
                     return `${REPO_CANTICI}/base/${cantico.filename}`;
                 } else {
@@ -665,24 +927,45 @@
             });
         }
 
-        function startBulkDownload() {
+        async function startBulkDownload() {
             if (!navigator.onLine) {
-                alert('⚠️ Devi essere connesso a internet per scaricare i cantici!');
-                return;
-            }
-            if (!swRegistration || !navigator.serviceWorker.controller) {
-                alert('⚠️ Il sistema offline non è ancora pronto. Ricarica la pagina e riprova.');
+                alert('⚠️ Devi essere connesso a internet!');
                 return;
             }
 
+            const btn = document.getElementById('btnDownloadAll');
+            btn.disabled = true;
+
+            if (!navigator.serviceWorker.controller) {
+                btn.textContent = '⏳ Preparazione sistema offline...';
+                try {
+                    await waitForSWController();
+                } catch (e) {
+                    btn.disabled = false;
+                    btn.textContent = '📥 Scarica tutti i cantici per uso offline';
+                    alert('⚠️ Impossibile avviare. Ricarica la pagina.');
+                    return;
+                }
+            }
+
             const urls = buildPDFUrls('base');
-            document.getElementById('btnDownloadAll').disabled = true;
-            document.getElementById('btnDownloadAll').textContent = '⏳ Download in corso...';
+            btn.textContent = '⏳ Download in corso...';
             document.getElementById('downloadProgressWrap').classList.add('show');
 
             navigator.serviceWorker.controller.postMessage({
                 type: 'DOWNLOAD_ALL_PDFS',
                 data: { urls }
+            });
+        }
+
+        function waitForSWController() {
+            return new Promise((resolve, reject) => {
+                if (navigator.serviceWorker.controller) { resolve(); return; }
+                const timeout = setTimeout(() => reject(new Error('Timeout')), 10000);
+                navigator.serviceWorker.addEventListener('controllerchange', () => {
+                    clearTimeout(timeout);
+                    resolve();
+                }, { once: true });
             });
         }
 
@@ -696,14 +979,11 @@
         }
 
         function clearPDFCache() {
-            if (!confirm('Sei sicuro di voler eliminare tutti i cantici scaricati offline?')) return;
+            if (!confirm('Eliminare tutti i cantici offline?')) return;
             if (!navigator.serviceWorker.controller) return;
             navigator.serviceWorker.controller.postMessage({ type: 'CLEAR_PDF_CACHE' });
         }
 
-        // ============================================================
-        // MESSAGGI DAL SERVICE WORKER
-        // ============================================================
         function handleSWMessage(event) {
             const { type, downloaded, total, failed, filename, cached } = event.data || {};
 
@@ -711,7 +991,7 @@
                 const percent = Math.round((downloaded / total) * 100);
                 document.getElementById('progressFill').style.width = `${percent}%`;
                 document.getElementById('progressText').textContent =
-                    `${downloaded} di ${total} scaricati ${failed > 0 ? `(${failed} errori)` : ''}`;
+                    `${downloaded} di ${total} ${failed > 0 ? `(${failed} errori)` : ''}`;
                 document.getElementById('progressFilename').textContent = filename || '';
                 document.getElementById('statCached').textContent = downloaded;
                 document.getElementById('statPercent').textContent = `${percent}%`;
@@ -721,14 +1001,14 @@
                 const percent = Math.round((downloaded / total) * 100);
                 document.getElementById('progressFill').style.width = `${percent}%`;
                 document.getElementById('progressText').textContent =
-                    `✅ Completato! ${downloaded} cantici disponibili offline.`;
+                    `✅ Completato! ${downloaded} cantici offline.`;
                 document.getElementById('progressFilename').textContent = '';
                 document.getElementById('btnDownloadAll').disabled = false;
-                document.getElementById('btnDownloadAll').textContent = '🔄 Aggiorna cantici offline';
+                document.getElementById('btnDownloadAll').textContent = '🔄 Aggiorna cantici';
                 document.getElementById('statCached').textContent = downloaded;
                 document.getElementById('statPercent').textContent = `${percent}%`;
-                showInfoMessage(`✅ ${downloaded} cantici ora disponibili offline!`);
-                displayAllCantici(); // Aggiorna badge sulle card
+                showInfoMessage(`✅ ${downloaded} cantici ora offline!`);
+                displayAllCantici();
             }
 
             if (type === 'CACHED_PDFS_LIST') {
@@ -736,7 +1016,7 @@
                 document.getElementById('statCached').textContent = cached.length;
                 const percent = Math.round((cached.length / allCantici.length) * 100) || 0;
                 document.getElementById('statPercent').textContent = `${percent}%`;
-                displayAllCantici(); // Aggiorna badge
+                displayAllCantici();
             }
 
             if (type === 'PDF_CACHE_CLEARED') {
@@ -746,248 +1026,38 @@
                 document.getElementById('downloadProgressWrap').classList.remove('show');
                 document.getElementById('btnDownloadAll').disabled = false;
                 document.getElementById('btnDownloadAll').textContent = '📥 Scarica tutti i cantici per uso offline';
-                showInfoMessage('🗑️ Cache PDF eliminata.');
+                showInfoMessage('🗑️ Cache eliminata.');
                 displayAllCantici();
             }
-        }
-
-        // ============================================================
-        // MODALITÀ
-        // ============================================================
-        function selectMode(mode) {
-            document.querySelectorAll('.mode-card').forEach(c => c.classList.remove('active'));
-            document.querySelector(`[data-mode="${mode}"]`).classList.add('active');
-
-            if (mode === 'musicisti' && !isLoggedIn) {
-                showLogin();
-            } else {
-                currentMode = mode;
-                showInfoMessage(mode === 'base' ? 'Modalità Cantici Base attiva.' : 'Modalità Musicisti attiva.');
-                displayAllCantici();
-            }
-        }
-
-        function showLogin() { document.getElementById('loginModal').classList.add('show'); }
-
-        function closeLogin() {
-            document.getElementById('loginModal').classList.remove('show');
-            if (!isLoggedIn) selectMode('base');
-        }
-
-        async function handleLogin(event) {
-            event.preventDefault();
-            const username = document.getElementById('username').value;
-            const password = document.getElementById('password').value;
-
-            try {
-                const res = await fetch('api-musicisti.php?action=login', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ username, password })
-                });
-                const data = await res.json();
-
-                if (data.success) {
-                    isLoggedIn = true;
-                    currentMode = 'musicisti';
-                    // Salva token per accesso offline
-                    localStorage.setItem('musicisti-token', data.token || '1');
-                    localStorage.setItem('musicisti-name', data.user.name);
-                    closeLogin();
-                    showInfoMessage(`✅ Benvenuto ${data.user.name}!`);
-                    displayAllCantici();
-                } else {
-                    alert('❌ Credenziali non valide.');
-                }
-            } catch (err) {
-                // Prova accesso offline con token salvato
-                const savedToken = localStorage.getItem('musicisti-token');
-                if (savedToken) {
-                    isLoggedIn = true;
-                    currentMode = 'musicisti';
-                    const name = localStorage.getItem('musicisti-name') || 'Musicista';
-                    closeLogin();
-                    showInfoMessage(`✅ Benvenuto ${name}! (modalità offline)`);
-                    displayAllCantici();
-                } else {
-                    alert('❌ Errore di connessione e nessun accesso offline salvato.');
-                }
-            }
-        }
-
-        // ============================================================
-        // RICERCA
-        // ============================================================
-        function searchCantici() {
-            const term = document.getElementById('searchInput').value.toLowerCase();
-            if (!term) { displayAllCantici(); return; }
-            const filtered = allCantici.filter(c =>
-                c.numero.toString().includes(term) ||
-                c.titolo.toLowerCase().includes(term) ||
-                c.categoria.toLowerCase().includes(term)
-            );
-            displayCantici(filtered);
-        }
-
-        function quickSearch(n) { document.getElementById('searchInput').value = n; searchCantici(); }
-        function displayAllCantici() { displayCantici(allCantici); }
-
-        function displayCantici(cantici) {
-            const grid = document.getElementById('resultsGrid');
-            if (!cantici.length) {
-                grid.innerHTML = `
-                    <div style="grid-column:1/-1;text-align:center;padding:60px 20px;">
-                        <span style="font-size:4rem;">🔍</span>
-                        <h3 style="color:var(--dark-gray);margin:20px 0;">Nessun cantico trovato</h3>
-                        <p style="color:#888;">Prova a cercare con altri termini</p>
-                    </div>`;
-                return;
-            }
-
-            grid.innerHTML = cantici.map(cantico => {
-                const pdfUrl = `${REPO_CANTICI}/base/${cantico.filename}`;
-                const isCached = cachedPDFUrls.has(pdfUrl);
-                return `
-                <div class="cantico-card" onclick="openCantico(${cantico.numero})">
-                    <span class="cantico-number">#${cantico.numero}</span>
-                    <div class="cantico-title">${cantico.titolo}</div>
-                    <div class="cantico-meta">
-                        <span>📂</span>
-                        <span>${cantico.categoria}</span>
-                    </div>
-                    ${currentMode === 'musicisti' ? '<span class="badge-musicisti">🎸 Con accordi</span>' : ''}
-                    ${isCached ? '<span class="cantico-offline-badge">📵 Offline</span>' : ''}
-                </div>`;
-            }).join('');
-        }
-
-        // ============================================================
-        // APERTURA PDF
-        // ============================================================
-        function openCantico(numero) {
-            const cantico = allCantici.find(c => c.numero === numero);
-            let pdfPath;
-
-            if (currentMode === 'base') {
-                pdfPath = cantico?.filename
-                    ? `${REPO_CANTICI}/base/${cantico.filename}`
-                    : `${REPO_CANTICI}/base/${numero.toString().padStart(4, '0')}.pdf`;
-            } else {
-                if (cantico?.filename_musicisti) {
-                    pdfPath = `${REPO_CANTICI}/musicisti/${cantico.filename_musicisti}`;
-                } else if (cantico?.filename) {
-                    const base = cantico.filename.replace('.pdf', '');
-                    pdfPath = `${REPO_CANTICI}/musicisti/${base}-accordi.pdf`;
-                } else {
-                    pdfPath = `${REPO_CANTICI}/musicisti/${numero.toString().padStart(4, '0')}-accordi.pdf`;
-                }
-            }
-
-            currentPDFUrl = pdfPath;
-
-            document.getElementById('pdfViewer').classList.add('show');
-            document.getElementById('pdfLoading').style.display = 'block';
-            document.getElementById('pdfLoading').innerHTML = `
-                <div class="pdf-spinner"></div>
-                <p>Caricamento PDF...</p>
-            `;
-            document.getElementById('pdfFrame').style.display = 'none';
-
-            console.log(`📄 Apertura cantico ${numero} [${currentMode}]: ${pdfPath}`);
-            loadPDFWithFallback(pdfPath);
-        }
-
-        function loadPDFWithFallback(pdfUrl) {
-            const iframe = document.getElementById('pdfFrame');
-            const loading = document.getElementById('pdfLoading');
-            const timestamp = new Date().getTime();
-
-            const methods = [
-                `https://mozilla.github.io/pdf.js/web/viewer.html?file=${encodeURIComponent(pdfUrl)}`,
-                `https://docs.google.com/viewer?url=${encodeURIComponent(pdfUrl)}&embedded=true&t=${timestamp}`,
-                pdfUrl
-            ];
-
-            let currentMethod = 0;
-
-            function tryNext() {
-                if (currentMethod >= methods.length) {
-                    loading.innerHTML = `
-                        <div class="pdf-error">
-                            <h3>❌ PDF non disponibile</h3>
-                            <p>${pdfUrl.split('/').pop()}</p>
-                            <p style="font-size:0.85em;color:#999;margin:8px 0;">
-                                ${!navigator.onLine ? '📵 Sei offline e questo cantico non è stato scaricato.' : 'File non trovato sul server.'}
-                            </p>
-                            <button onclick="downloadPDF()" style="margin:12px 4px 0;padding:10px 20px;background:#4CAF50;color:white;border:none;border-radius:6px;cursor:pointer;">⬇️ Scarica PDF</button>
-                            <button onclick="openInNewTab()" style="margin:12px 4px 0;padding:10px 20px;background:#2196F3;color:white;border:none;border-radius:6px;cursor:pointer;">🔗 Apri in nuova scheda</button>
-                        </div>`;
-                    return;
-                }
-
-                iframe.src = methods[currentMethod];
-                const timeout = setTimeout(() => { currentMethod++; tryNext(); }, 5000);
-
-                iframe.onload = () => {
-                    clearTimeout(timeout);
-                    loading.style.display = 'none';
-                    iframe.style.display = 'block';
-                };
-                iframe.onerror = () => { clearTimeout(timeout); currentMethod++; tryNext(); };
-            }
-
-            tryNext();
-        }
-
-        function closePDF() {
-            document.getElementById('pdfViewer').classList.remove('show');
-            document.getElementById('pdfFrame').src = '';
-        }
-
-        function downloadPDF() {
-            if (currentPDFUrl) {
-                const a = document.createElement('a');
-                a.href = currentPDFUrl;
-                a.download = currentPDFUrl.split('/').pop();
-                a.target = '_blank';
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-            }
-        }
-
-        function openInNewTab() {
-            if (currentPDFUrl) window.open(currentPDFUrl, '_blank');
-        }
-
-        // ============================================================
-        // UTILITY
-        // ============================================================
-        function showInfoMessage(text) {
-            const el = document.getElementById('infoMessage');
-            document.getElementById('infoText').textContent = text;
-            el.classList.add('show');
-            setTimeout(() => el.classList.remove('show'), 5000);
         }
 
         // Menu hamburger
-        document.querySelector('.icon-hamburger')?.addEventListener('click', () => {
+        document.querySelector('.icon-hamburger')?.addEventListener('click', function () {
             document.body.classList.toggle('menu-open');
         });
-        document.addEventListener('click', e => {
+
+        document.addEventListener('click', function (event) {
             const menu = document.querySelector('.header__menu');
-            const ham = document.querySelector('.icon-hamburger');
+            const hamburger = document.querySelector('.icon-hamburger');
+
             if (document.body.classList.contains('menu-open') &&
-                !menu?.contains(e.target) && !ham?.contains(e.target)) {
+                !menu?.contains(event.target) &&
+                !hamburger?.contains(event.target)) {
                 document.body.classList.remove('menu-open');
             }
         });
-        document.addEventListener('keydown', e => {
-            if (e.key === 'Escape') {
-                if (document.getElementById('loginModal').classList.contains('show')) closeLogin();
-                if (document.getElementById('pdfViewer').classList.contains('show')) closePDF();
+
+        document.addEventListener('keydown', function (event) {
+            if (event.key === 'Escape') {
+                if (document.getElementById('loginModal').classList.contains('show')) {
+                    closeLogin();
+                }
+                if (document.getElementById('pdfViewer').classList.contains('show')) {
+                    closePDF();
+                }
             }
         });
     </script>
 </body>
+
 </html>

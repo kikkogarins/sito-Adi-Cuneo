@@ -187,6 +187,14 @@ async function cachePDFStrategy(request) {
 self.addEventListener('message', event => {
     const { type, data } = event.data || {};
 
+    // Forza claim immediato (usato alla prima visita)
+    if (type === 'CLAIM') {
+        self.clients.claim().then(() => {
+            event.source?.postMessage({ type: 'SW_READY' });
+        });
+        return;
+    }
+
     // Ricevi lista PDF da scaricare in bulk (download iniziale)
     if (type === 'DOWNLOAD_ALL_PDFS') {
         downloadAllPDFs(data.urls, event.source);
