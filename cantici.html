@@ -685,9 +685,6 @@ function openCantico(numero) {
     document.getElementById('pdfLoading').style.display = 'block';
     document.getElementById('pdfFrame').style.display = 'none';
 
-    // Setup auto-hide per il pulsante chiudi
-    setupPDFControlsAutoHide();
-
     console.log(`📄 Apertura: ${pdfPath}`);
 
     if (isPDFCached(pdfPath)) {
@@ -755,7 +752,7 @@ function loadPDFFromNetwork(pdfUrl) {
     const iframe = document.getElementById('pdfFrame');
     const loading = document.getElementById('pdfLoading');
 
-    const pdfJsUrl = `https://mozilla.github.io/pdf.js/web/viewer.html?file=${encodeURIComponent(pdfUrl)}`;
+    const pdfJsUrl = `https://mozilla.github.io/pdf.js/web/viewer.html?file=${encodeURIComponent(pdfUrl)}#zoom=page-fit`;
     const timestamp = new Date().getTime();
     const googleDocsUrl = `https://docs.google.com/viewer?url=${encodeURIComponent(pdfUrl)}&embedded=true&t=${timestamp}`;
     const directUrl = pdfUrl;
