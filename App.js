@@ -17,7 +17,6 @@ let cachedPDFs = {};
 // INIT
 // ============================================================
 window.onload = async function () {
-    document.body.classList.add('has-banner');
     updateStatusBanner();
     setupOnlineOfflineListeners();
 
@@ -190,30 +189,26 @@ function isPDFCached(url) {
 }
 
 // ============================================================
-// STATUS BANNER
+// STATUS BANNER (ICONA ANGOLO)
 // ============================================================
 function updateStatusBanner(status, progress, total) {
     const banner = document.getElementById('statusBanner');
-    const text = document.getElementById('statusText');
-    const progressMini = document.getElementById('progressMini');
-    const progressFill = document.getElementById('progressMiniFill');
+    const icon = banner.querySelector('.status-icon');
 
     banner.className = 'status-banner';
 
     if (status === 'downloading') {
         banner.classList.add('downloading');
-        text.textContent = `Download ${progress}/${total}`;
-        progressMini.style.display = 'block';
-        const percent = (progress / total) * 100;
-        progressFill.style.width = `${percent}%`;
+        icon.textContent = '📥';
+        banner.setAttribute('data-tooltip', `Download ${progress}/${total}`);
     } else if (!navigator.onLine) {
         banner.classList.add('offline');
-        text.textContent = '📵 Offline';
-        progressMini.style.display = 'none';
+        icon.textContent = '📵';
+        banner.setAttribute('data-tooltip', 'Offline');
     } else {
         banner.classList.add('online');
-        text.textContent = '🌐 Online';
-        progressMini.style.display = 'none';
+        icon.textContent = '🌐';
+        banner.setAttribute('data-tooltip', 'Online');
     }
 }
 
@@ -361,6 +356,8 @@ function displayCantici(cantici) {
 // ============================================================
 // APERTURA PDF
 // ============================================================
+let pdfControlsTimeout;
+
 function openCantico(numero) {
     const cantico = allCantici.find(c => c.numero === numero);
     let pdfPath;
@@ -380,18 +377,54 @@ function openCantico(numero) {
 
     currentPDFUrl = pdfPath;
 
-    document.getElementById('pdfViewer').classList.add('show');
+    const viewer = document.getElementById('pdfViewer');
+    viewer.classList.add('show');
+    
     document.getElementById('pdfLoading').style.display = 'block';
     document.getElementById('pdfFrame').style.display = 'none';
 
+    // Setup auto-hide per il pulsante chiudi
+    setupPDFControlsAutoHide();
+
     console.log(`📄 Apertura: ${pdfPath}`);
 
-    // Se è in cache, caricalo dalla cache
     if (isPDFCached(pdfPath)) {
         loadPDFFromCache(pdfPath);
     } else {
         loadPDFFromNetwork(pdfPath);
     }
+}
+
+function setupPDFControlsAutoHide() {
+    const viewer = document.getElementById('pdfViewer');
+    const controls = document.getElementById('pdfControls');
+    
+    // Mostra controlli
+    controls.classList.remove('fade-out');
+    
+    // Auto-hide dopo 3 secondi
+    clearTimeout(pdfControlsTimeout);
+    pdfControlsTimeout = setTimeout(() => {
+        controls.classList.add('fade-out');
+    }, 3000);
+    
+    // Mostra al movimento del mouse
+    viewer.onmousemove = () => {
+        controls.classList.remove('fade-out');
+        clearTimeout(pdfControlsTimeout);
+        pdfControlsTimeout = setTimeout(() => {
+            controls.classList.add('fade-out');
+        }, 3000);
+    };
+    
+    // Mostra al touch su mobile
+    viewer.ontouchstart = () => {
+        controls.classList.remove('fade-out');
+        clearTimeout(pdfControlsTimeout);
+        pdfControlsTimeout = setTimeout(() => {
+            controls.classList.add('fade-out');
+        }, 3000);
+    };
 }
 
 function loadPDFFromCache(url) {
@@ -461,8 +494,14 @@ function loadPDFFromNetwork(pdfUrl) {
 }
 
 function closePDF() {
-    document.getElementById('pdfViewer').classList.remove('show');
+    const viewer = document.getElementById('pdfViewer');
+    viewer.classList.remove('show');
     document.getElementById('pdfFrame').src = '';
+    
+    // Reset controlli
+    clearTimeout(pdfControlsTimeout);
+    viewer.onmousemove = null;
+    viewer.ontouchstart = null;
 }
 
 function downloadPDF() {
