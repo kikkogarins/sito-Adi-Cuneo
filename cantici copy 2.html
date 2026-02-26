@@ -752,44 +752,45 @@ function loadPDFFromNetwork(pdfUrl) {
     const iframe = document.getElementById('pdfFrame');
     const loading = document.getElementById('pdfLoading');
 
-    // USA SEMPRE PDF.js per coerenza
     const pdfJsUrl = `https://mozilla.github.io/pdf.js/web/viewer.html?file=${encodeURIComponent(pdfUrl)}#zoom=page-fit`;
-    
-    iframe.src = pdfJsUrl;
-    
-    // Timeout di 10 secondi, poi mostra errore
-    const timeout = setTimeout(() => {
-        loading.innerHTML = `
-            <div style="color:#ff6b6b;text-align:center;padding:40px;">
-                <h3>❌ PDF non disponibile</h3>
-                <p>${!navigator.onLine ? '📵 Sei offline' : 'Errore nel caricamento'}</p>
-                <button onclick="downloadPDF()" style="margin-top:20px;padding:10px 20px;background:#4CAF50;color:white;border:none;border-radius:6px;cursor:pointer;">
-                    ⬇️ Scarica PDF
-                </button>
-            </div>`;
-    }, 10000);
+    const timestamp = new Date().getTime();
+    const googleDocsUrl = `https://docs.google.com/viewer?url=${encodeURIComponent(pdfUrl)}&embedded=true&t=${timestamp}`;
+    const directUrl = pdfUrl;
 
-    iframe.onload = () => {
-        clearTimeout(timeout);
-        loading.style.display = 'none';
-        iframe.style.display = 'block';
-        console.log('✅ PDF caricato con PDF.js');
-        setupPDFControlsAutoHide(); // Aggiungi questa riga se non c'è già
-    };
+    let currentMethod = 0;
+    const methods = [pdfJsUrl, googleDocsUrl, directUrl];
 
-    iframe.onerror = () => {
-        clearTimeout(timeout);
-        loading.innerHTML = `
-            <div style="color:#ff6b6b;text-align:center;padding:40px;">
-                <h3>❌ Errore caricamento PDF</h3>
-                <p>Il file potrebbe non esistere</p>
-                <button onclick="closePDF()" style="margin-top:20px;padding:10px 20px;background:#666;color:white;border:none;border-radius:6px;cursor:pointer;">
-                    Chiudi
-                </button>
-            </div>`;
-    };
+    function tryNext() {
+        if (currentMethod >= methods.length) {
+            loading.innerHTML = `
+                <div style="color:#ff6b6b;text-align:center;padding:40px;">
+                    <h3>❌ PDF non disponibile</h3>
+                    <p>${!navigator.onLine ? '📵 Sei offline' : 'File non trovato'}</p>
+                    <button onclick="downloadPDF()" style="margin-top:20px;padding:10px 20px;background:#4CAF50;color:white;border:none;border-radius:6px;cursor:pointer;">
+                        ⬇️ Scarica PDF
+                    </button>
+                </div>`;
+            return;
+        }
+
+        iframe.src = methods[currentMethod];
+        const timeout = setTimeout(() => { currentMethod++; tryNext(); }, 5000);
+
+        iframe.onload = () => {
+            clearTimeout(timeout);
+            loading.style.display = 'none';
+            iframe.style.display = 'block';
+        };
+
+        iframe.onerror = () => {
+            clearTimeout(timeout);
+            currentMethod++;
+            tryNext();
+        };
+    }
+
+    tryNext();
 }
-
 
 function closePDF() {
     const viewer = document.getElementById('pdfViewer');
