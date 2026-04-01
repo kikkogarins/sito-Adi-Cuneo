@@ -677,22 +677,10 @@ function openCantico(numero) {
         }
     }
 
-    currentPDFUrl = pdfPath;
-
-    const viewer = document.getElementById('pdfViewer');
-    viewer.classList.add('show');
-    
-    document.getElementById('pdfLoading').style.display = 'block';
-    document.getElementById('pdfFrame').style.display = 'none';
-
-    console.log(`📄 Apertura: ${pdfPath}`);
-
-    if (isPDFCached(pdfPath)) {
-        loadPDFFromCache(pdfPath);
-    } else {
-        loadPDFFromNetwork(pdfPath);
-    }
+    const pdfJsUrl = `https://mozilla.github.io/pdf.js/web/viewer.html?file=${encodeURIComponent(pdfPath)}#zoom=page-fit`;
+    window.location.href = pdfJsUrl;
 }
+
 
 function setupPDFControlsAutoHide() {
     const viewer = document.getElementById('pdfViewer');
