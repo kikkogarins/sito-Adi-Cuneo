@@ -10,7 +10,7 @@ session_start();
 // ============================================
 // PROTEZIONE PASSWORD - CAMBIA QUI!
 // ============================================
-define('ADMIN_PASSWORD', 'admin2025'); // <-- CAMBIA QUESTA PASSWORD!
+define('ADMIN_PASSWORD', 'tonalita'); // <-- CAMBIA QUESTA PASSWORD!
 
 // Verifica autenticazione per tutte le azioni tranne login
 $action = $_GET['action'] ?? '';
