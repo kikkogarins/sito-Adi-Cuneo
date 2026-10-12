@@ -64,6 +64,20 @@
             margin-left: 6px;
         }
 
+        /* Bottone "Mostra altri" */
+        .load-more-btn {
+            padding: 12px 32px;
+            background: #1a3a5c;
+            color: #fff;
+            border: none;
+            border-radius: 30px;
+            font-size: 1rem;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            transition: transform 0.2s, background 0.2s;
+        }
+        .load-more-btn:hover { background: #24507f; transform: translateY(-2px); }
+
         /* PDF Viewer pulito */
         .pdf-viewer {
             position: fixed;
@@ -131,6 +145,28 @@
             margin: 0 auto 20px;
         }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        /* PDF centrato e fisso (render su canvas, niente scroll laterale) */
+        .pdf-container {
+            align-items: flex-start;
+            overflow-x: hidden;
+            -webkit-overflow-scrolling: touch;
+            touch-action: pan-y pinch-zoom;
+        }
+        .pdf-pages {
+            width: 100%;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 70px 12px 24px;
+            box-sizing: border-box;
+        }
+        .pdf-pages canvas {
+            display: block;
+            width: 100%;
+            height: auto;
+            background: #fff;
+            border-radius: 8px;
+            margin-bottom: 12px;
+        }
         #pdfFrame {
             width: 100%;
             height: 100%;
@@ -225,6 +261,9 @@
         </div>
         <div class="results-section">
             <div class="results-grid" id="resultsGrid"></div>
+            <div style="text-align:center;margin:30px 0;">
+                <button id="loadMoreBtn" class="load-more-btn" onclick="showMore()" style="display:none;"></button>
+            </div>
         </div>
     </section>
 
@@ -259,6 +298,7 @@
                 <div class="pdf-spinner"></div>
                 <p>Caricamento PDF...</p>
             </div>
+            <div class="pdf-pages" id="pdfPages" style="display:none;"></div>
             <iframe id="pdfFrame" style="display: none;"></iframe>
         </div>
     </div>
@@ -299,7 +339,11 @@
         <p class="text-center pt-4">© 2025 ADI Cuneo - Tutti i diritti riservati</p>
     </footer>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
     <script>
+if (window.pdfjsLib) {
+    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+}
 // ============================================================
 // CANTICI ADI CUNEO - APP CON CACHE AUTOMATICA
 // Sistema offline con localStorage (funziona garantito!)
@@ -308,12 +352,15 @@
 const REPO_CANTICI = 'https://raw.githubusercontent.com/kikkogarins/Adi-Cuneo-Cantici/main';
 const STORAGE_KEY = 'cantici-adi-cache';
 const STORAGE_VERSION = 'v1';
+const PAGE_SIZE = 4; // cantici mostrati per volta
 
 let currentMode = 'base';
 let isLoggedIn = false;
 let currentPDFUrl = '';
 let allCantici = [];
 let cachedPDFs = {};
+let currentList = [];
+let visibleCount = PAGE_SIZE;
 
 // ============================================================
 // INIT
@@ -438,7 +485,7 @@ async function startAutomaticCaching() {
     saveToCache({ cantici: allCantici, pdfs: cachedPDFs });
     console.log(`✅ Download completato: ${downloaded}/${urlsToCache.length}`);
     updateStatusBanner('online');
-    displayAllCantici(); // Aggiorna i badge
+    renderCantici(); // Aggiorna i badge senza perdere ricerca e pagina
     showInfoMessage(`✅ ${downloaded} cantici ora disponibili offline!`);
 }
 
@@ -624,20 +671,36 @@ function displayAllCantici() {
     displayCantici(allCantici);
 }
 
+// ============================================================
+// VISUALIZZAZIONE (4 alla volta + "Mostra altri")
+// ============================================================
 function displayCantici(cantici) {
-    const grid = document.getElementById('resultsGrid');
+    currentList = cantici;
+    visibleCount = PAGE_SIZE;
+    renderCantici();
+}
 
-    if (!cantici.length) {
+function showMore() {
+    visibleCount += PAGE_SIZE;
+    renderCantici();
+}
+
+function renderCantici() {
+    const grid = document.getElementById('resultsGrid');
+    const btn = document.getElementById('loadMoreBtn');
+
+    if (!currentList.length) {
         grid.innerHTML = `
             <div style="grid-column:1/-1;text-align:center;padding:60px 20px;">
                 <span style="font-size:4rem;">🔍</span>
                 <h3 style="color:var(--dark-gray);margin:20px 0;">Nessun cantico trovato</h3>
                 <p style="color:#888;">Prova con altri termini</p>
             </div>`;
+        btn.style.display = 'none';
         return;
     }
 
-    grid.innerHTML = cantici.map(c => {
+    grid.innerHTML = currentList.slice(0, visibleCount).map(c => {
         const url = `${REPO_CANTICI}/base/${c.filename}`;
         const cached = isPDFCached(url);
 
@@ -653,6 +716,14 @@ function displayCantici(cantici) {
             ${currentMode === 'musicisti' ? '<span class="badge-musicisti">🎸 Con accordi</span>' : ''}
         </div>`;
     }).join('');
+
+    const remaining = currentList.length - visibleCount;
+    if (remaining > 0) {
+        btn.style.display = 'inline-block';
+        btn.textContent = `Mostra altri (${remaining} rimanenti)`;
+    } else {
+        btn.style.display = 'none';
+    }
 }
 
 // ============================================================
@@ -682,8 +753,11 @@ function openCantico(numero) {
     const viewer = document.getElementById('pdfViewer');
     viewer.classList.add('show');
     
+    document.getElementById('pdfLoading').innerHTML = '<div class="pdf-spinner"></div><p>Caricamento PDF...</p>';
     document.getElementById('pdfLoading').style.display = 'block';
     document.getElementById('pdfFrame').style.display = 'none';
+    document.getElementById('pdfPages').style.display = 'none';
+    document.getElementById('pdfPages').innerHTML = '';
 
     console.log(`📄 Apertura: ${pdfPath}`);
 
@@ -726,11 +800,93 @@ function setupPDFControlsAutoHide() {
     };
 }
 
-function loadPDFFromCache(url) {
+// ---- Render PDF su canvas: ritaglia i margini vuoti e centra il testo ----
+let pdfRenderToken = 0;
+
+function contentBounds(ctx, w, h) {
+    const d = ctx.getImageData(0, 0, w, h).data;
+    let x1 = w, y1 = h, x2 = 0, y2 = 0;
+    for (let y = 0; y < h; y += 2) {
+        for (let x = 0; x < w; x += 2) {
+            const i = (y * w + x) * 4;
+            if (d[i] < 235 || d[i + 1] < 235 || d[i + 2] < 235) {
+                if (x < x1) x1 = x;
+                if (x > x2) x2 = x;
+                if (y < y1) y1 = y;
+                if (y > y2) y2 = y;
+            }
+        }
+    }
+    return x2 > x1 && y2 > y1 ? { x1, y1, x2, y2 } : null;
+}
+
+async function renderPDF(source) {
+    if (!window.pdfjsLib) throw new Error('pdf.js non disponibile');
+    const token = ++pdfRenderToken;
+    const pagesEl = document.getElementById('pdfPages');
+    const loading = document.getElementById('pdfLoading');
+
+    const pdf = await pdfjsLib.getDocument(source).promise;
+    const items = [];
+    let minX = Infinity, maxX = 0;
+
+    for (let i = 1; i <= pdf.numPages; i++) {
+        const page = await pdf.getPage(i);
+        const vp = page.getViewport({ scale: 2 });
+        const c = document.createElement('canvas');
+        c.width = vp.width;
+        c.height = vp.height;
+        const ctx = c.getContext('2d', { willReadFrequently: true });
+        ctx.fillStyle = '#fff';
+        ctx.fillRect(0, 0, c.width, c.height);
+        await page.render({ canvasContext: ctx, viewport: vp }).promise;
+        if (token !== pdfRenderToken) return;
+
+        const b = contentBounds(ctx, c.width, c.height);
+        if (b) {
+            items.push({ c, b });
+            minX = Math.min(minX, b.x1);
+            maxX = Math.max(maxX, b.x2);
+        }
+    }
+
+    if (!items.length) throw new Error('PDF vuoto');
+
+    const pad = 30;
+    pagesEl.innerHTML = '';
+    items.forEach(({ c, b }) => {
+        const x1 = Math.max(0, minX - pad);
+        const x2 = Math.min(c.width, maxX + pad);
+        const y1 = Math.max(0, b.y1 - pad);
+        const y2 = Math.min(c.height, b.y2 + pad);
+        const out = document.createElement('canvas');
+        out.width = x2 - x1;
+        out.height = y2 - y1;
+        out.getContext('2d').drawImage(c, x1, y1, out.width, out.height, 0, 0, out.width, out.height);
+        pagesEl.appendChild(out);
+    });
+
+    loading.style.display = 'none';
+    pagesEl.style.display = 'block';
+    document.querySelector('.pdf-container').scrollTop = 0;
+}
+
+async function loadPDFFromCache(url) {
     const cached = cachedPDFs[url];
     if (!cached) {
         loadPDFFromNetwork(url);
         return;
+    }
+
+    try {
+        const bin = atob(cached.data);
+        const bytes = new Uint8Array(bin.length);
+        for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+        await renderPDF({ data: bytes });
+        console.log('✅ PDF dalla cache (canvas)');
+        return;
+    } catch (e) {
+        console.warn('Render canvas fallito, uso iframe', e);
     }
 
     const iframe = document.getElementById('pdfFrame');
@@ -748,7 +904,20 @@ function loadPDFFromCache(url) {
     };
 }
 
-function loadPDFFromNetwork(pdfUrl) {
+async function loadPDFFromNetwork(pdfUrl) {
+    try {
+        const res = await fetch(pdfUrl);
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const buf = await res.arrayBuffer();
+        await renderPDF({ data: new Uint8Array(buf) });
+        return;
+    } catch (e) {
+        console.warn('Render canvas fallito, uso iframe', e);
+    }
+    loadPDFFallback(pdfUrl);
+}
+
+function loadPDFFallback(pdfUrl) {
     const iframe = document.getElementById('pdfFrame');
     const loading = document.getElementById('pdfLoading');
 
@@ -796,6 +965,9 @@ function closePDF() {
     const viewer = document.getElementById('pdfViewer');
     viewer.classList.remove('show');
     document.getElementById('pdfFrame').src = '';
+    document.getElementById('pdfPages').innerHTML = '';
+    document.getElementById('pdfPages').style.display = 'none';
+    pdfRenderToken++;
     
     // Reset controlli
     clearTimeout(pdfControlsTimeout);
