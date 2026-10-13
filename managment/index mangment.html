@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="theme-color" content="#4a4a54">
+  <title>Gestione sito - ADI Cuneo</title>
+  <style>
+    :root { --dark: #4a4a54; --gold: #e0ca55; }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      min-height: 100vh;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      color: #fff;
+      line-height: 1.5;
+      -webkit-text-size-adjust: 100%;
+      background:
+        radial-gradient(circle at 15% 20%, rgba(224, 202, 85, 0.18), transparent 55%),
+        radial-gradient(circle at 85% 85%, rgba(224, 202, 85, 0.10), transparent 50%),
+        linear-gradient(160deg, #3c3c45, #4a4a54 60%, #5a5a64);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px 20px 30px;
+    }
+
+    .logo {
+      width: 96px;
+      height: 96px;
+      border-radius: 50%;
+      object-fit: cover;
+      box-shadow: 0 8px 26px rgba(0, 0, 0, 0.35);
+      animation: up 0.7s ease both;
+    }
+
+    h1 {
+      margin-top: 18px;
+      font-size: clamp(1.7rem, 5vw, 2.4rem);
+      text-align: center;
+      animation: up 0.7s ease 0.1s both;
+    }
+
+    .sub {
+      margin-top: 6px;
+      color: var(--gold);
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      font-size: 0.85rem;
+      text-align: center;
+      animation: up 0.7s ease 0.15s both;
+    }
+
+    main { width: 100%; max-width: 760px; flex: 1; display: flex; align-items: center; }
+
+    .tiles {
+      width: 100%;
+      margin: 36px 0;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 22px;
+    }
+
+    .tile {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      gap: 8px;
+      min-height: 250px;
+      padding: 28px 22px;
+      color: #fff;
+      text-decoration: none;
+      border-radius: 24px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      backdrop-filter: blur(6px);
+      box-shadow: 0 12px 34px rgba(0, 0, 0, 0.25);
+      overflow: hidden;
+      transition: transform 0.3s ease, background 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+      animation: up 0.7s ease both;
+    }
+
+    .tile:nth-child(1) { animation-delay: 0.25s; }
+    .tile:nth-child(2) { animation-delay: 0.35s; }
+    .tile:nth-child(3) { animation-delay: 0.45s; }
+    .tile:nth-child(4) { animation-delay: 0.55s; }
+
+    .tile::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 0;
+      height: 5px;
+      background: linear-gradient(90deg, var(--gold), #ffd700);
+    }
+
+    .tile:hover,
+    .tile:focus-visible {
+      transform: translateY(-8px);
+      background: rgba(224, 202, 85, 0.16);
+      border-color: var(--gold);
+      box-shadow: 0 20px 46px rgba(0, 0, 0, 0.35);
+      outline: none;
+    }
+
+    .tile__icon {
+      font-size: 3.6rem;
+      line-height: 1;
+      transition: transform 0.3s ease;
+    }
+
+    .tile:hover .tile__icon { transform: scale(1.15) rotate(-4deg); }
+
+    .tile h2 {
+      font-size: 1.35rem;
+      color: var(--gold);
+    }
+
+    .tile p {
+      font-size: 0.95rem;
+      opacity: 0.88;
+    }
+
+    .tile__lock {
+      margin-top: 8px;
+      padding: 4px 14px;
+      border-radius: 999px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      background: rgba(0, 0, 0, 0.28);
+    }
+
+    .back {
+      color: #fff;
+      opacity: 0.8;
+      text-decoration: none;
+      font-weight: 600;
+      padding: 10px 18px;
+      border-radius: 999px;
+      transition: all 0.3s ease;
+    }
+
+    .back:hover { opacity: 1; background: rgba(255, 255, 255, 0.12); }
+
+    @keyframes up {
+      from { opacity: 0; transform: translateY(24px); }
+      to { opacity: 1; transform: none; }
+    }
+
+    @media (max-width: 480px) {
+      body { padding-top: 28px; }
+      .tile { min-height: 200px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      * { animation: none !important; transition: none !important; }
+    }
+  </style>
+</head>
+<body>
+  <img class="logo" src="/img/logo_adi_cuneo.png" alt="Logo ADI Cuneo">
+  <h1>Gestione sito</h1>
+  <div class="sub">ADI Cuneo · Area riservata</div>
+
+  <main>
+    <div class="tiles">
+
+      <a class="tile" href="/admin-musicisti-php.html">
+        <span class="tile__icon">🎸</span>
+        <h2>Area Musicisti</h2>
+        <p>Gestione dell'area musicisti e degli spartiti</p>
+        <span class="tile__lock">🔒 Richiede accesso</span>
+      </a>
+
+      <a class="tile" href="/admin-eventi.php">
+        <span class="tile__icon">🗓️</span>
+        <h2>Eventi</h2>
+        <p>Aggiungi, modifica ed elimina gli eventi del sito</p>
+        <span class="tile__lock">🔒 Richiede accesso</span>
+      </a>
+
+      <!-- PER AGGIUNGERE UN NUOVO RIQUADRO: copia uno dei blocchi <a class="tile"> qui sopra,
+           cambia href, icona, titolo e descrizione. -->
+
+    </div>
+  </main>
+
+  <a class="back" href="/index.html">← Torna al sito</a>
+</body>
+</html>
