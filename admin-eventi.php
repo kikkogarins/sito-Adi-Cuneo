@@ -11,7 +11,7 @@
  */
 
 // ===================== CONFIGURAZIONE =====================
-define('SETUP_KEY', 'Cuneo-Eventi-7xQ2mK');   // <-- CAMBIALA (solo per la prima configurazione)
+define('SETUP_KEY', 'CAMBIA-QUESTA-CHIAVE');   // <-- CAMBIALA (solo per la prima configurazione)
 
 define('EVENTI_FILE', __DIR__ . '/eventi.json');
 define('PRIVATE_DIR', __DIR__ . '/private');
@@ -20,7 +20,7 @@ define('ATTEMPTS_FILE', PRIVATE_DIR . '/attempts.php');
 define('MAX_ATTEMPTS', 5);        // tentativi di login sbagliati...
 define('LOCK_SECONDS', 900);      // ...poi blocco per 15 minuti
 define('SESSION_IDLE', 7200);     // logout automatico dopo 2 ore di inattività
-define('MIN_PASSWORD', 10);
+define('MIN_PASSWORD', 5);
 define('PHP_GUARD', "<?php http_response_code(404); exit; ?>\n");
 
 // ===================== SICUREZZA BASE =====================
@@ -306,6 +306,7 @@ if ($method === 'POST') {
     }
 
     if ($action === 'change_password') {
+        if (!$isSuper) { flash('err', 'Non hai il permesso di cambiare la password.'); go(); }
         $cur = (string)($_POST['current'] ?? '');
         $n1  = (string)($_POST['new'] ?? '');
         $n2  = (string)($_POST['confirm'] ?? '');
@@ -417,6 +418,7 @@ page_start('Gestione eventi');
   </div>
   <?php endif; ?>
 
+  <?php if ($isSuper): ?>
   <div class="card">
     <h2>🔑 Cambia la tua password</h2>
     <form method="post" autocomplete="off">
@@ -427,6 +429,7 @@ page_start('Gestione eventi');
       <p style="margin-top:16px"><button class="btn" type="submit">Aggiorna password</button></p>
     </form>
   </div>
+  <?php endif; ?>
 
   <?php if ($isSuper): ?>
   <div class="card">
