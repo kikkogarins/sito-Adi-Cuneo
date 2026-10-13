@@ -11,3 +11,4 @@ AddHandler application/x-httpd-php .php
 
 # Rimozione index.php dall'URL
 DirectoryIndex index.html index.php
+Require all denied
