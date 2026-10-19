@@ -188,7 +188,8 @@ if ($users && !empty($_SESSION['u']) && isset($users[$_SESSION['u']])) {
 }
 if ($me === null) {
     if ($ajax) json_out(false, 'Sessione scaduta, accedi di nuovo');
-    header('Location: admin-eventi.php');
+    // Vai al login e, dopo l'accesso, torna qui (next=galleria)
+    header('Location: admin-eventi.php?next=galleria');
     exit;
 }
 $user = $users[$me];

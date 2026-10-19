@@ -223,6 +223,11 @@ if ($me === null) {
                     $users[$u]['hash'] = password_hash($p, PASSWORD_DEFAULT);
                     private_write(USERS_FILE, $users);
                 }
+                // Se arrivavi da "Galleria", torna lì dopo il login
+                if (($_GET['next'] ?? '') === 'galleria') {
+                    header('Location: admin-galleria.php');
+                    exit;
+                }
                 go();
             }
             attempt_fail();
