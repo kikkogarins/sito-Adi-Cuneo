@@ -21,12 +21,12 @@
     <li><a href="eventi.html">Eventi</a></li>
     <li><a href="contatti.html" class="mobile-only">Contatti</a></li>  <!-- SOLO SU MOBILE -->
   </ul>
-    
+
     <!-- SPOSTA IL MENU HAMBURGER FUORI DAL DIV MENU -->
     <div class="header__quick">
       <a href="contatti.html" class="desktop-only">Contatti</a>  <!-- SOLO SU DESKTOP -->
     </div>
-    
+
     <!-- MENU HAMBURGER SEPARATO -->
     <div class="icon-hamburger">
       <span></span>
@@ -37,59 +37,15 @@
 </header>
   <div id="gallery" class="page-title">
     <h1>La Nostra Galleria Fotografica</h1>
-    <p>Scopri i momenti più significativi della nostra comunità attraverso le immagini</p>
+    <p>Scopri i momenti pi&#249; significativi della nostra comunit&#224; attraverso le immagini</p>
   </div>
 
-  <div class="category-filter">
-    <button class="filter-button active" data-filter="all">Tutti</button>
-    <button class="filter-button" data-filter="battesimi">Battesimi</button>
-    <button class="filter-button" data-filter="giovani">Giovani</button>
-    <button class="filter-button" data-filter="illuminiamo">IlluminiAMO</button>
-  </div>
+  <!-- Filtri e foto: riempiti dallo script in fondo leggendo galleria.json -->
+  <div class="category-filter" id="filterBar"></div>
 
-  <div class="gallery">
-    <div class="gallery-item" data-category="battesimi">
-      <img src="img/battesimi 1.JPG" alt="Culto domenicale" data-title="Domenica di battesimi">
-    </div>
-    <div class="gallery-item" data-category="battesimi">
-      <img src="img/battesimi 2.JPG" alt="Evento speciale" data-title="Domenica di battesimi">
-    </div>
-    <div class="gallery-item" data-category="battesimi">
-      <img src="img/battesimi 3.JPG" alt="Attività giovani" data-title="Domenica di battesimi">
-    </div>
-    <div class="gallery-item" data-category="battesimi">
-      <img src="img/battesimi 4.JPG" alt="Momento di preghiera" data-title="Domenica di battesimi">
-    </div>
-    <div class="gallery-item" data-category="giovani">
-      <img src="img/giovani 1.JPG" alt="Conferenza biblica" data-title="Attività Giovani">
-    </div>
-    <div class="gallery-item" data-category="giovani">
-      <img src="img/giovani 2.JPG" alt="Gruppo musicale" data-title="Attività Giovani">
-    </div>
-    <div class="gallery-item" data-category="giovani">
-      <img src="img/giovani 3.JPG" alt="Studio biblico" data-title="Attività Giovani">
-    </div>
-    <div class="gallery-item" data-category="battesimi">
-      <img src="img/principale.png" alt="Studio biblico" data-title="Attività Giovani">
-    </div>
-    <div class="gallery-item" data-category="illuminiamo">
-      <img src="img/orizzonatale lato.jpg" alt="ill" data-title="Attività illuminiamo">
-    </div>
-    <div class="gallery-item" data-category="illuminiamo">
-      <img src="img/orizzonatale con pastore.jpg" alt="ill" data-title="Attività illuminiamo">
-    </div>
-    <div class="gallery-item" data-category="illuminiamo">
-      <img src="img/fantasmino.jpg" alt="ill" data-title="Attività illuminiamo">
-    </div>
-    <div class="gallery-item" data-category="illuminiamo">
-      <img src="img/illimcopertina.jpg" alt="ill" data-title="Attività illuminiamo">
-    </div>
-    <div class="gallery-item" data-category="illuminiamo">
-      <img src="img/sfondo_ill_intero.jpg" alt="ill" data-title="Attività illuminiamo">
-    </div>
-    <div class="gallery-item" data-category="illuminiamo">
-      <img src="img/sfondo_ill_pulpito.jpg" alt="ill" data-title="Attività illuminiamo">
-    </div>
+  <div class="gallery" id="galleryGrid">
+    <p style="grid-column:1/-1;text-align:center">Caricamento foto&#8230;</p>
+    <noscript><p style="grid-column:1/-1;text-align:center">Per vedere la galleria attiva JavaScript.</p></noscript>
   </div>
 
   <!-- Lightbox -->
@@ -98,7 +54,7 @@
       <span class="lightbox-close">&times;</span>
       <span class="lightbox-prev">&#10094;</span>
       <span class="lightbox-next">&#10095;</span>
-      <img id="lightbox-img" src="" alt="">
+      <img id="lightbox-img" alt="">
     </div>
   </div>
 
@@ -120,13 +76,13 @@
 
       <!-- Mappa -->
       <div style="margin-top: 15px;">
-        <iframe 
-          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2849.374292999981!2d7.556393076545171!3d44.39166800674194!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x12cd58294ac356c7%3A0x93d57c0141b1de2!2sVia%20Acceglio%2C%204%2C%2012100%20Cuneo%20CN!5e0!3m2!1sit!2sit!4v1699199999999!5m2!1sit!2sit" 
-          width="100%" 
-          height="200" 
-          style="border:0; border-radius: 8px;" 
-          allowfullscreen="" 
-          loading="lazy" 
+        <iframe
+          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2849.374292999981!2d7.556393076545171!3d44.39166800674194!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x12cd58294ac356c7%3A0x93d57c0141b1de2!2sVia%20Acceglio%2C%204%2C%2012100%20Cuneo%20CN!5e0!3m2!1sit!2sit!4v1699199999999!5m2!1sit!2sit"
+          width="100%"
+          height="200"
+          style="border:0; border-radius: 8px;"
+          allowfullscreen=""
+          loading="lazy"
           referrerpolicy="no-referrer-when-downgrade">
         </iframe>
       </div>
@@ -135,139 +91,127 @@
     <div class="col-50">
       <h3>Orari</h3>
       <p>Domenica: 10:30 - 12:30</p>
-      <p>Martedì: 20:30 - 21:30</p>
-      <p>Giovedì: 20:30 - 21:30</p>
+      <p>Marted&#236;: 20:30 - 21:30</p>
+      <p>Gioved&#236;: 20:30 - 21:30</p>
       <a href="gallery.html" class="button">Visita la nostra galleria</a>
       <br>
       <p>Visita le nostra pagine</p>
       <a href="https://www.instagram.com/adicuneo/" target="_blank">
         <img src="img/insta.png" alt="Instagram" style="width: 40px; height: 40px;">
-      </a> 
+      </a>
       <a href="https://www.facebook.com/ADICuneo/?locale=it_IT" target="_blank">
         <img src="img/facebook.png" alt="Facebook" style="width: 40px; height: 35px;">
-      </a> 
+      </a>
     </div>
   </div>
 
-  <p class="text-center pt-4">© 2025 ADI Cuneo - Tutti i diritti riservati</p>
+  <p class="text-center pt-4">&#169; 2025 ADI Cuneo - Tutti i diritti riservati</p>
 </footer>
-  
+
   <script>
     // Menu mobile
-    let item = document.querySelector('.icon-hamburger');
-    item.addEventListener("click", function() {
+    document.querySelector('.icon-hamburger').addEventListener('click', function () {
       document.body.classList.toggle('menu-open');
     });
-    
-    // Filtro galleria
-    const filterButtons = document.querySelectorAll('.filter-button');
-    const galleryItems = document.querySelectorAll('.gallery-item');
-    
-    filterButtons.forEach(button => {
-      button.addEventListener('click', () => {
-        filterButtons.forEach(btn => btn.classList.remove('active'));
-        button.classList.add('active');
-        
-        const filter = button.getAttribute('data-filter');
-        
-        galleryItems.forEach(item => {
-          if (filter === 'all' || item.getAttribute('data-category') === filter) {
-            item.style.display = 'block';
-          } else {
-            item.style.display = 'none';
-          }
+
+    // ===== Galleria da galleria.json =====
+    (function () {
+      var grid = document.getElementById('galleryGrid');
+      var bar = document.getElementById('filterBar');
+      var lb = document.getElementById('lightbox');
+      var lbImg = document.getElementById('lightbox-img');
+      var items = [], visible = [], current = 0, activeFilter = 'all';
+
+      function el(tag, cls, text) {
+        var n = document.createElement(tag);
+        if (cls) n.className = cls;
+        if (text !== undefined) n.textContent = text;
+        return n;
+      }
+      function message(text) {
+        grid.innerHTML = '';
+        var p = el('p', '', text);
+        p.style.gridColumn = '1 / -1';
+        p.style.textAlign = 'center';
+        grid.appendChild(p);
+      }
+
+      function render() {
+        grid.innerHTML = '';
+        visible = items.filter(function (it) { return activeFilter === 'all' || it.categoria === activeFilter; });
+        if (!visible.length) { message('Nessuna foto in questa categoria.'); return; }
+        visible.forEach(function (it, idx) {
+          var box = el('div', 'gallery-item');
+          var img = el('img');
+          img.src = it.file;
+          img.alt = it.titolo || it.categoria || 'Foto';
+          img.loading = 'lazy';
+          box.appendChild(img);
+          box.addEventListener('click', function () { openLb(idx); });
+          grid.appendChild(box);
         });
-      });
-    });
+      }
 
-    // Lightbox functionality
-    const lightbox = document.getElementById('lightbox');
-    const lightboxImg = document.getElementById('lightbox-img');
-    const lightboxClose = document.querySelector('.lightbox-close');
-    const lightboxPrev = document.querySelector('.lightbox-prev');
-    const lightboxNext = document.querySelector('.lightbox-next');
-    
-    let currentImageIndex = 0;
-    let visibleImages = [];
-
-    function updateVisibleImages() {
-      visibleImages = Array.from(galleryItems).filter(item => 
-        item.style.display !== 'none'
-      ).map(item => item.querySelector('img'));
-    }
-
-    function openLightbox(index) {
-      currentImageIndex = index;
-      lightboxImg.src = visibleImages[index].src;
-      lightboxImg.alt = visibleImages[index].alt;
-      lightbox.classList.add('show');
-      document.body.style.overflow = 'hidden';
-    }
-
-    function closeLightbox() {
-      lightbox.classList.remove('show');
-      document.body.style.overflow = 'auto';
-    }
-
-    function showPrevImage() {
-      currentImageIndex = (currentImageIndex - 1 + visibleImages.length) % visibleImages.length;
-      lightboxImg.src = visibleImages[currentImageIndex].src;
-      lightboxImg.alt = visibleImages[currentImageIndex].alt;
-    }
-
-    function showNextImage() {
-      currentImageIndex = (currentImageIndex + 1) % visibleImages.length;
-      lightboxImg.src = visibleImages[currentImageIndex].src;
-      lightboxImg.alt = visibleImages[currentImageIndex].alt;
-    }
-
-    // Aggiungi event listeners alle immagini della galleria
-    galleryItems.forEach((item, index) => {
-      item.addEventListener('click', () => {
-        updateVisibleImages();
-        const visibleIndex = visibleImages.indexOf(item.querySelector('img'));
-        if (visibleIndex !== -1) {
-          openLightbox(visibleIndex);
+      function buildFilters() {
+        var cats = [];
+        items.forEach(function (it) { if (it.categoria && cats.indexOf(it.categoria) < 0) cats.push(it.categoria); });
+        bar.innerHTML = '';
+        function add(text, value) {
+          var b = el('button', 'filter-button' + (value === activeFilter ? ' active' : ''), text);
+          b.type = 'button';
+          b.addEventListener('click', function () {
+            activeFilter = value;
+            Array.prototype.forEach.call(bar.children, function (x) { x.classList.remove('active'); });
+            b.classList.add('active');
+            render();
+          });
+          bar.appendChild(b);
         }
+        add('Tutti', 'all');
+        cats.forEach(function (c) { add(c, c); });
+      }
+
+      function show() {
+        var it = visible[current];
+        if (!it) return;
+        lbImg.style.display = 'block';
+        lbImg.src = it.file;
+        lbImg.alt = it.titolo || it.categoria || '';
+      }
+      function openLb(i) {
+        current = i; show();
+        lb.classList.add('show');
+        document.body.style.overflow = 'hidden';
+      }
+      function closeLb() { lb.classList.remove('show'); document.body.style.overflow = 'auto'; }
+      function prev() { current = (current - 1 + visible.length) % visible.length; show(); }
+      function next() { current = (current + 1) % visible.length; show(); }
+
+      document.querySelector('.lightbox-close').addEventListener('click', closeLb);
+      document.querySelector('.lightbox-prev').addEventListener('click', prev);
+      document.querySelector('.lightbox-next').addEventListener('click', next);
+      lb.addEventListener('click', function (e) { if (e.target === lb) closeLb(); });
+      document.addEventListener('keydown', function (e) {
+        if (!lb.classList.contains('show')) return;
+        if (e.key === 'Escape') closeLb();
+        if (e.key === 'ArrowLeft') prev();
+        if (e.key === 'ArrowRight') next();
       });
-    });
 
-    // Event listeners per il lightbox
-    lightboxClose.addEventListener('click', closeLightbox);
-    lightboxPrev.addEventListener('click', showPrevImage);
-    lightboxNext.addEventListener('click', showNextImage);
-
-    // Chiudi lightbox cliccando sullo sfondo
-    lightbox.addEventListener('click', (e) => {
-      if (e.target === lightbox) {
-        closeLightbox();
-      }
-    });
-
-    // Controlli da tastiera
-    document.addEventListener('keydown', (e) => {
-      if (!lightbox.classList.contains('show')) return;
-      
-      switch(e.key) {
-        case 'Escape':
-          closeLightbox();
-          break;
-        case 'ArrowLeft':
-          showPrevImage();
-          break;
-        case 'ArrowRight':
-          showNextImage();
-          break;
-      }
-    });
-
-    // Aggiorna le immagini visibili quando cambia il filtro
-    filterButtons.forEach(button => {
-      button.addEventListener('click', updateVisibleImages);
-    });
-
-    // Inizializza le immagini visibili
-    updateVisibleImages();
+      fetch('galleria.json?v=' + Date.now(), { cache: 'no-store' })
+        .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+        .then(function (data) {
+          items = (Array.isArray(data) ? data : []).filter(function (e) { return e && e.file; });
+          items.sort(function (a, b) {
+            var c = String(b.data || '').localeCompare(String(a.data || ''));
+            return c !== 0 ? c : ((a.ts || 0) - (b.ts || 0));
+          });
+          if (!items.length) { message('Nessuna foto presente.'); return; }
+          buildFilters();
+          render();
+        })
+        .catch(function () { message('Impossibile caricare la galleria. Riprova tra qualche istante.'); });
+    })();
   </script>
 </body>
 </html>
