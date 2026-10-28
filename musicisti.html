@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ADI Cuneo - Area Musicisti</title>
+    <meta name="theme-color" content="#1a3a5c">
+    <link rel="stylesheet" href="css/st.css">
+    <link rel="stylesheet" href="css/musicisti.css">
+</head>
+<body>
+    <header class="header">
+        <div class="header__content">
+            <a class="header__logo" href="index.html">
+                <img src="img/logo_adi_cuneo.png" alt="Logo ADI Cuneo" height="100px" width="100px">
+            </a>
+            <ul class="header__menu">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="cantici.html">Cantici</a></li>
+                <li><a href="musicisti.html" class="active">Musicisti</a></li>
+            </ul>
+            <div class="icon-hamburger"><span></span><span></span><span></span></div>
+        </div>
+    </header>
+
+    <main class="mus-wrap">
+        <div class="mus-top">
+            <h1>🎸 Area Musicisti</h1>
+            <div>
+                <span class="mus-who" id="who"></span>
+                <button class="mus-btn mus-btn--ghost mus-btn--sm" id="logoutBtn" type="button">Esci</button>
+            </div>
+        </div>
+
+        <form class="mus-search" id="searchForm">
+            <input class="mus-in" id="q" type="search" placeholder="Numero o titolo" autocomplete="off" aria-label="Cerca cantico">
+            <button class="mus-btn" type="submit">Cerca</button>
+        </form>
+        <ul class="mus-results" id="results"></ul>
+
+        <section class="mus-song" id="songBox" hidden>
+            <h2 id="songTitle"></h2>
+            <div class="mus-toolbar" id="tools">
+                <label>Tonalità <select id="keySel"></select></label>
+                <label>Preset <select id="presetSel"></select></label>
+                <button class="mus-btn mus-btn--sm" id="savePreset" type="button">💾 Salva preset</button>
+                <button class="mus-btn mus-btn--sm mus-btn--danger" id="delPreset" type="button" title="Elimina preset">🗑️</button>
+                <span class="mus-fs">
+                    <button class="mus-btn mus-btn--sm mus-btn--ghost" id="fsMinus" type="button" aria-label="Riduci testo">A−</button>
+                    <button class="mus-btn mus-btn--sm mus-btn--ghost" id="fsPlus" type="button" aria-label="Ingrandisci testo">A+</button>
+                </span>
+            </div>
+            <p class="mus-hint" id="hint">Tocca un accordo per modificarlo.</p>
+            <div class="sheet" id="sheet"></div>
+        </section>
+    </main>
+
+    <!-- Modifica accordo -->
+    <div class="mus-modal" id="chordModal" role="dialog" aria-modal="true" aria-labelledby="cmTitle">
+        <div class="mus-modal-box">
+            <button class="mus-modal-x" id="cmClose" type="button" aria-label="Chiudi">×</button>
+            <h3 id="cmTitle">Modifica accordo</h3>
+            <p class="sub" id="cmSub"></p>
+
+            <h4>Accordi della scala</h4>
+            <div class="dia" id="cmDia"></div>
+
+            <h4>Accordo libero</h4>
+            <div class="cust">
+                <select id="cmRoot" aria-label="Nota"></select>
+                <select id="cmQual" aria-label="Tipo"></select>
+                <select id="cmBass" aria-label="Basso"></select>
+            </div>
+
+            <label class="mus-check"><input type="checkbox" id="cmAll"> Applica a tutti gli accordi uguali del cantico</label>
+            <div class="mus-actions">
+                <button class="mus-btn" id="cmApply" type="button">Applica</button>
+                <button class="mus-btn mus-btn--ghost" id="cmReset" type="button">Ripristina automatico</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/chords.js"></script>
+    <script>
+(function () {
+    const $ = id => document.getElementById(id);
+    const C = window.Chords;
+    const QUALS = [['', 'maggiore'], ['-', 'minore (-)'], ['7', '7'], ['maj7', 'maj7'], ['-7', '-7'], ['sus4', 'sus4'], ['4', '4'], ['6', '6'], ['9', '9'], ['add9', 'add9'], ['dim', 'dim'], ['+', 'aug (+)']];
+
+    let hasCh = true, songs = [], song = null, presets = [], key = '', overrides = {}, curPreset = '', edit = null, fs = 1.15;
+
+    async function api(action, params, body) {
+        const qs = new URLSearchParams(Object.assign({ action: action }, params || {}));
+        const opt = body ? { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) } : {};
+        const r = await fetch('api-cantici.php?' + qs, opt);
+        const j = await r.json().catch(() => ({ success: false, message: 'Risposta non valida dal server' }));
+        if (r.status === 401) { location.href = 'cantici.html'; throw new Error('non autenticato'); }
+        return j;
+    }
+
+    function fillSelect(sel, items, value) {
+        sel.textContent = '';
+        items.forEach(it => {
+            const o = document.createElement('option');
+            o.value = it[0]; o.textContent = it[1];
+            sel.appendChild(o);
+        });
+        if (value !== undefined) sel.value = value;
+    }
+
+    // ---------- avvio ----------
+    async function init() {
+        const me = await api('me');
+        if (!me.user) { location.href = 'cantici.html'; return; }
+        $('who').textContent = me.user.name;
+        const l = await api('list');
+        songs = l.songs || [];
+        showResults('');
+    }
+
+    $('logoutBtn').addEventListener('click', async () => {
+        await fetch('api-cantici.php?action=logout');
+        location.href = 'cantici.html';
+    });
+
+    // ---------- ricerca ----------
+    function showResults(q) {
+        q = q.trim().toLowerCase();
+        const found = songs.filter(s => !q || String(s.numero).includes(q) || s.titolo.toLowerCase().includes(q)).slice(0, 10);
+        const ul = $('results');
+        ul.textContent = '';
+        if (!songs.length) { ul.innerHTML = '<li class="mus-empty">Nessun cantico con accordi caricato.</li>'; return; }
+        if (!found.length) { ul.innerHTML = '<li class="mus-empty">Nessun cantico trovato.</li>'; return; }
+        found.forEach(s => {
+            const li = document.createElement('li');
+            const b = document.createElement('button');
+            b.type = 'button';
+            const n = document.createElement('span'); n.className = 'num'; n.textContent = '#' + s.numero;
+            const k = document.createElement('span'); k.className = 'key'; k.textContent = s.accordi ? s.key : 'solo testo';
+            b.append(n, document.createTextNode(s.titolo), k);
+            b.addEventListener('click', () => openSong(s.numero));
+            li.appendChild(b);
+            ul.appendChild(li);
+        });
+    }
+    $('searchForm').addEventListener('submit', e => { e.preventDefault(); showResults($('q').value); });
+
+    // ---------- cantico ----------
+    async function openSong(numero) {
+        const [g, p] = await Promise.all([api('get', { numero: numero }), api('presets', { numero: numero })]);
+        if (!g.success) { alert(g.message || 'Errore'); return; }
+        song = g.song;
+        hasCh = song.testo.indexOf('[') !== -1;
+        document.querySelectorAll('#tools > :not(.mus-fs)').forEach(el => { el.style.display = hasCh ? '' : 'none'; });
+        presets = p.presets || [];
+        const k0 = C.keyInfo(song.key);
+        key = C.keyName(k0.idx, k0.minor); overrides = {}; curPreset = '';
+        const minor = C.keyInfo(song.key).minor;
+        fillSelect($('keySel'), C.keyList(minor).map(k => [k, k]), key);
+        $('songTitle').textContent = '#' + song.numero + ' ' + song.titolo;
+        $('songBox').hidden = false;
+        refreshPresets();
+        draw();
+        $('songBox').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    function ctx() {
+        const ki = C.keyInfo(key);
+        return { shift: C.shiftBetween(song.key, key), flat: C.usesFlats(ki.idx, ki.minor) };
+    }
+
+    function draw() {
+        const c = ctx();
+        C.render($('sheet'), song.testo, { shift: c.shift, flat: c.flat, overrides: overrides, onChord: openEdit });
+        const n = Object.keys(overrides).length;
+        $('hint').textContent = !hasCh
+            ? 'Accordi non ancora inseriti per questo cantico.'
+            : n
+            ? n + ' accordi modificati (in rosso). Premi "Salva preset" per tenerli.'
+            : 'Tocca un accordo per modificarlo.';
+    }
+
+    function refreshPresets() {
+        const items = [['', 'Automatico (predefinito)']];
+        presets.filter(p => p.key === key).forEach(p => items.push([p.id, p.name]));
+        fillSelect($('presetSel'), items, curPreset);
+        if ($('presetSel').value !== curPreset) { curPreset = ''; $('presetSel').value = ''; }
+        $('delPreset').disabled = !curPreset;
+    }
+
+    $('keySel').addEventListener('change', e => {
+        key = e.target.value; overrides = {}; curPreset = '';
+        refreshPresets(); draw();
+    });
+
+    $('presetSel').addEventListener('change', e => {
+        curPreset = e.target.value;
+        const p = presets.find(x => x.id === curPreset);
+        overrides = p ? JSON.parse(JSON.stringify(p.overrides || {})) : {};
+        $('delPreset').disabled = !curPreset;
+        draw();
+    });
+
+    $('savePreset').addEventListener('click', async () => {
+        const cur = presets.find(p => p.id === curPreset);
+        const name = prompt('Nome del preset:', cur ? cur.name : '');
+        if (!name || !name.trim()) return;
+        const id = cur && cur.name === name.trim() ? cur.id : undefined;
+        const j = await api('preset-save', {}, { numero: song.numero, name: name.trim(), key: key, overrides: overrides, id: id });
+        if (!j.success) { alert(j.message || 'Errore nel salvataggio'); return; }
+        presets = j.presets; curPreset = j.id;
+        refreshPresets();
+    });
+
+    $('delPreset').addEventListener('click', async () => {
+        const cur = presets.find(p => p.id === curPreset);
+        if (!cur || !confirm('Eliminare il preset "' + cur.name + '"?')) return;
+        const j = await api('preset-delete', {}, { numero: song.numero, id: cur.id });
+        if (!j.success) { alert(j.message || 'Errore'); return; }
+        presets = j.presets; curPreset = ''; overrides = {};
+        refreshPresets(); draw();
+    });
+
+    function setFs(v) { fs = Math.max(.8, Math.min(2, v)); $('sheet').style.fontSize = fs + 'rem'; }
+    $('fsMinus').addEventListener('click', () => setFs(fs - .1));
+    $('fsPlus').addEventListener('click', () => setFs(fs + .1));
+
+    // ---------- modifica accordo ----------
+    function openEdit(i, shown, raw) {
+        edit = { i: i, raw: raw };
+        const c = ctx();
+        const first = C.parse(raw.split(/\s+/)[0]);
+        const upper = first ? first.upper : false;
+
+        $('cmSub').textContent = 'Attuale: ' + shown + ' · Tonalità ' + key;
+
+        const dia = $('cmDia'); dia.textContent = '';
+        C.diatonic(key, upper).forEach(ch => {
+            const b = document.createElement('button');
+            b.type = 'button'; b.textContent = ch;
+            b.addEventListener('click', () => apply(ch));
+            dia.appendChild(b);
+        });
+
+        const notes = Array.from({ length: 12 }, (_, j) => [String(j), C.name(j, c.flat, upper)]);
+        const cur = C.parse(shown.split(/\s+/)[0]);
+        fillSelect($('cmRoot'), notes, cur ? String(cur.idx) : '0');
+        const quals = QUALS.slice();
+        if (cur && !quals.some(q => q[0] === cur.suf)) quals.push([cur.suf, cur.suf]);
+        fillSelect($('cmQual'), quals, cur ? cur.suf : '');
+        fillSelect($('cmBass'), [['', 'senza basso']].concat(notes.map(n => [n[0], '/' + n[1]])), cur && cur.bass !== null ? String(cur.bass) : '');
+        $('cmAll').checked = false;
+        $('chordModal').classList.add('show');
+        $('cmApply').focus();
+    }
+
+    function closeEdit() { $('chordModal').classList.remove('show'); edit = null; }
+
+    function targets() {
+        if (!$('cmAll').checked) return [edit.i];
+        const raws = C.chordsOf(song.testo), t = [];
+        raws.forEach((r, j) => { if (r === edit.raw) t.push(j); });
+        return t;
+    }
+
+    function apply(val) {
+        if (!edit) return;
+        targets().forEach(j => { overrides[j] = val; });
+        closeEdit(); draw();
+    }
+
+    $('cmApply').addEventListener('click', () => {
+        const c = ctx();
+        const first = C.parse(edit.raw.split(/\s+/)[0]);
+        const upper = first ? first.upper : false;
+        const root = parseInt($('cmRoot').value, 10), bass = $('cmBass').value;
+        apply(C.name(root, c.flat, upper) + $('cmQual').value + (bass !== '' ? '/' + C.name(parseInt(bass, 10), c.flat, upper) : ''));
+    });
+    $('cmReset').addEventListener('click', () => {
+        targets().forEach(j => { delete overrides[j]; });
+        closeEdit(); draw();
+    });
+    $('cmClose').addEventListener('click', closeEdit);
+    $('chordModal').addEventListener('click', e => { if (e.target.id === 'chordModal') closeEdit(); });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape' && edit) closeEdit(); });
+
+    // menu hamburger (come le altre pagine)
+    document.querySelector('.icon-hamburger')?.addEventListener('click', () => document.body.classList.toggle('menu-open'));
+
+    init();
+})();
+    </script>
+</body>
+</html>

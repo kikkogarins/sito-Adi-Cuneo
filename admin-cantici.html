@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Cantici con accordi - ADI Cuneo</title>
+    <link rel="stylesheet" href="css/st.css">
+    <link rel="stylesheet" href="css/musicisti.css">
+</head>
+<body>
+    <header class="header">
+        <div class="header__content">
+            <a class="header__logo" href="index.html">
+                <img src="img/logo_adi_cuneo.png" alt="Logo ADI Cuneo" height="100px" width="100px">
+            </a>
+            <ul class="header__menu">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="cantici.html">Cantici</a></li>
+                <li><a href="admin-musicisti-php.html">Admin Musicisti</a></li>
+                <li><a href="admin-cantici.html" class="active">Admin Accordi</a></li>
+            </ul>
+            <div class="icon-hamburger"><span></span><span></span><span></span></div>
+        </div>
+    </header>
+
+    <main class="mus-wrap">
+        <div class="mus-top"><h1>🎼 Cantici con accordi</h1></div>
+
+        <div class="adm-msg" id="msg" role="status"></div>
+
+        <div class="adm-card" id="denied" hidden>
+            <h2>Accesso richiesto</h2>
+            <p>Devi prima accedere come amministratore da
+                <a href="admin-musicisti-php.html">Admin Musicisti</a>, poi torna su questa pagina.</p>
+        </div>
+
+        <div id="app" hidden>
+            <div class="adm-card">
+                <h2>Nuovo cantico / modifica</h2>
+                <div class="adm-row">
+                    <label>Numero <input class="mus-in" id="numero" type="number" min="1" max="99999" style="width:110px"></label>
+                    <label class="grow">Titolo <input class="mus-in" id="titolo" maxlength="120"></label>
+                    <label>Tonalità originale <select class="mus-in" id="key"></select></label>
+                </div>
+
+                <label for="paste" style="font-weight:600;color:#555;font-size:.85rem">1. Incolla il testo con gli accordi sopra le righe</label>
+                <textarea class="adm-area" id="paste" spellcheck="false" placeholder="Mi        Si7      Do#-     La&#10;Tu sei Re, Tu sei Re, sei Re Gesù."></textarea>
+                <div class="adm-row" style="margin-top:10px">
+                    <button class="mus-btn mus-btn--sm" id="convert" type="button">⬇️ Converti</button>
+                    <span style="color:#777;font-size:.85rem;align-self:center">Le righe di soli accordi vengono unite alla riga di testo sotto.</span>
+                </div>
+
+                <label for="testo" style="font-weight:600;color:#555;font-size:.85rem">2. Testo con accordi (modificabile). Una riga che inizia con # è un titolo di sezione.</label>
+                <textarea class="adm-area" id="testo" spellcheck="false" placeholder="[Mi]Tu sei Re, [Si7]Tu sei Re"></textarea>
+
+                <h2 style="margin-top:18px;font-size:1.05rem">Anteprima</h2>
+                <div class="adm-prev"><div class="sheet" id="prev"></div></div>
+
+                <div class="adm-row" style="margin-top:14px">
+                    <button class="mus-btn" id="save" type="button">💾 Salva cantico</button>
+                    <button class="mus-btn mus-btn--ghost" id="clear" type="button">Nuovo</button>
+                </div>
+            </div>
+
+            <div class="adm-card">
+                <h2>Cantici salvati</h2>
+                <ul class="adm-list" id="list"></ul>
+            </div>
+        </div>
+    </main>
+
+    <script src="js/chords.js"></script>
+    <script>
+(function () {
+    const $ = id => document.getElementById(id);
+    const C = window.Chords;
+
+    async function api(action, params, body) {
+        const qs = new URLSearchParams(Object.assign({ action: action }, params || {}));
+        const opt = body ? { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) } : {};
+        const r = await fetch('api-cantici.php?' + qs, opt);
+        return r.json().catch(() => ({ success: false, message: 'Risposta non valida dal server' }));
+    }
+
+    function msg(text, ok) {
+        const m = $('msg');
+        m.textContent = text;
+        m.className = 'adm-msg show ' + (ok ? 'ok' : 'err');
+        clearTimeout(msg.t);
+        msg.t = setTimeout(() => m.classList.remove('show'), 5000);
+    }
+
+    function fillKeys() {
+        const sel = $('key');
+        C.keyList(false).concat(C.keyList(true)).forEach(k => {
+            const o = document.createElement('option');
+            o.value = k; o.textContent = k;
+            sel.appendChild(o);
+        });
+        sel.value = 'Do';
+    }
+
+    function preview() {
+        const ki = C.keyInfo($('key').value);
+        C.render($('prev'), $('testo').value, { shift: 0, flat: C.usesFlats(ki.idx, ki.minor), overrides: {} });
+    }
+
+    async function loadList() {
+        const j = await api('list');
+        const ul = $('list');
+        ul.textContent = '';
+        if (!j.songs || !j.songs.length) { ul.innerHTML = '<li>Nessun cantico salvato.</li>'; return; }
+        j.songs.forEach(s => {
+            const li = document.createElement('li');
+            const t = document.createElement('span');
+            t.className = 't';
+            t.textContent = '#' + s.numero + ' ' + s.titolo + (s.accordi ? ' (' + s.key + ')' : ' · solo testo');
+            const e = document.createElement('button');
+            e.className = 'mus-btn mus-btn--sm mus-btn--ghost'; e.type = 'button'; e.textContent = 'Modifica';
+            e.addEventListener('click', () => editSong(s.numero));
+            const d = document.createElement('button');
+            d.className = 'mus-btn mus-btn--sm mus-btn--danger'; d.type = 'button'; d.textContent = 'Elimina';
+            d.addEventListener('click', () => delSong(s));
+            li.append(t, e, d);
+            ul.appendChild(li);
+        });
+    }
+
+    async function editSong(n) {
+        const j = await api('get', { numero: n });
+        if (!j.success) { msg(j.message || 'Errore', false); return; }
+        $('numero').value = j.song.numero;
+        $('titolo').value = j.song.titolo;
+        $('key').value = j.song.key;
+        $('testo').value = j.song.testo;
+        $('paste').value = '';
+        preview();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    async function delSong(s) {
+        if (!confirm('Eliminare il cantico #' + s.numero + ' ' + s.titolo + '? I preset degli utenti per questo cantico resteranno orfani.')) return;
+        const j = await api('delete', {}, { numero: s.numero });
+        if (j.success) { msg('Cantico eliminato', true); loadList(); } else msg(j.message || 'Errore', false);
+    }
+
+    $('convert').addEventListener('click', () => {
+        if (!$('paste').value.trim()) { msg('Incolla prima il testo con gli accordi', false); return; }
+        $('testo').value = C.convert($('paste').value);
+        preview();
+    });
+    $('testo').addEventListener('input', preview);
+    $('key').addEventListener('change', preview);
+
+    $('save').addEventListener('click', async () => {
+        const j = await api('save', {}, {
+            numero: parseInt($('numero').value, 10),
+            titolo: $('titolo').value,
+            key: $('key').value,
+            testo: $('testo').value
+        });
+        if (j.success) { msg('Cantico salvato ✅', true); loadList(); } else msg(j.message || 'Errore nel salvataggio', false);
+    });
+
+    $('clear').addEventListener('click', () => {
+        ['numero', 'titolo', 'paste', 'testo'].forEach(id => { $(id).value = ''; });
+        $('key').value = 'Do';
+        preview();
+    });
+
+    document.querySelector('.icon-hamburger')?.addEventListener('click', () => document.body.classList.toggle('menu-open'));
+
+    (async function () {
+        const me = await api('me');
+        if (!me.admin) { $('denied').hidden = false; return; }
+        $('app').hidden = false;
+        fillKeys();
+        loadList();
+    })();
+})();
+    </script>
+</body>
+</html>
