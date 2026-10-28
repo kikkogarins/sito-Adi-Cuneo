@@ -1,0 +1,84 @@
+/* css/musicisti.css - Area musicisti e admin accordi (usa le variabili di st.css) */
+.mus-wrap { max-width: 900px; margin: 0 auto; padding: 130px 16px 60px; }
+.mus-top { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 18px; }
+.mus-top h1 { color: var(--dark-gray); font-size: 1.8rem; }
+.mus-who { color: #666; margin-right: 8px; font-size: .95rem; }
+
+.mus-btn { background: var(--dark-gray); color: #fff; border: 2px solid var(--dark-gray); border-radius: 8px; padding: 9px 16px; font-weight: 600; font-size: .95rem; cursor: pointer; font-family: inherit; transition: background .2s, color .2s; }
+.mus-btn:hover { background: var(--gold); border-color: var(--gold); color: var(--dark-gray); }
+.mus-btn--sm { padding: 7px 12px; font-size: .9rem; }
+.mus-btn--ghost { background: #fff; color: var(--dark-gray); }
+.mus-btn--danger { background: #fff; color: #c0392b; border-color: #c0392b; }
+.mus-btn--danger:hover { background: #c0392b; border-color: #c0392b; color: #fff; }
+.mus-btn:focus-visible, .mus-in:focus-visible, .ch.tap:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+
+.mus-search { display: flex; gap: 8px; max-width: 420px; }
+.mus-in { flex: 1; min-width: 0; padding: 9px 12px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 1rem; font-family: inherit; background: #fff; }
+.mus-in:focus { outline: none; border-color: var(--gold); }
+
+.mus-results { list-style: none; margin: 12px 0 0; padding: 0; max-width: 420px; }
+.mus-results li button { width: 100%; text-align: left; background: #fff; border: 1px solid #e6e6e6; border-left: 4px solid var(--gold); border-radius: 8px; padding: 10px 12px; margin-bottom: 6px; cursor: pointer; font-family: inherit; font-size: 1rem; color: var(--dark-gray); }
+.mus-results li button:hover { background: #fbf8e6; }
+.mus-results .num { font-weight: 700; margin-right: 8px; }
+.mus-results .key { float: right; color: #888; font-size: .85rem; }
+.mus-empty { color: #888; padding: 8px 0; }
+
+.mus-song { margin-top: 26px; background: #fff; border-radius: 14px; box-shadow: 0 4px 20px rgba(0,0,0,.08); padding: 20px; }
+.mus-song h2 { color: var(--dark-gray); font-size: 1.4rem; margin-bottom: 14px; }
+.mus-toolbar { display: flex; flex-wrap: wrap; gap: 10px 14px; align-items: end; padding-bottom: 14px; border-bottom: 2px solid #f0f0f0; }
+.mus-toolbar label { display: flex; flex-direction: column; font-size: .8rem; color: #666; font-weight: 600; gap: 3px; }
+.mus-toolbar select { padding: 8px 10px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 1rem; font-family: inherit; background: #fff; min-width: 120px; }
+.mus-fs { margin-left: auto; display: flex; gap: 6px; }
+.mus-hint { font-size: .85rem; color: #777; margin: 12px 0 4px; }
+
+/* Testo con accordi */
+.sheet { font-size: 1.15rem; line-height: 1.4; color: #222; padding: 8px 0; overflow-wrap: anywhere; }
+.sheet .hd { font-weight: 700; color: var(--dark-gray); margin-top: 1em; }
+.sheet .sp { height: .8em; }
+.sheet .ln { margin: .1em 0; }
+.sheet .seg { display: inline-flex; flex-direction: column; vertical-align: bottom; }
+.sheet .ch { font-weight: 700; color: #8a6d00; min-height: 1.4em; padding-right: .5em; white-space: pre; font-size: .95em; }
+.sheet .ch.tap { cursor: pointer; border-radius: 4px; }
+.sheet .ch.tap:hover { background: rgba(224,202,85,.35); }
+.sheet .ch.mod { color: #c0392b; }
+.sheet .tx { white-space: pre; min-height: 1.4em; }
+
+/* Finestra modifica accordo */
+.mus-modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.6); z-index: 10000; align-items: center; justify-content: center; padding: 14px; }
+.mus-modal.show { display: flex; }
+.mus-modal-box { background: #fff; border-radius: 14px; max-width: 460px; width: 100%; max-height: 92vh; overflow-y: auto; padding: 22px; position: relative; }
+.mus-modal-x { position: absolute; top: 8px; right: 12px; background: none; border: none; font-size: 1.8rem; cursor: pointer; color: #888; line-height: 1; }
+.mus-modal-x:hover { color: var(--dark-gray); }
+.mus-modal h3 { color: var(--dark-gray); margin-bottom: 4px; }
+.mus-modal .sub { color: #777; font-size: .9rem; margin-bottom: 12px; }
+.mus-modal h4 { margin: 14px 0 6px; font-size: .9rem; color: var(--dark-gray); }
+.dia { display: flex; flex-wrap: wrap; gap: 6px; }
+.dia button { padding: 8px 12px; border: 2px solid var(--gold); background: #fff; border-radius: 20px; font-weight: 700; cursor: pointer; font-family: inherit; font-size: 1rem; color: var(--dark-gray); }
+.dia button:hover { background: var(--gold); }
+.cust { display: flex; flex-wrap: wrap; gap: 8px; }
+.cust select { padding: 8px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 1rem; font-family: inherit; flex: 1; min-width: 90px; }
+.mus-check { display: flex; gap: 8px; align-items: center; margin: 12px 0; font-size: .9rem; color: #555; }
+.mus-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+
+/* Admin accordi */
+.adm-card { background: #fff; border-radius: 14px; box-shadow: 0 4px 20px rgba(0,0,0,.08); padding: 20px; margin-bottom: 22px; }
+.adm-card h2 { color: var(--dark-gray); font-size: 1.3rem; margin-bottom: 14px; border-bottom: 3px solid var(--gold); padding-bottom: 8px; }
+.adm-row { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 12px; }
+.adm-row label { display: flex; flex-direction: column; font-size: .85rem; font-weight: 600; color: #555; gap: 4px; }
+.adm-row .grow { flex: 1; min-width: 180px; }
+.adm-area { width: 100%; min-height: 180px; padding: 10px; border: 2px solid #e0e0e0; border-radius: 8px; font-family: 'Courier New', monospace; font-size: .95rem; resize: vertical; }
+.adm-area:focus { outline: none; border-color: var(--gold); }
+.adm-msg { padding: 10px 14px; border-radius: 8px; margin-bottom: 14px; display: none; }
+.adm-msg.show { display: block; }
+.adm-msg.ok { background: #d4edda; color: #155724; }
+.adm-msg.err { background: #f8d7da; color: #721c24; }
+.adm-list { list-style: none; padding: 0; margin: 0; }
+.adm-list li { display: flex; align-items: center; gap: 8px; padding: 8px 0; border-bottom: 1px solid #eee; }
+.adm-list .t { flex: 1; }
+.adm-prev { border: 2px dashed #e0e0e0; border-radius: 8px; padding: 10px; margin-top: 8px; }
+
+@media (max-width: 600px) {
+  .mus-wrap { padding-top: 110px; }
+  .sheet { font-size: 1.05rem; }
+  .mus-fs { margin-left: 0; }
+}

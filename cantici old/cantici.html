@@ -1,0 +1,1044 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ADI Cuneo - Cantici</title>
+    <meta name="theme-color" content="#1a3a5c">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="Cantici ADI">
+    <link rel="apple-touch-icon" href="img/icon-192.png">
+    <link rel="manifest" href="manifest.json">
+    <link rel="stylesheet" href="css/st.css">
+    <style>
+        /* Banner piccolo angolo */
+        .status-banner {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9000;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        .status-banner:hover { transform: scale(1.1); }
+        .status-banner.online { background: linear-gradient(135deg, #10b981, #059669); }
+        .status-banner.offline { background: linear-gradient(135deg, #f59e0b, #d97706); }
+        .status-banner.downloading {
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            animation: pulse 2s infinite;
+        }
+        .status-icon { font-size: 1.5rem; }
+        @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
+        .status-banner::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            bottom: 100%;
+            right: 0;
+            margin-bottom: 8px;
+            padding: 6px 12px;
+            background: rgba(0,0,0,0.9);
+            color: white;
+            font-size: 0.75rem;
+            border-radius: 6px;
+            white-space: nowrap;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
+        }
+        .status-banner:hover::after { opacity: 1; }
+        
+        .offline-badge {
+            display: inline-block;
+            background: #10b981;
+            color: white;
+            font-size: 0.7rem;
+            padding: 2px 8px;
+            border-radius: 10px;
+            margin-left: 6px;
+        }
+
+        /* Bottone "Mostra altri" */
+        .load-more-btn {
+            padding: 12px 32px;
+            background: #1a3a5c;
+            color: #fff;
+            border: none;
+            border-radius: 30px;
+            font-size: 1rem;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            transition: transform 0.2s, background 0.2s;
+        }
+        .load-more-btn:hover { background: #24507f; transform: translateY(-2px); }
+
+        /* PDF Viewer pulito */
+        .pdf-viewer {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.98);
+            z-index: 10000;
+            display: none;
+        }
+        .pdf-viewer.show { display: flex; }
+        .pdf-controls {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            z-index: 10001;
+            opacity: 1;
+            transition: opacity 0.3s ease;
+        }
+        .pdf-controls.fade-out {
+            opacity: 0;
+            pointer-events: none;
+        }
+        .pdf-close {
+            background: rgba(255, 255, 255, 0.9);
+            border: none;
+            color: #1a3a5c;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 28px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            transition: all 0.3s;
+        }
+        .pdf-close:hover {
+            background: white;
+            transform: scale(1.1);
+        }
+        .pdf-container {
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .pdf-loading {
+            color: white;
+            text-align: center;
+            padding: 40px;
+        }
+        .pdf-spinner {
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-top: 3px solid white;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        /* PDF centrato e fisso (render su canvas, niente scroll laterale) */
+        .pdf-container {
+            align-items: flex-start;
+            overflow-x: hidden;
+            -webkit-overflow-scrolling: touch;
+            touch-action: pan-y pinch-zoom;
+        }
+        .pdf-pages {
+            width: 100%;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 70px 12px 24px;
+            box-sizing: border-box;
+        }
+        .pdf-pages canvas {
+            display: block;
+            width: 100%;
+            height: auto;
+            background: #fff;
+            border-radius: 8px;
+            margin-bottom: 12px;
+        }
+        #pdfFrame {
+            width: 100%;
+            height: 100%;
+            border: none;
+            background: white;
+        }
+        @media (max-width: 768px) {
+            .pdf-controls { top: 10px; right: 10px; }
+            .pdf-close { width: 44px; height: 44px; font-size: 24px; }
+            .status-banner { bottom: 80px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="status-banner online" id="statusBanner" data-tooltip="Online">
+        <span class="status-icon">🌐</span>
+    </div>
+
+    <header class="header">
+        <div class="header__content">
+            <a class="header__logo" href="#">
+                <img src="img/logo_adi_cuneo.png" alt="Logo ADI Cuneo" height="100px" width="100px">
+            </a>
+            <ul class="header__menu">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="cantici.html">Cantici</a></li>
+                <li><a href="admin-musicisti-php.html">Admin Musicisti</a></li>
+                <li><a href="#contatti" class="mobile-only">Contatti</a></li>
+            </ul>
+            <div class="header__quick">
+                <a href="contatti.html" class="desktop-only">Contatti</a>
+            </div>
+            <div class="icon-hamburger">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+    </header>
+
+    <section class="cantici-hero">
+        <div class="cantici-hero__content">
+            <h1>🎵 Cantici di Lode</h1>
+            <p>Esplora la collezione completa dei cantici della chiesa ADI Cuneo</p>
+        </div>
+    </section>
+
+    <section class="mode-selector">
+        <h2 style="color: var(--dark-gray); font-size: 2.5rem; margin-bottom: 20px;">Scegli la modalità</h2>
+        <p style="color: #666; font-size: 1.1rem; max-width: 600px; margin: 0 auto;">
+            Seleziona se visualizzare i cantici base o accedi all'area musicisti per vedere gli spartiti con accordi
+        </p>
+        <div class="mode-container">
+            <div class="mode-card active" data-mode="base" onclick="selectMode('base')">
+                <span class="mode-icon">📖</span>
+                <h3>Cantici Base</h3>
+                <p>Visualizza i testi dei cantici per il culto e la lode</p>
+            </div>
+            <div class="mode-card" data-mode="musicisti" onclick="selectMode('musicisti')">
+                <span class="mode-icon">🎸</span>
+                <h3>Area Musicisti</h3>
+                <p>Accedi agli spartiti con accordi (richiede login)</p>
+            </div>
+        </div>
+    </section>
+
+    <div class="info-message" id="infoMessage">
+        <h4>ℹ️ Informazione</h4>
+        <p id="infoText"></p>
+    </div>
+
+    <section class="search-section">
+        <div class="search-container">
+            <h2 style="color: var(--dark-gray); font-size: 2rem; margin-bottom: 30px; text-align: center;">
+                Cerca un cantico
+            </h2>
+            <div class="search-box">
+                <input type="text" class="search-input" id="searchInput"
+                    placeholder="Cerca per numero, titolo o parole chiave..." onkeyup="searchCantici()">
+                <span class="search-icon">🔍</span>
+            </div>
+            <div class="quick-numbers">
+                <div class="quick-number" onclick="quickSearch('700')">700</div>
+                <div class="quick-number" onclick="quickSearch('800')">800</div>
+                <div class="quick-number" onclick="quickSearch('900')">900</div>
+                <div class="quick-number" onclick="quickSearch('1000')">1000</div>
+            </div>
+        </div>
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <p style="color: var(--dark-gray);">Caricamento cantici...</p>
+        </div>
+        <div class="results-section">
+            <div class="results-grid" id="resultsGrid"></div>
+            <div style="text-align:center;margin:30px 0;">
+                <button id="loadMoreBtn" class="load-more-btn" onclick="showMore()" style="display:none;"></button>
+            </div>
+        </div>
+    </section>
+
+    <div class="login-modal" id="loginModal">
+        <div class="login-content">
+            <span class="login-close" onclick="closeLogin()">×</span>
+            <div class="login-icon">🎼</div>
+            <h2>Area Musicisti</h2>
+            <form onsubmit="handleLogin(event)">
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" name="username" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" required>
+                </div>
+                <button type="submit" class="login-button">Accedi</button>
+            </form>
+            <p class="login-note">
+                Per ottenere le credenziali di accesso contatta il responsabile del gruppo musicale
+            </p>
+        </div>
+    </div>
+
+    <div class="pdf-viewer" id="pdfViewer">
+        <div class="pdf-controls" id="pdfControls">
+            <button class="pdf-close" onclick="closePDF()" title="Chiudi">×</button>
+        </div>
+        <div class="pdf-container">
+            <div class="pdf-loading" id="pdfLoading">
+                <div class="pdf-spinner"></div>
+                <p>Caricamento PDF...</p>
+            </div>
+            <div class="pdf-pages" id="pdfPages" style="display:none;"></div>
+            <iframe id="pdfFrame" style="display: none;"></iframe>
+        </div>
+    </div>
+
+    <footer id="contatti">
+        <div class="grid">
+            <div class="col-50">
+                <h3>ADI Cuneo</h3>
+                <p>Via Acceglio, 4</p>
+                <p>12100 Cuneo (CN)</p>
+                <p>Email: info@adicuneo.it</p>
+                <p>visita la pagina Assemblee di Dio in Italia</p>
+                <a href="https://www.assembleedidio.org/" target="_blank">
+                    <img src="img/adi.png" alt="" style="width: 50px; height: 50px;">
+                </a>
+                <div style="margin-top: 15px;">
+                    <iframe
+                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2849.374292999981!2d7.556393076545171!3d44.39166800674194!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x12cd58294ac356c7%3A0x93d57c0141b1de2!2sVia%20Acceglio%2C%204%2C%2012100%20Cuneo%20CN!5e0!3m2!1sit!2sit!4v1699199999999!5m2!1sit!2sit"
+                        width="100%" height="200" style="border:0; border-radius: 8px;" allowfullscreen loading="lazy">
+                    </iframe>
+                </div>
+            </div>
+            <div class="col-50">
+                <h3>Orari</h3>
+                <p>Domenica: 10:30 - 12:30</p>
+                <p>Martedì: 20:30 - 21:30</p>
+                <p>Giovedì: 20:30 - 21:30</p>
+                <a href="gallery.html" class="button">Visita la nostra galleria</a>
+                <br><p>Visita le nostra pagine</p>
+                <a href="https://www.instagram.com/adicuneo/" target="_blank">
+                    <img src="img/insta.png" alt="Instagram" style="width: 40px; height: 40px;">
+                </a>
+                <a href="https://www.facebook.com/ADICuneo/?locale=it_IT" target="_blank">
+                    <img src="img/facebook.png" alt="Facebook" style="width: 40px; height: 35px;">
+                </a>
+            </div>
+        </div>
+        <p class="text-center pt-4">© 2025 ADI Cuneo - Tutti i diritti riservati</p>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <script>
+if (window.pdfjsLib) {
+    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+}
+// ============================================================
+// CANTICI ADI CUNEO - APP CON CACHE AUTOMATICA
+// Sistema offline con localStorage (funziona garantito!)
+// ============================================================
+
+const REPO_CANTICI = 'https://raw.githubusercontent.com/kikkogarins/Adi-Cuneo-Cantici/main';
+const STORAGE_KEY = 'cantici-adi-cache';
+const STORAGE_VERSION = 'v1';
+const PAGE_SIZE = 4; // cantici mostrati per volta
+
+let currentMode = 'base';
+let isLoggedIn = false;
+let currentPDFUrl = '';
+let allCantici = [];
+let cachedPDFs = {};
+let currentList = [];
+let visibleCount = PAGE_SIZE;
+
+// ============================================================
+// INIT
+// ============================================================
+window.onload = async function () {
+    updateStatusBanner();
+    setupOnlineOfflineListeners();
+
+    showInfoMessage('⏳ Caricamento cantici...');
+    document.getElementById('loading').classList.add('show');
+
+    try {
+        // Carica database cantici
+        const data = await loadDatabase();
+        allCantici = data;
+        displayAllCantici();
+        document.getElementById('loading').classList.remove('show');
+        showInfoMessage(`✅ Caricati ${allCantici.length} cantici`);
+
+        // DOWNLOAD AUTOMATICO in background
+        if (navigator.onLine) {
+            startAutomaticCaching();
+        }
+    } catch (error) {
+        console.error('Errore:', error);
+        document.getElementById('loading').classList.remove('show');
+        showInfoMessage('⚠️ Errore caricamento. Uso dati offline.');
+        
+        // Prova a usare cache
+        const cached = loadFromCache();
+        if (cached && cached.cantici) {
+            allCantici = cached.cantici;
+            cachedPDFs = cached.pdfs || {};
+            displayAllCantici();
+        }
+    }
+};
+
+// ============================================================
+// DATABASE CANTICI
+// ============================================================
+async function loadDatabase() {
+    // Prova prima la cache
+    const cached = loadFromCache();
+    if (cached && cached.cantici && !navigator.onLine) {
+        console.log('📦 Uso database dalla cache (offline)');
+        cachedPDFs = cached.pdfs || {};
+        return cached.cantici;
+    }
+
+    // Scarica da GitHub
+    const response = await fetch(`${REPO_CANTICI}/database.json`);
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    
+    const data = await response.json();
+    
+    // Salva in cache
+    saveToCache({ cantici: data, pdfs: cachedPDFs });
+    
+    return data;
+}
+
+// ============================================================
+// CACHE AUTOMATICA PDF
+// ============================================================
+async function startAutomaticCaching() {
+    const cached = loadFromCache();
+    cachedPDFs = cached?.pdfs || {};
+
+    const urlsToCache = allCantici.map(c => 
+        `${REPO_CANTICI}/base/${c.filename}`
+    );
+
+    // Conta quanti sono già in cache
+    const alreadyCached = urlsToCache.filter(url => cachedPDFs[url]).length;
+    
+    if (alreadyCached >= urlsToCache.length) {
+        console.log('✅ Tutti i PDF già in cache');
+        updateStatusBanner('online');
+        return;
+    }
+
+    console.log(`📥 Download automatico: ${alreadyCached}/${urlsToCache.length}`);
+    updateStatusBanner('downloading', 0, urlsToCache.length);
+
+    let downloaded = alreadyCached;
+
+    for (const url of urlsToCache) {
+        // Salta se già in cache
+        if (cachedPDFs[url]) continue;
+
+        try {
+            const response = await fetch(url);
+            if (response.ok) {
+                const blob = await response.blob();
+                const base64 = await blobToBase64(blob);
+                
+                // Salva in memoria
+                cachedPDFs[url] = {
+                    data: base64,
+                    type: 'application/pdf',
+                    cached: new Date().toISOString()
+                };
+
+                downloaded++;
+                updateStatusBanner('downloading', downloaded, urlsToCache.length);
+
+                // Salva ogni 10 PDF
+                if (downloaded % 10 === 0) {
+                    saveToCache({ cantici: allCantici, pdfs: cachedPDFs });
+                }
+            }
+        } catch (err) {
+            console.warn(`Errore download: ${url.split('/').pop()}`);
+        }
+
+        // Pausa per non sovraccaricare
+        await sleep(100);
+    }
+
+    // Salva tutto
+    saveToCache({ cantici: allCantici, pdfs: cachedPDFs });
+    console.log(`✅ Download completato: ${downloaded}/${urlsToCache.length}`);
+    updateStatusBanner('online');
+    renderCantici(); // Aggiorna i badge senza perdere ricerca e pagina
+    showInfoMessage(`✅ ${downloaded} cantici ora disponibili offline!`);
+}
+
+// ============================================================
+// STORAGE LOCALE
+// ============================================================
+function saveToCache(data) {
+    try {
+        const toSave = {
+            version: STORAGE_VERSION,
+            timestamp: new Date().toISOString(),
+            ...data
+        };
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(toSave));
+        console.log('💾 Cache salvata');
+    } catch (e) {
+        console.error('Errore salvataggio cache:', e);
+        // Se localStorage è pieno, elimina vecchi PDF
+        if (e.name === 'QuotaExceededError') {
+            console.warn('⚠️ Storage pieno, salvo solo database');
+            localStorage.setItem(STORAGE_KEY, JSON.stringify({
+                version: STORAGE_VERSION,
+                cantici: data.cantici,
+                pdfs: {}
+            }));
+        }
+    }
+}
+
+function loadFromCache() {
+    try {
+        const data = localStorage.getItem(STORAGE_KEY);
+        if (!data) return null;
+        
+        const parsed = JSON.parse(data);
+        if (parsed.version !== STORAGE_VERSION) {
+            console.log('⚠️ Versione cache obsoleta');
+            return null;
+        }
+        
+        return parsed;
+    } catch (e) {
+        console.error('Errore lettura cache:', e);
+        return null;
+    }
+}
+
+function isPDFCached(url) {
+    return cachedPDFs[url] !== undefined;
+}
+
+// ============================================================
+// STATUS BANNER (ICONA ANGOLO)
+// ============================================================
+function updateStatusBanner(status, progress, total) {
+    const banner = document.getElementById('statusBanner');
+    const icon = banner.querySelector('.status-icon');
+
+    banner.className = 'status-banner';
+
+    if (status === 'downloading') {
+        banner.classList.add('downloading');
+        icon.textContent = '📥';
+        banner.setAttribute('data-tooltip', `Download ${progress}/${total}`);
+    } else if (!navigator.onLine) {
+        banner.classList.add('offline');
+        icon.textContent = '📵';
+        banner.setAttribute('data-tooltip', 'Offline');
+    } else {
+        banner.classList.add('online');
+        icon.textContent = '🌐';
+        banner.setAttribute('data-tooltip', 'Online');
+    }
+}
+
+function setupOnlineOfflineListeners() {
+    window.addEventListener('online', () => {
+        updateStatusBanner('online');
+        showInfoMessage('✅ Connessione ripristinata');
+        // Riprendi download se interrotto
+        if (Object.keys(cachedPDFs).length < allCantici.length) {
+            startAutomaticCaching();
+        }
+    });
+
+    window.addEventListener('offline', () => {
+        updateStatusBanner('offline');
+        showInfoMessage('📵 Modalità offline');
+    });
+}
+
+// ============================================================
+// MODALITÀ
+// ============================================================
+function selectMode(mode) {
+    document.querySelectorAll('.mode-card').forEach(c => c.classList.remove('active'));
+    document.querySelector(`[data-mode="${mode}"]`).classList.add('active');
+
+    if (mode === 'musicisti' && !isLoggedIn) {
+        showLogin();
+    } else {
+        currentMode = mode;
+        showInfoMessage(mode === 'base' ? 'Modalità Cantici Base' : 'Modalità Musicisti');
+        displayAllCantici();
+    }
+}
+
+function showLogin() {
+    document.getElementById('loginModal').classList.add('show');
+}
+
+function closeLogin() {
+    document.getElementById('loginModal').classList.remove('show');
+    if (!isLoggedIn) selectMode('base');
+}
+
+async function handleLogin(event) {
+    event.preventDefault();
+    const username = document.getElementById('username').value;
+    const password = document.getElementById('password').value;
+
+    try {
+        const response = await fetch('api-musicisti.php?action=login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username, password })
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+            isLoggedIn = true;
+            currentMode = 'musicisti';
+            localStorage.setItem('musicisti-token', data.token || '1');
+            localStorage.setItem('musicisti-name', data.user.name);
+            closeLogin();
+            showInfoMessage(`✅ Benvenuto ${data.user.name}!`);
+            displayAllCantici();
+        } else {
+            alert('❌ Credenziali non valide');
+        }
+    } catch (error) {
+        // Prova accesso offline
+        const savedToken = localStorage.getItem('musicisti-token');
+        if (savedToken) {
+            isLoggedIn = true;
+            currentMode = 'musicisti';
+            const name = localStorage.getItem('musicisti-name') || 'Musicista';
+            closeLogin();
+            showInfoMessage(`✅ Benvenuto ${name} (offline)`);
+            displayAllCantici();
+        } else {
+            alert('❌ Errore connessione');
+        }
+    }
+}
+
+// ============================================================
+// RICERCA
+// ============================================================
+function searchCantici() {
+    const term = document.getElementById('searchInput').value.toLowerCase();
+    if (!term) {
+        displayAllCantici();
+        return;
+    }
+
+    const filtered = allCantici.filter(c =>
+        c.numero.toString().includes(term) ||
+        c.titolo.toLowerCase().includes(term) ||
+        c.categoria.toLowerCase().includes(term)
+    );
+
+    displayCantici(filtered);
+}
+
+function quickSearch(n) {
+    document.getElementById('searchInput').value = n;
+    searchCantici();
+}
+
+function displayAllCantici() {
+    displayCantici(allCantici);
+}
+
+// ============================================================
+// VISUALIZZAZIONE (4 alla volta + "Mostra altri")
+// ============================================================
+function displayCantici(cantici) {
+    currentList = cantici;
+    visibleCount = PAGE_SIZE;
+    renderCantici();
+}
+
+function showMore() {
+    visibleCount += PAGE_SIZE;
+    renderCantici();
+}
+
+function renderCantici() {
+    const grid = document.getElementById('resultsGrid');
+    const btn = document.getElementById('loadMoreBtn');
+
+    if (!currentList.length) {
+        grid.innerHTML = `
+            <div style="grid-column:1/-1;text-align:center;padding:60px 20px;">
+                <span style="font-size:4rem;">🔍</span>
+                <h3 style="color:var(--dark-gray);margin:20px 0;">Nessun cantico trovato</h3>
+                <p style="color:#888;">Prova con altri termini</p>
+            </div>`;
+        btn.style.display = 'none';
+        return;
+    }
+
+    grid.innerHTML = currentList.slice(0, visibleCount).map(c => {
+        const url = `${REPO_CANTICI}/base/${c.filename}`;
+        const cached = isPDFCached(url);
+
+        return `
+        <div class="cantico-card" onclick="openCantico(${c.numero})">
+            <span class="cantico-number">#${c.numero}</span>
+            <div class="cantico-title">${c.titolo}</div>
+            <div class="cantico-meta">
+                <span>📂</span>
+                <span>${c.categoria}</span>
+                ${cached ? '<span class="offline-badge">📵 Offline</span>' : ''}
+            </div>
+            ${currentMode === 'musicisti' ? '<span class="badge-musicisti">🎸 Con accordi</span>' : ''}
+        </div>`;
+    }).join('');
+
+    const remaining = currentList.length - visibleCount;
+    if (remaining > 0) {
+        btn.style.display = 'inline-block';
+        btn.textContent = `Mostra altri (${remaining} rimanenti)`;
+    } else {
+        btn.style.display = 'none';
+    }
+}
+
+// ============================================================
+// APERTURA PDF
+// ============================================================
+let pdfControlsTimeout;
+
+function openCantico(numero) {
+    const cantico = allCantici.find(c => c.numero === numero);
+    let pdfPath;
+
+    if (currentMode === 'base') {
+        pdfPath = cantico?.filename
+            ? `${REPO_CANTICI}/base/${cantico.filename}`
+            : `${REPO_CANTICI}/base/${numero.toString().padStart(4, '0')}.pdf`;
+    } else {
+        if (cantico?.filename) {
+            const base = cantico.filename.replace('.pdf', '');
+            pdfPath = `${REPO_CANTICI}/musicisti/${base}-accordi.pdf`;
+        } else {
+            pdfPath = `${REPO_CANTICI}/musicisti/${numero.toString().padStart(4, '0')}-accordi.pdf`;
+        }
+    }
+
+    currentPDFUrl = pdfPath;
+
+    const viewer = document.getElementById('pdfViewer');
+    viewer.classList.add('show');
+    
+    document.getElementById('pdfLoading').innerHTML = '<div class="pdf-spinner"></div><p>Caricamento PDF...</p>';
+    document.getElementById('pdfLoading').style.display = 'block';
+    document.getElementById('pdfFrame').style.display = 'none';
+    document.getElementById('pdfPages').style.display = 'none';
+    document.getElementById('pdfPages').innerHTML = '';
+
+    console.log(`📄 Apertura: ${pdfPath}`);
+
+    if (isPDFCached(pdfPath)) {
+        loadPDFFromCache(pdfPath);
+    } else {
+        loadPDFFromNetwork(pdfPath);
+    }
+}
+
+function setupPDFControlsAutoHide() {
+    const viewer = document.getElementById('pdfViewer');
+    const controls = document.getElementById('pdfControls');
+    
+    // Mostra controlli
+    controls.classList.remove('fade-out');
+    
+    // Auto-hide dopo 3 secondi
+    clearTimeout(pdfControlsTimeout);
+    pdfControlsTimeout = setTimeout(() => {
+        controls.classList.add('fade-out');
+    }, 3000);
+    
+    // Mostra al movimento del mouse
+    viewer.onmousemove = () => {
+        controls.classList.remove('fade-out');
+        clearTimeout(pdfControlsTimeout);
+        pdfControlsTimeout = setTimeout(() => {
+            controls.classList.add('fade-out');
+        }, 3000);
+    };
+    
+    // Mostra al touch su mobile
+    viewer.ontouchstart = () => {
+        controls.classList.remove('fade-out');
+        clearTimeout(pdfControlsTimeout);
+        pdfControlsTimeout = setTimeout(() => {
+            controls.classList.add('fade-out');
+        }, 3000);
+    };
+}
+
+// ---- Render PDF su canvas: ritaglia i margini vuoti e centra il testo ----
+let pdfRenderToken = 0;
+
+function contentBounds(ctx, w, h) {
+    const d = ctx.getImageData(0, 0, w, h).data;
+    let x1 = w, y1 = h, x2 = 0, y2 = 0;
+    for (let y = 0; y < h; y += 2) {
+        for (let x = 0; x < w; x += 2) {
+            const i = (y * w + x) * 4;
+            if (d[i] < 235 || d[i + 1] < 235 || d[i + 2] < 235) {
+                if (x < x1) x1 = x;
+                if (x > x2) x2 = x;
+                if (y < y1) y1 = y;
+                if (y > y2) y2 = y;
+            }
+        }
+    }
+    return x2 > x1 && y2 > y1 ? { x1, y1, x2, y2 } : null;
+}
+
+async function renderPDF(source) {
+    if (!window.pdfjsLib) throw new Error('pdf.js non disponibile');
+    const token = ++pdfRenderToken;
+    const pagesEl = document.getElementById('pdfPages');
+    const loading = document.getElementById('pdfLoading');
+
+    const pdf = await pdfjsLib.getDocument(source).promise;
+    const items = [];
+    let minX = Infinity, maxX = 0;
+
+    for (let i = 1; i <= pdf.numPages; i++) {
+        const page = await pdf.getPage(i);
+        const vp = page.getViewport({ scale: 2 });
+        const c = document.createElement('canvas');
+        c.width = vp.width;
+        c.height = vp.height;
+        const ctx = c.getContext('2d', { willReadFrequently: true });
+        ctx.fillStyle = '#fff';
+        ctx.fillRect(0, 0, c.width, c.height);
+        await page.render({ canvasContext: ctx, viewport: vp }).promise;
+        if (token !== pdfRenderToken) return;
+
+        const b = contentBounds(ctx, c.width, c.height);
+        if (b) {
+            items.push({ c, b });
+            minX = Math.min(minX, b.x1);
+            maxX = Math.max(maxX, b.x2);
+        }
+    }
+
+    if (!items.length) throw new Error('PDF vuoto');
+
+    const pad = 30;
+    pagesEl.innerHTML = '';
+    items.forEach(({ c, b }) => {
+        const x1 = Math.max(0, minX - pad);
+        const x2 = Math.min(c.width, maxX + pad);
+        const y1 = Math.max(0, b.y1 - pad);
+        const y2 = Math.min(c.height, b.y2 + pad);
+        const out = document.createElement('canvas');
+        out.width = x2 - x1;
+        out.height = y2 - y1;
+        out.getContext('2d').drawImage(c, x1, y1, out.width, out.height, 0, 0, out.width, out.height);
+        pagesEl.appendChild(out);
+    });
+
+    loading.style.display = 'none';
+    pagesEl.style.display = 'block';
+    document.querySelector('.pdf-container').scrollTop = 0;
+}
+
+async function loadPDFFromCache(url) {
+    const cached = cachedPDFs[url];
+    if (!cached) {
+        loadPDFFromNetwork(url);
+        return;
+    }
+
+    try {
+        const bin = atob(cached.data);
+        const bytes = new Uint8Array(bin.length);
+        for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+        await renderPDF({ data: bytes });
+        console.log('✅ PDF dalla cache (canvas)');
+        return;
+    } catch (e) {
+        console.warn('Render canvas fallito, uso iframe', e);
+    }
+
+    const iframe = document.getElementById('pdfFrame');
+    const loading = document.getElementById('pdfLoading');
+
+    // Converte base64 a blob URL
+    const blob = base64ToBlob(cached.data, cached.type);
+    const blobUrl = URL.createObjectURL(blob);
+
+    iframe.src = blobUrl;
+    iframe.onload = () => {
+        loading.style.display = 'none';
+        iframe.style.display = 'block';
+        console.log('✅ PDF dalla cache');
+    };
+}
+
+async function loadPDFFromNetwork(pdfUrl) {
+    try {
+        const res = await fetch(pdfUrl);
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const buf = await res.arrayBuffer();
+        await renderPDF({ data: new Uint8Array(buf) });
+        return;
+    } catch (e) {
+        console.warn('Render canvas fallito, uso iframe', e);
+    }
+    loadPDFFallback(pdfUrl);
+}
+
+function loadPDFFallback(pdfUrl) {
+    const iframe = document.getElementById('pdfFrame');
+    const loading = document.getElementById('pdfLoading');
+
+    const pdfJsUrl = `https://mozilla.github.io/pdf.js/web/viewer.html?file=${encodeURIComponent(pdfUrl)}#zoom=page-fit`;
+    const timestamp = new Date().getTime();
+    const googleDocsUrl = `https://docs.google.com/viewer?url=${encodeURIComponent(pdfUrl)}&embedded=true&t=${timestamp}`;
+    const directUrl = pdfUrl;
+
+    let currentMethod = 0;
+    const methods = [pdfJsUrl, googleDocsUrl, directUrl];
+
+    function tryNext() {
+        if (currentMethod >= methods.length) {
+            loading.innerHTML = `
+                <div style="color:#ff6b6b;text-align:center;padding:40px;">
+                    <h3>❌ PDF non disponibile</h3>
+                    <p>${!navigator.onLine ? '📵 Sei offline' : 'File non trovato'}</p>
+                    <button onclick="downloadPDF()" style="margin-top:20px;padding:10px 20px;background:#4CAF50;color:white;border:none;border-radius:6px;cursor:pointer;">
+                        ⬇️ Scarica PDF
+                    </button>
+                </div>`;
+            return;
+        }
+
+        iframe.src = methods[currentMethod];
+        const timeout = setTimeout(() => { currentMethod++; tryNext(); }, 5000);
+
+        iframe.onload = () => {
+            clearTimeout(timeout);
+            loading.style.display = 'none';
+            iframe.style.display = 'block';
+        };
+
+        iframe.onerror = () => {
+            clearTimeout(timeout);
+            currentMethod++;
+            tryNext();
+        };
+    }
+
+    tryNext();
+}
+
+function closePDF() {
+    const viewer = document.getElementById('pdfViewer');
+    viewer.classList.remove('show');
+    document.getElementById('pdfFrame').src = '';
+    document.getElementById('pdfPages').innerHTML = '';
+    document.getElementById('pdfPages').style.display = 'none';
+    pdfRenderToken++;
+    
+    // Reset controlli
+    clearTimeout(pdfControlsTimeout);
+    viewer.onmousemove = null;
+    viewer.ontouchstart = null;
+}
+
+function downloadPDF() {
+    if (currentPDFUrl) {
+        const a = document.createElement('a');
+        a.href = currentPDFUrl;
+        a.download = currentPDFUrl.split('/').pop();
+        a.target = '_blank';
+        a.click();
+    }
+}
+
+function openInNewTab() {
+    if (currentPDFUrl) window.open(currentPDFUrl, '_blank');
+}
+
+// ============================================================
+// UTILITY
+// ============================================================
+function showInfoMessage(text) {
+    const el = document.getElementById('infoMessage');
+    document.getElementById('infoText').textContent = text;
+    el.classList.add('show');
+    setTimeout(() => el.classList.remove('show'), 5000);
+}
+
+async function blobToBase64(blob) {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onloadend = () => resolve(reader.result.split(',')[1]);
+        reader.onerror = reject;
+        reader.readAsDataURL(blob);
+    });
+}
+
+function base64ToBlob(base64, type) {
+    const binary = atob(base64);
+    const array = new Uint8Array(binary.length);
+    for (let i = 0; i < binary.length; i++) {
+        array[i] = binary.charCodeAt(i);
+    }
+    return new Blob([array], { type });
+}
+
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+// Menu hamburger
+document.querySelector('.icon-hamburger')?.addEventListener('click', () => {
+    document.body.classList.toggle('menu-open');
+});
+
+document.addEventListener('click', e => {
+    const menu = document.querySelector('.header__menu');
+    const ham = document.querySelector('.icon-hamburger');
+    if (document.body.classList.contains('menu-open') &&
+        !menu?.contains(e.target) && !ham?.contains(e.target)) {
+        document.body.classList.remove('menu-open');
+    }
+});
+
+document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') {
+        if (document.getElementById('loginModal').classList.contains('show')) closeLogin();
+        if (document.getElementById('pdfViewer').classList.contains('show')) closePDF();
+    }
+});
+    </script>
+</body>
+</html>

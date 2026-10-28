@@ -576,19 +576,28 @@ function setupOnlineOfflineListeners() {
 }
 
 // ============================================================
-// MODALITÀ
+// MODALITÀ  (MODIFICATO: l'area musicisti ora e' musicisti.html)
 // ============================================================
-function selectMode(mode) {
+async function selectMode(mode) {
     document.querySelectorAll('.mode-card').forEach(c => c.classList.remove('active'));
     document.querySelector(`[data-mode="${mode}"]`).classList.add('active');
 
-    if (mode === 'musicisti' && !isLoggedIn) {
+    if (mode === 'musicisti') {
+        // Se la sessione e' gia' attiva vai direttamente all'area musicisti
+        try {
+            const me = await (await fetch('api-cantici.php?action=me')).json();
+            if (me.user) {
+                window.location.href = 'musicisti.html';
+                return;
+            }
+        } catch (e) { /* nessuna sessione: mostra il login */ }
         showLogin();
-    } else {
-        currentMode = mode;
-        showInfoMessage(mode === 'base' ? 'Modalità Cantici Base' : 'Modalità Musicisti');
-        displayAllCantici();
+        return;
     }
+
+    currentMode = 'base';
+    showInfoMessage('Modalità Cantici Base');
+    displayAllCantici();
 }
 
 function showLogin() {
@@ -615,29 +624,12 @@ async function handleLogin(event) {
         const data = await response.json();
 
         if (data.success) {
-            isLoggedIn = true;
-            currentMode = 'musicisti';
-            localStorage.setItem('musicisti-token', data.token || '1');
-            localStorage.setItem('musicisti-name', data.user.name);
-            closeLogin();
-            showInfoMessage(`✅ Benvenuto ${data.user.name}!`);
-            displayAllCantici();
+            window.location.href = 'musicisti.html';
         } else {
             alert('❌ Credenziali non valide');
         }
     } catch (error) {
-        // Prova accesso offline
-        const savedToken = localStorage.getItem('musicisti-token');
-        if (savedToken) {
-            isLoggedIn = true;
-            currentMode = 'musicisti';
-            const name = localStorage.getItem('musicisti-name') || 'Musicista';
-            closeLogin();
-            showInfoMessage(`✅ Benvenuto ${name} (offline)`);
-            displayAllCantici();
-        } else {
-            alert('❌ Errore connessione');
-        }
+        alert('❌ Errore di connessione');
     }
 }
 

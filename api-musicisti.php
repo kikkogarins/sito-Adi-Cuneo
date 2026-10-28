@@ -3,6 +3,7 @@
  * API Gestione Utenti Musicisti ADI Cuneo
  * File: api-musicisti.php
  * VERSIONE PROTETTA CON PASSWORD
+ * MODIFICA: il login musicista ora salva l'utente in sessione ($_SESSION['user'])
  */
 
 session_start();
@@ -210,6 +211,12 @@ switch ($action) {
         foreach ($users as $user) {
             if ($user['username'] === $input['username']) {
                 if (password_verify($input['password'], $user['password'])) {
+                    // NUOVO: salva l'utente in sessione (serve ai preset per utente)
+                    session_regenerate_id(true);
+                    $_SESSION['user'] = [
+                        'username' => $user['username'],
+                        'name' => $user['name']
+                    ];
                     echo json_encode([
                         'success' => true,
                         'message' => 'Login effettuato',
