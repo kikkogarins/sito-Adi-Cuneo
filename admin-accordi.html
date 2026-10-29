@@ -64,7 +64,18 @@
 
             <div class="adm-card">
                 <h2>Cantici salvati</h2>
-                <ul class="adm-list" id="list"></ul>
+                <div class="adm-row">
+                    <label class="grow">Cerca <input class="mus-in" id="filtro" type="search" placeholder="Numero o titolo" autocomplete="off"></label>
+                    <label>Mostra
+                        <select class="mus-in" id="filtroStato">
+                            <option value="">Tutti</option>
+                            <option value="solo">Solo testo (senza accordi)</option>
+                            <option value="accordi">Con accordi</option>
+                        </select>
+                    </label>
+                </div>
+                <p class="mus-hint" id="conta"></p>
+                <ul class="adm-list" id="list" style="max-height:460px;overflow-y:auto"></ul>
             </div>
         </div>
     </main>
@@ -105,12 +116,29 @@
         C.render($('prev'), $('testo').value, { shift: 0, flat: C.usesFlats(ki.idx, ki.minor), overrides: {} });
     }
 
+    let allSongs = [];
+
+    function norm(t) {
+        return String(t).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+    }
+
     async function loadList() {
         const j = await api('list');
+        allSongs = j.songs || [];
+        renderList();
+    }
+
+    function renderList() {
+        const q = norm($('filtro').value.trim());
+        const stato = $('filtroStato').value;
         const ul = $('list');
         ul.textContent = '';
-        if (!j.songs || !j.songs.length) { ul.innerHTML = '<li>Nessun cantico salvato.</li>'; return; }
-        j.songs.forEach(s => {
+        const found = allSongs.filter(s =>
+            (!q || String(s.numero).includes(q) || norm(s.titolo).includes(q)) &&
+            (stato === '' || (stato === 'accordi') === !!s.accordi));
+        $('conta').textContent = found.length + ' di ' + allSongs.length + ' cantici';
+        if (!found.length) { ul.innerHTML = '<li>Nessun cantico trovato.</li>'; return; }
+        found.forEach(s => {
             const li = document.createElement('li');
             const t = document.createElement('span');
             t.className = 't';
@@ -149,6 +177,8 @@
         $('testo').value = C.convert($('paste').value);
         preview();
     });
+    $('filtro').addEventListener('input', renderList);
+    $('filtroStato').addEventListener('change', renderList);
     $('testo').addEventListener('input', preview);
     $('key').addEventListener('change', preview);
 

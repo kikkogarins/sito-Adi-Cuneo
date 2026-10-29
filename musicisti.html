@@ -42,6 +42,7 @@
             <h2 id="songTitle"></h2>
             <div class="mus-toolbar" id="tools">
                 <label>Tonalità <select id="keySel"></select></label>
+                <button class="mus-btn mus-btn--sm mus-btn--ghost" id="keyOrig" type="button" title="Torna alla tonalità originale">↺ Originale</button>
                 <label>Preset <select id="presetSel"></select></label>
                 <button class="mus-btn mus-btn--sm" id="savePreset" type="button">💾 Salva preset</button>
                 <button class="mus-btn mus-btn--sm mus-btn--danger" id="delPreset" type="button" title="Elimina preset">🗑️</button>
@@ -87,7 +88,7 @@
     const C = window.Chords;
     const QUALS = [['', 'maggiore'], ['-', 'minore (-)'], ['7', '7'], ['maj7', 'maj7'], ['-7', '-7'], ['sus4', 'sus4'], ['4', '4'], ['6', '6'], ['9', '9'], ['add9', 'add9'], ['dim', 'dim'], ['+', 'aug (+)']];
 
-    let hasCh = true, songs = [], song = null, presets = [], key = '', overrides = {}, curPreset = '', edit = null, fs = 1.15;
+    let origKey = '', hasCh = true, songs = [], song = null, presets = [], key = '', overrides = {}, curPreset = '', edit = null, fs = 1.15;
 
     async function api(action, params, body) {
         const qs = new URLSearchParams(Object.assign({ action: action }, params || {}));
@@ -155,8 +156,9 @@
         presets = p.presets || [];
         const k0 = C.keyInfo(song.key);
         key = C.keyName(k0.idx, k0.minor); overrides = {}; curPreset = '';
-        const minor = C.keyInfo(song.key).minor;
-        fillSelect($('keySel'), C.keyList(minor).map(k => [k, k]), key);
+        origKey = key;
+        fillSelect($('keySel'), C.keyList(k0.minor).map(k => [k, k === origKey ? k + ' (originale)' : k]), key);
+        updateOrig();
         $('songTitle').textContent = '#' + song.numero + ' ' + song.titolo;
         $('songBox').hidden = false;
         refreshPresets();
@@ -188,10 +190,15 @@
         $('delPreset').disabled = !curPreset;
     }
 
-    $('keySel').addEventListener('change', e => {
-        key = e.target.value; overrides = {}; curPreset = '';
-        refreshPresets(); draw();
-    });
+    function updateOrig() { $('keyOrig').disabled = key === origKey; }
+
+    function setKey(k) {
+        key = k; overrides = {}; curPreset = '';
+        $('keySel').value = key;
+        updateOrig(); refreshPresets(); draw();
+    }
+    $('keySel').addEventListener('change', e => setKey(e.target.value));
+    $('keyOrig').addEventListener('click', () => setKey(origKey));
 
     $('presetSel').addEventListener('change', e => {
         curPreset = e.target.value;
